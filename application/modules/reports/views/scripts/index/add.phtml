@@ -1,0 +1,109 @@
+<?php
+	$this->headTitle('Currency Smart | Report Transfer page'); 
+	echo $this->headTitle();
+?>	
+
+<script>
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+	
+	function doPrint() {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid').innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();	    
+	}
+</script>
+
+<form name="frmlist_mt_rpt" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+<table class="fullside" style=" border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0 10px 0;">
+	<tr>
+	    <td width="25%">
+	    	<select name="type_money" id="type_money" dojoType="dijit.form.FilteringSelect" 
+				style="width: 265px; height: 30px;" >
+				<option value="-1" <?php if($this->type_money == -1) echo 'selected="selected"';?> >ជ្រើសរើស ប្រភេទ​លុយ</option> 
+				<?php foreach ($this->currencylist as $key => $cur) : ?>
+					<option value="<?php echo $cur['id'];?>" <?php if($cur['id'] == $this->type_money) echo 'selected'?>><?php echo $cur['name'];?></option>
+				<?php endforeach;?> 
+			</select>
+	    </td>
+	    <td width="25%">
+	    	<select name="status" id="status"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->status == -1) echo 'selected="selected"';?> >ជ្រើសរើស ស្ថានការណ៍</option> 
+				<?php foreach ($this->statuslist as $key => $st) : ?>
+					<option value="<?php echo $key;?>" <?php if($key == $this->status) echo 'selected'?>><?php echo $st;?></option>
+				<?php endforeach;?>	 
+			</select> 
+	    </td>
+	    <td width="25%" align="right">
+	    	<select name="status_loan" id="status_loan"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->loan == -1) echo 'selected="selected"';?> >ជ្រើសរើស ស្ថានភាព​ប្រាក់កម្ចី</option> 
+				<?php foreach ($this->loanlist as $key => $ln) : ?>
+					<option value="<?php echo $key;?>" <?php if($key == $this->loan) echo 'selected'?>><?php echo $ln;?></option>
+				<?php endforeach;?>	 
+			</select> 
+	    </td>
+	    <td width="25%" align="right">
+			<select name="agent" id="agent"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->agent == -1) echo 'selected="selected"';?> >ជ្រើសរើស សាខាមេ</option> 
+				<?php foreach ($this->agentlist as $key => $ag) : ?>
+					<?php /* if($this->province == -1):?>
+						<option value="<?php echo $ag['id'];?>" <?php if($ag['id'] == $this->agent) echo 'selected'?>><?php echo $ag['name'];?></option>
+					<?php elseif($ag['province'] == $this->province):?>
+						<option value="<?php echo $ag['id'];?>" <?php if($ag['id'] == $this->agent) echo 'selected'?>><?php echo $ag['name'];?></option>
+					<?php endif; */?>
+					<option value="<?php echo $ag['id'];?>" <?php if($ag['id'] == $this->agent) echo 'selected'?>><?php echo $ag['name'];?></option>
+				<?php endforeach;?>	 
+			</select>
+	    </td>
+	</tr>
+	<tr style="height: 60px;">
+	    <td>
+			<?php 
+				$session_user=new Zend_Session_Namespace('auth');
+				if ($session_user->level == 1) :
+			?>
+		    	<select name="user_id" id="user_id" dojoType="dijit.form.FilteringSelect" 
+					style="width: 265px; height: 30px;" >
+					<option value="-1" <?php if($this->user_id == -1) echo 'selected="selected"';?> >ជ្រើសរើស ឈ្មោះ​អ្នក​ប្រើប្រាស់</option> 
+					<?php foreach ($this->userlist as $key => $usr) : ?>
+						<option value="<?php echo $usr['id'];?>" <?php if($usr['id'] == $this->user_id) echo 'selected'?>><?php echo $usr['name'];?></option>
+					<?php endforeach;?> 
+				</select>
+			<?php endif;?>
+	    </td>
+	    <td>
+	    	<select name="sender" id="sender"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->sender == -1) echo 'selected="selected"';?> >ជ្រើសរើសឈ្មោះអ្នកផ្ញើរ</option> 
+				<?php foreach ($this->sender_list as $key => $sd) : ?>
+					<option value="<?php echo $sd['sender_name'];?>" <?php if($sd['sender_name'] == $this->sender) echo 'selected'?>><?php echo $sd['sender_name'];?></option>
+				<?php endforeach;?>	 
+				<option value=""​ <?php if(empty($this->sender)) echo 'selected="selected"';?> >ផ្សេងៗ</option> 
+			</select>
+	    </td>
+	    <td align="right">
+	    	ពី៖&nbsp;
+			<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+				dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+				rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+				constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+				onchange="dijit.byId('to_date').constraints.min = arguments[0]; " />
+	    </td>
+	    <td align="right">
+			ដល់៖&nbsp;
+			<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+				dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+				rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+				constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+				onChange="dijit.byId('from_date').constraints.max = arguments[0]; " />
+	    </td>
+	</tr>
+	<tr>
+	    <td colspan="4" align="right">
+	    	<input type="submit" value="ស្វែង​រក" label="ស្វែង​រក" id="submitButton" 
+				dojoType="dijit.form.Button"  iconClass="dijitIconSearch"/>
+	    </td>
+	</tr>
+</table>
+</form>

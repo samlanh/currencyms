@@ -1,0 +1,193 @@
+<?php
+	$this->headTitle('Currency Smart | Payment page'); 
+	echo $this->headTitle();
+?>	
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $base_url;?>js/help.js"  type="text/javascript"></script>
+<script src="<?php echo $base_url;?>js/moment.min.js"  type="text/javascript"></script>
+<script src="<?php echo $base_url?>js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $base_url?>js/convertion.js"> </script>
+<style>
+	#grid{
+	    margin-top: 10px;		
+	}
+	.dojoxGridSortNode{
+		text-align: center;	
+		height: 24px;		
+	}
+</style>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<?php 
+	//User Access level for redirct url
+	$url = Application_Form_FrmMessage::getUrl("/payment/index/view/id/");
+?>
+<script type="text/javascript">
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dojox.grid.DataGrid");	
+	
+    dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');	
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dojo.number");
+    dojo.require("dojo.date.locale");
+    dojo.require("dijit.Dialog");
+    dojo.require("dijit.form.DateTextBox");
+    dojo.require("dijit.Dialog");
+
+    var sender_store = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->senderlist));?> ); 
+    
+	dojo.ready(function(){
+		//Creat data fror show			
+		loadData(<?php print_r($this->tranlist);?>);
+		
+		
+		dojo.connect(grid, "onRowClick", grid, function(evt){
+			var idx = evt.rowIndex,
+				item = this.getItem(idx);
+			
+			window.location = '<?php echo $url;?>' + this.store.getValue(item, "found_id");//just disabe
+		});
+		
+		new dijit.form.FilteringSelect({
+            store: sender_store,
+            autoComplete: true,                        
+            required: true,
+            id: "sender_name",
+            name: "sender_name",
+            searchAttr: "name",           
+            class: 'fullside',            
+            missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ផ្ញើរ!",            
+            onChange: function() {                
+             
+            }
+        }, "sender_name");	
+        
+		dijit.byId('sender_name').set('value','<?php echo $this->sender_name;?>');
+	});
+        
+	function loadData(data){			
+		// create an object store
+		var objectStore = new dojo.store.Memory({
+		       data: data
+		 });
+
+		//load data into data grid
+		grid = new dojox.grid.DataGrid({
+			store: dojo.data.ObjectStore({objectStore: objectStore}),
+			autoHeight: true,	
+			structure: [
+				{ name: "ល.រ", field: "num", width: "50px", cellStyles: "text-align: center;" },
+				{ name: "id", field: "found_id", hidden: "true"},	
+				{ name: "ឈ្មោះ​អ្នក​ផ្ញើរ", field: "sender_name", width: "auto" },
+				{ name: "លេខប្រតិបត្តិការណ៏", field: "invoice_found", width: "auto" },
+				{ name: "សង ($)", field: "refund_dollar", width: "auto" },			
+				{ name: "សង (฿)", field: "refund_bath", width: "auto" },
+				{ name: "សង (៛)", field: "refund_riel", width: "auto" },				
+				{ name: "ថ្ងៃ​ប្រតិបត្តិ", field: "date_refund", width: "auto" },
+			]
+		}, "grid");
+		grid.startup();
+	}
+	
+</script>
+
+<form name="frmlist_mt" action="<?php echo $this->url(array('module'=>'payment','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+<table class="fullside">	  	
+	  <tr>
+	    <td valign="top">
+			<!-- <select name="type_money" id="type_money" dojoType="dijit.form.FilteringSelect" 
+				style="width: 265px; height: 30px;" onChange="document.frmlist_mt.submit();">
+				<option value="-1" <?php //if($this->type_money == -1) echo 'selected="selected"';?> >ជ្រើសរើស ប្រភេទ​លុយ</option> 
+				<?php //foreach ($this->currencylist as $key => $cur) : ?>
+					<option value="<?php //echo $cur['id'];?>" <?php //if($cur['id'] == $this->type_money) echo 'selected'?>><?php //echo $cur['name'];?></option>
+				<?php //endforeach;?> 
+			</select> <br/><br/> -->
+<!-- 	    	<input type="text" name="txt_search" id="txt_search" placeholder="ឈ្មោះអ្នកផ្ញើរ"  dojoType="dijit.form.TextBox" 
+			 style="width: 265px;  height: 30px;" value='<?php echo $this->txtsearch;?>'/>-->
+			 
+			 <table width="500px">
+			 	<tr>
+			 		<td>ឈ្មោះអ្នកផ្ញើរ </td>
+			 		<td>
+			 			<input id="sender_name" style="width: 280px;  height: 30px;"/>
+			 		</td>
+			 		<td><button dojoType="dijit.form.Button" showLabel="true" type="submit">ស្វែង​រក</button>
+			 		</td>
+			 		<td>
+			 			<input  type="button" value="សងសេវាកម្ចី" label="សងសេវាកម្ចី" dojoType="dijit.form.Button" 
+							onclick="window.location = '<?php echo $this->url(array('module'=>'loan','controller'=>'payout','action'=>'index')); ?>';"/>
+			 		</td>
+			 	</tr>
+			 </table>
+		</td>
+	    <td align="right" valign="top">
+			ពី៖&nbsp;
+			<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+				dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+				rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+				constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+				onchange="dijit.byId('to_date').constraints.min = arguments[0];" />
+			ដល់៖&nbsp;
+			<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+				dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+				rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+				constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+				onChange="dijit.byId('from_date').constraints.max = arguments[0];" />
+		</td>
+	  </tr>	
+	  <tr>
+	  	<td colspan="2">&nbsp;</td>
+	  </tr>
+	  <tr>
+	  	<td>	  		
+	  		<?php echo $this->result_row;?>
+	  	</td>
+	  	<td align="right" >
+	  		<?php echo $this->rows_per_page;?>
+	  	</td>
+	  </tr>
+	  <tr>
+	  	<td colspan="2">
+	  		<div id="grid" ></div>
+	  	</td>
+	  </tr>	
+	  <tr>
+	  	<td colspan="2" align="center">
+	  		<div id="navigetion" style="margin: 0 auto;"><?php echo $this->nevigation;?></div>	  		
+	  	</td>
+	  </tr>		  
+</table>
+</form>
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'ចំនួន​នៃ​ប្រតិបត្តិការណ៍​សរុប'" id="viewcounter" >
+		<table border="1" cellpadding="0" cellspacing="0" style="color: #fff; font-size: 2em;">
+			<tr style="background-color: #dddddd; height: 60px; color: #000;">
+				<td align="center" style="font-size: 12px; padding: 0px 5px">ប្រតិបត្តិការណ៍​សរុប<br/>ប្រចាំ​ថ្ងៃ</td>
+				<td align="center" width="200px">ផ្ញើរ</td>
+				<td align="center" width="200px">ផ្ញើររួច</td>
+				<td align="center" width="200px">ទទួល</td>
+				<td align="center" width="200px">បើក​រួច</td>
+			</tr>
+			<tr style="background-color: #012a15; height: 50px;">
+				<td align="center" style="font-size: 12px;">​អ្នកប្រើប្រាស់នេះ</td>
+				<td align="center"><?php echo $this->trancounter['user_send']?></td>
+				<td align="center"><?php echo $this->trancounter['user_sent']?></td>
+				<td align="center"><?php echo $this->trancounter['user_recieved']?></td>
+				<td align="center"><?php echo $this->trancounter['user_paid']?></td>
+			</tr>
+			<tr style="background-color: #016315; height: 50px;">
+				<td align="center" style="font-size: 12px;">គ្រប់​អ្នកប្រើប្រាស់</td>
+				<td align="center"><?php echo $this->trancounter['total_send']?></td>
+				<td align="center"><?php echo $this->trancounter['total_sent']?></td>
+				<td align="center"><?php echo $this->trancounter['total_recieved']?></td>
+				<td align="center"><?php echo $this->trancounter['total_paid']?></td>
+			</tr>
+		</table>
+	</div>
+</div>

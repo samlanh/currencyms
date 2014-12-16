@@ -1,0 +1,62 @@
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script type="text/javascript">
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.NumberTextBox');
+	dojo.require("dojo.NodeList-manipulate");
+	dojo.require("dojo.html");
+	dojo.require('dijit.form.Select');	
+	
+</script>
+<?php 
+$result=backup_database('root','','localhost','db_cs2_5');
+echo $result;
+/*
+ * Function for backing up the database
+*/
+function backup_database($db_user, $db_password, $db_server, $db_name, $path = '', $process = 'mysqldump', $force_download = 'yes') {
+	if(!empty($db_user) && !empty($db_server) && !empty($db_name)) {
+		## Today's date
+		$date = date('d-m-Y');
+
+		## The generated SQL file
+		$sql_file = $path.'sql_'.$date.'.sql';
+		## This is to ensure that exec() is enabled on the server
+		if(exec('echo EXEC') == 'EXEC') {
+		try {
+			## For backing up the database
+			exec($process.' --user='.$db_user.' --password='.$db_password.' --host='.$db_server.' '.$db_name.' > '.$sql_file);
+
+			## Checking the filesize over here to understand whether the backup has been performed correctly or not.
+			$file_size = filesize($sql_file);
+
+			//if(!empty($file_size)) {
+				if($force_download == 'yes') {
+					header('Content-Type: application/octet-stream');
+					header('Content-Transfer-Encoding: Binary');
+					header('Content-length: '.$file_size);
+					header('Content-disposition: attachment; filename="'.basename($sql_file).'"');
+
+					readfile($sql_file);
+					//exit;
+				}
+
+				return 'Backup has been completed.';
+			//} else {
+			//	return 'There seems to be an error. Backup file is empty.';
+			//}
+		} catch(Exception $e) {
+			/*
+			 * We can log and display errors over here
+			*/
+		}
+	} else {
+		return 'exec() is not enabled on the server.';
+	}
+	} else {
+		return 'Empty values. Backup cannot continue.';
+	}
+}
+?>

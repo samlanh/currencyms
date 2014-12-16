@@ -1,0 +1,375 @@
+<?php
+	$this->headTitle('Currency Smart | Report debt'); 
+	echo $this->headTitle();
+	$rs_tran = $this->owerlist;
+	
+	$request=Zend_Controller_Front::getInstance()->getRequest();
+	$action=$request->getActionName();
+	$controller=$request->getControllerName();
+	$module=$request->getModuleName();
+	
+?>	
+<style>
+.style-bold{font-weight: bold;}
+</style>
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script>
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+
+	 var sender_store = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->senderlist));?> );  
+	
+	function doPrint(div_id) {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid_'+ div_id).innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    confirmSubmit(div_id);	
+	    	    
+	}
+	function confirmSubmit(div_id){
+		/*if (confirm("តើ​អ្នកជំពាក់នេះពិតជាបានសងរួចហើយរឺទេ ?")){
+			dijit.byId('frmlist_owe_'+ div_id).submit();			
+		}*/
+	}
+</script>
+<script type="text/javascript">
+	dojo.ready(function(){
+		new dijit.form.FilteringSelect({
+            store: sender_store,
+            autoComplete: true,                        
+            required: true,
+            id: "sender_name",
+            name: "sender_name",
+            searchAttr: "name",
+            value: "<?php echo $this->selected;?>",     
+            class: 'fullside',            
+            missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ផ្ញើរ!",            
+            onChange: function() {                
+            }
+        }, "sender_name");
+	}); 
+
+</script>
+
+
+<form name="frmlist_fund" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpt-debt')); ?>" dojoType="dijit.form.Form" method="post">
+	<table width="100%" style="float: right">
+		<tr>
+			<td>
+				<input id="sender_name" />	
+				<br />
+					<input type="submit" value="ស្វែង​រក" label="ស្វែង​រក" id="submitButton" 
+						dojoType="dijit.form.Button"  iconClass="dijitIconSearch"/>
+			</td>
+			<td align="center" valign="top">
+				<input <?php if($controller=='index' AND ($action=="rpt-debt" OR $action=="rpt-debtloan")){echo "class='style1'";}?>  type="button" value="បញ្ជីអ្នកជំពាក់កម្ចី" label="បញ្ជីអ្នកជំពាក់កម្ចី" dojoType="dijit.form.Button" onclick="window.location = '<?php echo $this->url(array('module'=>$module,'controller'=>'index','action'=>'rpt-debtloan')); ?>';"/>
+			</td>
+			<td align="right" valign="top">
+				ពី៖&nbsp;
+				<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+					dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+					rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+					constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+					onchange="dijit.byId('to_date').constraints.min = arguments[0];" />
+				ដល់៖&nbsp;
+				<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+					dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+					rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+					constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+					onChange="dijit.byId('from_date').constraints.max = arguments[0];" />
+		   </td>
+		</tr>
+	</table>
+	<div style="clear:both;"></div>
+</form>
+<br/>
+
+<?php if(!empty($this->owerlist['err']) && $this->owerlist['err']):?>
+	<script type="text/javascript">
+		alert("<?php echo $this->owerlist['msg']?>");
+	</script>
+	<table style="width: 100%; line-height: 25px;">		
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->owerlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('0');">Print All</button><br/>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('1');">Print</button><br/>
+<div id="grid_0" >
+<div id="grid_1" >
+<center><strong>របាយការណ៏ជំពាក់វេ គិតត្រឹមថ្ងៃ <?php echo $this->to_date;?></strong></center><br />
+	<form name="frmlist_owe_1" id="frmlist_owe_1" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'updateowe')); ?>"  method="post">
+		<table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+			<?php $num=1; $l_ower = ''; $pa = '5px'; $row_id=1; $div_id=2; 
+			$_total_dollar=0;$_total_bath=0;$_total_riel=0; $is_set='';
+			?>	
+			<?php if(!empty($this->owerlist))  foreach ( $this->owerlist as $key => $tran) { ?>
+			
+			<?php $ower = ($tran['sender_name']!="" ? $tran['sender_name'] : "Unknow");//not used if ($l_ower !== $ower){?>					
+				<?php  if ($l_ower != $ower){?>
+				<?php if($key > 0) {
+				?>	
+					</table><br />
+					<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+						  <tr class="bgtop style-bold"​ style="font-size: 12px;">
+							  <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប($)&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប(B)&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប(R)&nbsp;</td>
+						 </tr> 
+						 <tr>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_dollar,2),2); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_bath,2),2); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_riel,2),2); ?></b></td>
+						</tr>
+				 </table>
+					<br /><br /><br /><br /><br />
+	</form>
+</div>
+				<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+					showLabel="false" type="button" onclick="doPrint('<?php echo $div_id;?>');">Print</button><br/>
+				<div id="grid_<?php echo $div_id;?>" >					
+                 <form name="frmlist_owe_<?php echo $div_id;?>" id="frmlist_owe_<?php echo $div_id;?>" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rptowes')); ?>"  method="post">
+				    <table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+				<?php $div_id++;?>
+				<?php }else{//if the first record
+					if($key+1==count($rs_tran)){
+						$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+					}else{
+						if($tran['money_type'] != $rs_tran[$key+1]['money_type']){//if record 1!= record 2
+							$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+						}else{
+// 							$end = $tran['send_date'];
+// 							echo 'oner'.$ower.'next sender'.$rs_tran[$key+1]['sender_name'];
+							if($ower!=($rs_tran[$key+1]['sender_name']!="" ? $rs_tran[$key+1]['sender_name'] : "Unknow")){
+								$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+							}else{
+								$end = $rs_tran[$key+1]['send_date'];//
+							}
+						}
+					}
+						$day = countDays($tran['send_date'],$end);//count days;
+						$amount_rate=0;
+						$total_new_debt = $tran['total_money'];
+						$total_per_tran=calculateMoneyWithRate($day,$total_new_debt,($tran['rate_perday']));//amount day,capital,rate
+						if($total_per_tran!=0){
+							$amount_rate = $total_per_tran-$total_new_debt;//if amount day more than 1
+						
+						}else{
+							$total_per_tran = $total_new_debt;
+						}
+						$is_set=$tran['money_type'];
+						$l_ower == $ower;
+				}
+					?>
+				
+				
+				
+				
+			<?php  }
+			if ($l_ower !== $ower){?>
+			<?php //$l_ower = $ower; $row_id=1; 
+			?>
+			<tr class="bgtop" height="40px" style="background:#ccc;">
+				<td colspan="10" style="border:1px solid #000;">&nbsp;ឈ្មោះ <strong><?php echo $ower.' ,លេខទូរស័ព្ទ : '.$tran['tel']; ?></strong></td>
+			</tr>
+			<tr class="bgtop" align="center" style="font-size: 12px;">
+				<td><b style="font-size: 12px;">&nbsp;ល.រ&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;លេខប្រតិ.&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ថ្ងៃជំពាក់/នៅសល់ &nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ប្រាក់ &nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ជំពាក់ថ្មី/ដើម &nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ប្រាក់ដើម/សង&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ការប្រាក់/ខែ &nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;រយៈពេល ជំពាក់&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ចំនួនការប្រាក់  &nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;សរុប  &nbsp;</b></td>
+			</tr>
+			<?php 
+		///	$l_ower = $ower; $row_id=1;?>
+			
+		<?php };?>
+		<?php 
+			if($key>0){
+				if($l_ower == $ower){//curr with old
+					if($tran['is_orgdebt']==0){
+						$total_per_tran=0;
+						$db_fund = new Application_Model_DbTable_DbFund();
+						$rows = $db_fund->getFundByDebtId($tran["invoice_no"],$tran['money_type']);
+						$tran["invoice_no"]="សល់ពីសង"; 
+				foreach ($rows as $index => $row){
+						
+		?>
+			<tr style="background:rgba(230, 139, 139, 1);">
+				<td class="td_line" style="border:1px solid #000; font-size:11px; text-align: center;"><?php echo $num++;?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; white-space: nowrap ;font-size:11px;;">&nbsp;<?php echo 'បានសង';?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000;font-size:11px; white-space: nowrap;">&nbsp;<?php  $time = strtotime($row['date_refund']); echo date('Y-m-d',$time); ?>&nbsp;</td>
+				<td align="center" class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong style="font-size:10px;"><?php echo $this->curr_type[$row['curency_type']];?></strong>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<?php echo number_format($row['capital'],2); ?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong><?php echo number_format(round($row['refund'],2),2);?></strong>&nbsp;</td>
+				<td align="center" class="td_line" style="border:1px solid #000; font-size:11px;" colspan="3">&nbsp;<?php echo 'ប្រាក់ដើមនៅសល់'?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong><?php echo number_format($row['capital']-$row['refund'],2);?></strong>&nbsp;</td>
+			 </tr>
+						
+		<?php }			}
+					if($is_set==$tran['money_type']){
+						if($key+1==count($rs_tran)){ //if end record
+							$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date;
+						}else{
+							if($tran['money_type']!=$rs_tran[$key+1]['money_type']){//if record 1!= record 2
+								$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+							}else{
+								if($ower !=($rs_tran[$key+1]['sender_name']!="" ? $rs_tran[$key+1]['sender_name'] : "Unknow")){
+									$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+								}else{
+									$end = $rs_tran[$key+1]['send_date'];//
+								}
+							}
+						}
+						$day = countDays($tran['send_date'],$end);//count days;
+						$tem_debt = $total_per_tran;
+						$amount_rate=0;
+						$total_new_debt = $tran['total_money']+$tem_debt;//ប្រាក់ដើមបន្ទាប់
+						$total_per_tran = calculateMoneyWithRate($day,$total_new_debt,$tran["rate_perday"]);//amount day,capital,rate
+						
+						if($total_per_tran!=0){
+							$amount_rate = $total_per_tran-$total_new_debt;//if amount day more than 1
+						}else{
+							$total_per_tran = $total_new_debt; //amount =0;
+						}
+						$is_set=$tran['money_type'];
+					}else{
+						if($key+1==count($rs_tran)){ //if end record
+							$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+						}else{
+							if($tran['money_type']!=$rs_tran[$key+1]['money_type']){//if record 1!= record 2
+								$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+							}else{
+								$end = $rs_tran[$key+1]['send_date'];
+							}
+						}
+						$day = countDays($tran['send_date'],$end);//////////////////////
+						///////////////////////condition with other currencty
+						$total_new_debt = $tran['total_money'];
+						$amount_rate =($day*($total_new_debt*$tran['rate_perday']/100/30));//ការប្រាក់ក្នុងcurrent Tran
+						$total_per_tran =($amount_rate+$total_new_debt);
+						$is_set=$tran['money_type'];
+					
+					}
+				}else{
+					/////////////code body here
+					if($key+1==count($rs_tran)){ 
+						$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+					}else{
+						if($tran['money_type']!=$rs_tran[$key+1]['money_type']){//if record 1!= record 2 
+							$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+						}else{
+							if($ower !=($rs_tran[$key+1]['sender_name']!="" ? $rs_tran[$key+1]['sender_name'] : "Unknow")){
+								$end = ($this->to_date)==''?date('Y-m-d'):$this->to_date; //check condition sen
+							}else{
+								$end = $rs_tran[$key+1]['send_date'];//
+							}
+						}
+					}
+						$day = countDays($tran['send_date'],$end);//count days;
+						$amount_rate=0;
+						$total_new_debt = $tran['total_money'];
+						$total_per_tran=calculateMoneyWithRate($day,$total_new_debt,($tran['rate_perday']));//amount day,capital,rate
+						if($total_per_tran!=0){
+							$amount_rate = $total_per_tran-$total_new_debt;//if amount day more than 1
+								
+						}else{
+							$total_per_tran = $total_new_debt;
+						}
+						$is_set=$tran['money_type'];
+						$l_ower == $ower;
+					//if end record
+				}
+			}
+			
+			if($tran['money_type']==1){
+				$_total_dollar=$total_per_tran;
+				$_curr = 'ដុល្លា';
+			}
+			elseif($tran['money_type']==2){
+				$_total_bath=$total_per_tran;
+				$_curr = 'បាត';
+			}
+			else{
+				$_total_riel= $total_per_tran;
+				$_curr = 'រៀល';
+			}
+			
+				$l_ower = $ower;
+				$from = date('d',strtotime($tran['send_date']));
+				$owe_date = 'ថ្ងៃ'.$from.'ដល់ '.$end;
+		?>
+			<tr  <?php if ($tran["invoice_no"]=='សល់ពីសង') echo 'style="background:yellow;"';?>>
+			<?php if(empty($tran['total_money'])){
+					echo"<td colspan='10' align='center'><b style='font-size: 12px;'>បានសងដាច់</b></td>";
+				}else{ ?>
+				<td class="td_line" style="border:1px solid #000; font-size:11px; text-align: center;"><?php echo $num++;?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; white-space: nowrap ;font-size:11px;;">&nbsp;<?php echo $tran["invoice_no"];?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000;font-size:11px; white-space: nowrap;">&nbsp;<?php echo $owe_date;?>&nbsp;</td>
+				<td align="center" class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong style="font-size:10px;"><?php echo $_curr;?></strong>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<?php echo number_format($tran['total_money']); ?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong><?php echo number_format(round($total_new_debt,2),2);?></strong>&nbsp;</td>
+				<td align="center" class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<?php echo $tran["rate_perday"].'%';?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<?php echo $day ." ថ្ងៃ"; ?>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong><?php echo number_format(round($amount_rate,2),2);?></strong>&nbsp;</td>
+				<td class="td_line" style="border:1px solid #000; font-size:11px;">&nbsp;<strong><?php echo number_format(round($total_per_tran,2),2);?></strong>&nbsp;</td>
+			 </tr>
+		<?php } }//end forearch ?>
+		</table><br />
+		<?php if(empty($this->owerlist['err'])):?>
+		<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+	 			<tr class="bgtop style-bold">
+					 <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប($)&nbsp;</td>
+					 <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប(B)&nbsp;</td>
+					 <td align="center" style="border:1px solid #000;">&nbsp;ប្រាក់ជំពាក់សរុប(R)&nbsp;</td>
+				 </tr> 
+				 <tr>
+					 <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_dollar,2),2); ?></b></td>
+					 <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_bath,2),2); ?></b></td>
+					 <td align="center" style="border:1px solid #000;"><b><?php echo number_format(round($_total_riel,2),2); ?></b></td>
+				</tr>
+		</table><br/><br/>
+		<?php endif;?>
+	</form>
+</div>
+</div>
+<?php endif;?>
+<iframe marginwidth="45" marginheight="45" name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+<?php function countDays($start,$end){
+    $first_date = strtotime($start);
+    $second_date = strtotime($end);
+    $offset = $second_date-$first_date;
+    return floor($offset/60/60/24);
+	
+}
+function calculateMoneyWithRate($am_day,$capital,$rate){
+	
+	return $capital+($capital*($rate/100/30))*$am_day;
+	
+	//amount = dojo.number.round(capital,2)+dojo.number.round((capital*rate),2)*amount_day;
+	//return dojo.number.round(amount,2);
+	
+// 	$amount = 0;
+// 	for($j=0;$j<$am_day;$j++){
+// 		if($j==0){
+// 			$amount = $capital;
+// 		}
+// 		$amount = $amount+($amount*($rate/100/30));//ex: 2% per month
+// 	}
+// 	return $amount;
+}

@@ -1,0 +1,488 @@
+<?php
+	$this->headTitle('Currency Smart | Report Total Transfer  page'); 
+	echo $this->headTitle();
+?>	
+
+<script>
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+	
+	function doPrint() {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid').innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();	    
+	}
+</script>
+
+
+<form name="frmlist_mt_rpt" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpttotal')); ?>" dojoType="dijit.form.Form" method="post">
+<table class="fullside" style=" border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0 10px 0;">
+	<!-- <tr>
+	    <td width="25%">  	
+	    </td>
+	    <td width="25%">  	
+	    </td>
+	    <td width="25%" align="right">  	
+	    </td>
+	    <td width="25%" align="right">  	
+	    </td>
+	</tr><tr style="height: 60px;">
+	    <td width="25%">  	
+	    </td>
+	    <td width="25%">  	
+	    </td>
+	    <td width="25%" align="right">  	
+	    </td>
+	    <td width="25%" align="right">  	
+	    </td>
+	</tr><tr>
+	    <td colspan="4" align="right">  	
+	    </td>
+	</tr> -->
+	<tr>
+	    <td width="25%">  	
+			<select name="type_money" id="type_money" dojoType="dijit.form.FilteringSelect" 
+				style="width: 265px; height: 30px;" >
+				<option value="-1" <?php if($this->type_money == -1) echo 'selected="selected"';?> >ជ្រើសរើស ប្រភេទ​លុយ</option> 
+				<?php foreach ($this->currencylist as $key => $cur) : ?>
+					<option value="<?php echo $cur['id'];?>" <?php if($cur['id'] == $this->type_money) echo 'selected'?>><?php echo $cur['name'];?></option>
+				<?php endforeach;?> 
+			</select>
+	    </td>
+	    <td width="25%">  	
+	    	<select name="status" id="status"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->status == -1) echo 'selected="selected"';?> >ជ្រើសរើស ស្ថានការណ៍</option> 
+				<?php foreach ($this->statuslist as $key => $st) : ?>
+					<option value="<?php echo $key;?>" <?php if($key == $this->status) echo 'selected'?>><?php echo $st;?></option>
+				<?php endforeach;?>	 
+			</select> 
+	    </td>
+	    <td width="25%" align="right">  	
+	    	<select name="status_loan" id="status_loan"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->loan == -1) echo 'selected="selected"';?> >ជ្រើសរើស ស្ថានភាព​ប្រាក់កម្ចី</option> 
+				<?php foreach ($this->loanlist as $key => $ln) : ?>
+					<option value="<?php echo $key;?>" <?php if($key == $this->loan) echo 'selected'?>><?php echo $ln;?></option>
+				<?php endforeach;?>	 
+			</select> 
+	    </td>
+	    <td width="25%" align="right"> 
+			<select name="agent" id="agent"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->agent == -1) echo 'selected="selected"';?> >ជ្រើសរើស សាខាមេ</option> 
+				<?php foreach ($this->agentlist as $key => $ag) : ?>
+					<option value="<?php echo $ag['id'];?>" <?php if($ag['id'] == $this->agent) echo 'selected'?>><?php echo $ag['name'];?></option>
+				<?php endforeach;?>	 
+			</select> 	
+	    </td>
+	</tr><tr style="height: 60px;">
+	    <td width="25%">  	
+	    </td>
+	    <td width="25%">
+	    </td>
+	    <td width="25%" align="right">  
+	   		 ពី៖&nbsp;&nbsp;
+			<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+				dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+				rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+				constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+				onchange="dijit.byId('to_date').constraints.min = arguments[0];" />	
+	    </td>
+	    <td width="25%" align="right">  
+	    	ដល់៖&nbsp;
+			<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+				dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+				rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+				constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+				onChange="dijit.byId('from_date').constraints.max = arguments[0];" />	
+	    </td>
+	<tr>
+	    <td colspan="4" align="right">
+	    	<input type="submit" value="ស្វែង​រក" label="ស្វែង​រក" id="submitButton" 
+				dojoType="dijit.form.Button"  iconClass="dijitIconSearch"/>
+	    </td>
+	</tr>
+</table>
+</form>
+
+<?php if(!empty($this->tranlist['err']) && $this->tranlist['err']):?>
+	<script type="text/javascript">	
+		alert("<?php echo $this->tranlist['msg']?>");	
+	</script>
+	<table style="width: 100%; line-height: 25px;">
+		<tr>
+			<td width="45%"><strong>របាយការណ៍ទូទាត់​ទឹកប្រាក់</strong></td>
+			<td>
+				<strong><?php echo  date_format(date_create($this->from_date), "d/m/Y");?> - 
+				<?php echo date_format(date_create($this->to_date), "d/m/Y");?></strong>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->tranlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint();">Print</button><br/>	
+<div id="grid" >
+	<!-- Add style in div it efect for printing -->
+	<style>
+	<!--
+		.table{
+			width: 100%; 
+			font-size: 14px; 
+			line-height: 25px; 
+			border-bottom:0 none; 
+			border-left: 0 none;
+		}
+		.table tr, .table tr td, .table tr th {
+			border: solid 1px #000;			
+		}		
+		.table tr th{
+			font-weight: bold;
+		}
+		.table tr .subtotalbr{
+			border-bottom:0 none; 
+			border-left: 0 none;
+		}
+		.table tr .totalbr{
+			border-top: 0 none; 
+			border-bottom:0 none; 
+			border-left: 0 none;
+		}		
+		
+		#panelreport{
+			width: 100%; 
+			line-height: 25px;			
+		}
+		.table tr .labeltotal{		
+			padding-right: 5px;
+			 
+			font-weight: bold;	
+		}
+		.table tr .valuetotal{
+			border-bottom: solid 2px #000;
+			padding-right: 5px;
+			
+			font-weight: bold;	
+		}
+		.textsize{
+			font-size: 10px;	
+		}
+		.labelsize{
+			font-size: 12px;
+		}
+		.headersize{
+			font-size: 15px;
+			line-height: 25px;
+		}
+		.paddright{
+			padding-right: 5px;
+		}
+	-->
+	</style>
+	<table id="panelreport">		
+		<tr>
+			<td width="50%">				
+				<strong>របាយការណ៍ទូទាត់​ទឹកប្រាក់</strong>
+			</td>
+			<td>
+				<strong><?php echo  date_format(date_create($this->from_date), "d/m/Y");?> - 
+				<?php echo date_format(date_create($this->to_date), "d/m/Y");?></strong>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2">
+				<table border="1"  cellspacing="0" class="table">
+				<?php $l_agent = ''; $pa = '5px'; $l_currency=''; $row_id=1; $_total = 0; $_total_com = 0; $cur_tran_type=null; $__inx=0; $__rinx=0;?>
+				<?php 
+						//init variable for store total all transaction in one agent
+						$__totalall = array( 
+										array(0, 0 , 0),
+	               						array(0, 0 , 0)
+               						);
+						if(!empty($this->tranlist[0]['tran_type']) && $this->tranlist[0]['tran_type'] == 1) $__rinx=1;						
+               	?>							
+				<?php foreach ( $this->tranlist as $key => $tran) : ?>
+					<!-- header tables -->
+					<?php
+						 if($tran['tran_type'] == 0){							
+							$prefix = $this->keycode['rpt-transfer-send-kh'];
+						}
+						//recieved money
+						else{
+							$prefix = $this->keycode['rpt-transfer-recieve-kh'];
+						} 
+						$sub_agent = (empty($tran['subname']))? "":"(បើក​នៅ".$tran['subname'].")";
+						if($__inx == 3) $__inx=0;
+					?>
+					
+					<?php if ($cur_tran_type != $tran['tran_type'] || $l_agent != $tran['agentname']) :?>
+						<?php if($key > 0) :?>
+							<?php 
+								$__total = $_total + $_total_com;
+							?>
+							<tr calss="rowtotal">
+								<td colspan="4" class="subtotalbr">&nbsp;</td>
+								<td align="center" class="labeltotal">សរុប​</td>
+								<td align="right" class="labeltotal">
+									<?php echo $l_currency.' '.number_format($_total,(!strrpos($_total,"."))? 0 : 2);?>
+								</td>
+								<td align="right" class="labeltotal">
+									<?php echo $l_currency.' '.number_format($_total_com, (!strrpos($_total_com,"."))? 0 : 2) ;?>
+								</td>
+							</tr>
+							<tr calss="rowtotal">
+								<td colspan="4" class="totalbr">&nbsp;</td>
+								<td align="center" class="valuetotal">សរុប​រួម</td>
+								<td align="right" colspan="2" class="valuetotal">
+									<?php echo $l_currency.' '.number_format($__total, (!strrpos($__total,"."))? 0 : 2);?>
+								</td>						
+							</tr>
+							<?php 		
+								//clear index of change transaction type 
+								
+								if($l_currency == '$'){
+									$__inx = 0;
+								} 
+								elseif ($l_currency == 'B'){
+									$__inx = 1;
+								}
+								elseif ($l_currency == 'R'){
+									$__inx = 2;
+								}								
+								$__totalall[$__rinx][$__inx] = $_total + $_total_com;  $__rinx = $tran['tran_type']; $_total = 0; $_total_com = 0;
+							?>
+							</table><br/><br/>
+							
+							<?php if ($l_agent != $tran['agentname']) : //print_r($__totalall); exit;?>
+								
+								<!-- Generate table for total all currency Between 1 agent to other agent-->
+								<table border="1" cellspacing="0" class="table" >
+									<tr align="center" class='rowtotal bgtop'>
+										<td rowspan="2" class='labeltotal'>ប្រភេទ</td>
+										<td colspan="2" class='labeltotal'>មុន​ទូទាត់</td>
+										<td colspan="2" class='labeltotal'>ក្រោយ​ទូទាត់</td>										
+									</tr>
+									<tr align="center" class='rowtotal bgtop'>
+										<td class='labeltotal'><?php echo $this->keycode['rpt-transfer-send-kh'].' '.$this->keycode['mainbranch'];?></td>
+										<td class='labeltotal'><?php echo $this->keycode['rpt-transfer-send-kh'].' '.$l_agent;?></td>
+										<td class='labeltotal'><?php echo 'នៅ​ខ្វះ '.$this->keycode['mainbranch'];?></td>
+										<td class='labeltotal'><?php echo 'នៅ​ខ្វះ '.$l_agent;?></td>										
+									</tr>
+									<tr>
+										<td align="center">ដុល្លា</td>
+										<td align="right" class="paddright">$ <?php echo number_format($__totalall[1][0],(!strrpos($__totalall[1][0],"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">$ <?php echo number_format($__totalall[0][0],(!strrpos($__totalall[0][0],"."))? 0 : 2);?></td>
+										<?php $_us = $__totalall[1][0] - $__totalall[0][0]?>
+										<td align="right" class="paddright">$ <?php echo number_format(($_us < 0)? 0 : $_us,(!strrpos($_us,"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">$ <?php echo number_format(($_us >0)? 0: abs($_us),(!strrpos(abs($_us),"."))? 0 : 2);?></td>
+									</tr>
+									<tr>
+										<td align="center">បាត</td>
+										<td align="right" class="paddright">B <?php echo number_format($__totalall[1][1],(!strrpos($__totalall[1][1],"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">B <?php echo number_format($__totalall[0][1],(!strrpos($__totalall[0][1],"."))? 0 : 2);?></td>
+										<?php $_bt = $__totalall[1][1] - $__totalall[0][1]?>
+										<td align="right" class="paddright">B <?php echo number_format(($_bt < 0)? 0 : $_bt,(!strrpos($_bt,"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">B <?php echo number_format(($_bt >0)? 0: abs($_bt),(!strrpos(abs($_bt),"."))? 0 : 2);?></td>
+									</tr>
+									<tr>
+										<td align="center">រៀល</td>
+										<td align="right" class="paddright">R <?php echo number_format($__totalall[1][2],(!strrpos($__totalall[1][2],"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">R <?php echo number_format($__totalall[0][2],(!strrpos($__totalall[0][2],"."))? 0 : 2);?></td>
+										<?php $_r = $__totalall[1][2] - $__totalall[0][2]?>
+										<td align="right" class="paddright">R <?php echo number_format(($_r < 0)? 0 : $_r,(!strrpos($_r,"."))? 0 : 2);?></td>
+										<td align="right" class="paddright">R <?php echo number_format(($_r > 0)? 0: abs($_r),(!strrpos(abs($_r),"."))? 0 : 2);?></td>
+									</tr>								
+								</table><br/><br/>
+								<?php 
+										// clear data in arrays for view other agent
+										$__totalall = array( 
+														array(0, 0 , 0),
+					               						array(0, 0 , 0)
+				               						);
+										$__rinx=0; $__inx = 0;
+				               	?>
+							<?php endif;?>
+							<table border="1"  cellspacing="0" class="table">
+						<?php endif;?>
+						<?php $cur_tran_type = $tran['tran_type']; $row_id=1; $l_currency=''; $l_agent = $tran['agentname'];$__inx=0;?>
+						<!-- label of agent name -->
+							<tr​ class="bg-center">
+								<td colspan="7" style="padding-left: <?php echo $pa;?>;">
+									<strong class='headersize'>
+										<label class="labelsize"><?php echo $prefix;?> </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;									
+										<?php echo $tran['pro_name']." - ". $l_agent." ".$tran['agent_tel'];?>
+									</strong>
+								</td>						
+							</tr>		
+					<?php endif;?>
+					
+					<!-- Create new table for other currency -->
+					<?php if ($l_currency != $tran['symbol']) : ?>	
+						<?php if(!empty($l_currency)) :?>	
+							<?php 
+								$__total = $_total + $_total_com;
+							?>
+							<tr calss="rowtotal">
+								<td colspan="4" class="subtotalbr">&nbsp;</td>
+								<td align="center" class="labeltotal">សរុប​</td>
+								<td align="right" class="labeltotal">
+									<?php echo $l_currency.' '.number_format($_total,(!strrpos($_total,"."))? 0 : 2);?>
+								</td>
+								<td align="right" class="labeltotal">
+									<?php echo $l_currency.' '.number_format($_total_com, (!strrpos($_total_com,"."))? 0 : 2) ;?>
+								</td>
+							</tr>
+							<tr calss="rowtotal">
+								<td colspan="4" class="totalbr">&nbsp;</td>
+								<td align="center" class="valuetotal">សរុប​រួម</td>
+								<td align="right" colspan="2" class="valuetotal">
+									<?php echo $l_currency.' '.number_format($__total, (!strrpos($__total,"."))? 0 : 2);?>
+								</td>						
+							</tr>
+							<?php 
+								if($l_currency == '$'){
+									$__inx = 0;
+								}
+								elseif ($l_currency == 'B'){
+									$__inx = 1;
+								}
+								elseif ($l_currency == 'R'){
+									$__inx = 2;
+								}
+								$__totalall[$__rinx][$__inx] = $_total + $_total_com;  $__inx++;  $_total = 0; $_total_com = 0;
+							?>		
+							</table><br/>
+							<?php //print ($tran['symbol']);	?>
+							<table border="1"  cellspacing="0" class="table">
+						<?php endif;?>
+						<!-- label of currency type name -->
+						<tr class="bgtop">
+							<td colspan="7" style="padding-left: <?php echo $pa;?>;">
+								<label  class='labelsize'><strong>ប្រភេទ​លុយ <?php echo $tran['amount_type'].' '.$tran['symbol'];?></strong></label>
+							</td>						
+						</tr>	
+						<!-- Declear label table hader -->
+						<tr class="bg-center" style="text-align: center; border: 1 black solid;">
+							<th  width="60px">លេខរៀង</th>
+							<th>ឈ្មោះ​អ្នក​ផ្ញើរ</th>
+							<th>ឈ្មោះ​អ្នក​ទទួល</th>
+							<th width="120px">លេខ​អ្នក​ទទួល</th>							
+							<th width="100px">កាលបរិច្ឆេទ</th>							
+							<th>ចំនួន​ទឹក​ប្រាក់</th>
+							<th>ថៃ្ល​សេវា</th>
+						</tr>						
+						<?php $l_currency = $tran['symbol']; $row_id=1;?>
+					<?php endif;?>		
+					<?php
+						//transfer money				
+						$amount = $tran['transfer_money'];
+						$s_date = date_format(date_create($tran['send_date']), "d/m/Y");
+						$comm = $tran['commission_agent'];
+																		
+						$_total += $amount;	
+						$_total_com += $comm;					
+						
+						
+						//$sub_agent = (empty($tran['subname']))? $tran['sender_name']: $prefix." ".$tran['subname'];		
+						$amount_pos = (!strrpos($amount,"."))? 0 : 2;
+						$comm_pos = (!strrpos($comm,"."))? 0 : 2;
+					?>
+					<!-- init rows -->
+					<tr>
+						<td align="center"><?php echo ($row_id++);?></td>						
+						<td style="padding-left: <?php echo $pa;?>;"><?php echo empty($tran['sender_name'])?'&nbsp;':$tran['sender_name'];?></td>
+						<td style="padding-left: <?php echo $pa;?>;"><?php echo empty($tran['reciever_name'])?'&nbsp;':$tran['reciever_name'];?></td>
+						<td align="center"><?php echo $tran['reciever_tel'];?></td>						
+						<td align="center"><?php echo $s_date;?></td>						
+						<td align="right" style="padding-right: <?php echo $pa;?>;"><?php echo $tran['symbol'].' '.number_format($amount,$amount_pos);?></td>
+						<td align="right" style="padding-right: <?php echo $pa;?>;"><?php echo $tran['symbol'].' '.number_format($comm, $comm_pos);?></td>
+					</tr>
+					
+				<?php endforeach; ?>	
+					<?php 
+						$_total_pos = (!strrpos($_total,"."))? 0 : 2;
+						$_total_com_pos = (!strrpos($_total_com,"."))? 0 : 2;
+						$__total = $_total + $_total_com;
+						$__total_pos = (!strrpos($__total,"."))? 0 : 2;
+					?>
+					<tr class="rowtotal">
+						<td colspan="4" class="subtotalbr">&nbsp;</td>
+						<td align="center" class="labeltotal">សរុប​</td>
+						<td align="right" class="labeltotal">
+							<?php echo $l_currency.' '.number_format($_total,$_total_pos);?>
+						</td>
+						<td align="right" class="labeltotal">
+							<?php echo $l_currency.' '.number_format($_total_com,$_total_com_pos);?>
+						</td>
+					</tr>
+					<tr class="rowtotal">
+						<td colspan="4" class="totalbr">&nbsp;</td>
+						<td align="center" class="valuetotal">សរុប​រួម</td>
+						<td align="right" colspan='2' class="valuetotal">
+							<?php echo $l_currency.' '.number_format($__total, $__total_pos);?>
+						</td>						
+					</tr>		
+					<?php
+						if($l_currency == '$'){
+							$__inx = 0;
+						} 
+						elseif ($l_currency == 'B'){
+							$__inx = 1;
+						}
+						elseif ($l_currency == 'R'){
+							$__inx = 2;
+						}
+						$__totalall[$__rinx][$__inx] = $_total + $_total_com; $__rinx = $tran['tran_type']; 
+					?>
+				</table> <br><br>
+				<!-- Generate table for total all currency -->
+				<table border="1" cellspacing="0" class="table" >
+					<tr align="center" class='rowtotal bg-center'>
+						<td rowspan="2" class='labeltotal'>ប្រភេទ</td>
+						<td colspan="2" class='labeltotal'>មុន​ទូទាត់</td>
+						<td colspan="2" class='labeltotal'>ក្រោយ​ទូទាត់</td>										
+					</tr>
+					<tr align="center" class='rowtotal bg-center'>
+						<td class='labeltotal'><?php echo $this->keycode['rpt-transfer-send-kh'].' '.$this->keycode['mainbranch'];?></td>
+						<td class='labeltotal'><?php echo $this->keycode['rpt-transfer-send-kh'].' '.$l_agent;?></td>
+						<td class='labeltotal'><?php echo 'នៅ​ខ្វះ '.$this->keycode['mainbranch'];?></td>
+						<td class='labeltotal'><?php echo 'នៅ​ខ្វះ '.$l_agent;?></td>										
+					</tr>
+					<tr>
+						<td align="center">ដុល្លា</td>
+						<td align="right" class="paddright">$ <?php echo number_format($__totalall[1][0],(!strrpos($__totalall[1][0],"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">$ <?php echo number_format($__totalall[0][0],(!strrpos($__totalall[0][0],"."))? 0 : 2);?></td>
+						<?php $_us = $__totalall[1][0] - $__totalall[0][0]?>
+						<td align="right" class="paddright">$ <?php echo number_format(($_us < 0)? 0 : $_us,(!strrpos($_us,"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">$ <?php echo number_format(($_us >0)? 0: abs($_us),(!strrpos(abs($_us),"."))? 0 : 2);?></td>
+					</tr>
+					<tr>
+						<td align="center">បាត</td>
+						<td align="right" class="paddright">B <?php echo number_format($__totalall[1][1],(!strrpos($__totalall[1][1],"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">B <?php echo number_format($__totalall[0][1],(!strrpos($__totalall[0][1],"."))? 0 : 2);?></td>
+						<?php $_bt = $__totalall[1][1] - $__totalall[0][1]?>
+						<td align="right" class="paddright">B <?php echo number_format(($_bt < 0)? 0 : $_bt,(!strrpos($_bt,"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">B <?php echo number_format(($_bt >0)? 0: abs($_bt),(!strrpos(abs($_bt),"."))? 0 : 2);?></td>
+					</tr>
+					<tr>
+						<td align="center">រៀល</td>
+						<td align="right" class="paddright">R <?php echo number_format($__totalall[1][2],(!strrpos($__totalall[1][2],"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">R <?php echo number_format($__totalall[0][2],(!strrpos($__totalall[0][2],"."))? 0 : 2);?></td>
+						<?php $_r = $__totalall[1][2] - $__totalall[0][2]?>
+						<td align="right" class="paddright">R <?php echo number_format(($_r < 0)? 0 : $_r,(!strrpos($_r,"."))? 0 : 2);?></td>
+						<td align="right" class="paddright">R <?php echo number_format(($_r > 0)? 0: abs($_r),(!strrpos(abs($_r),"."))? 0 : 2);?></td>
+					</tr>								
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+<?php //print_r($__totalall);?>
+<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+<?php endif;?>

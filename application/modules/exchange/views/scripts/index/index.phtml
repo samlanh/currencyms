@@ -1,0 +1,169 @@
+<?php
+	$this->headTitle('Currency Smart | Transfer page'); 
+	echo $this->headTitle();
+?>
+<style>
+	#grid{
+	    margin-top: 10px;		
+	}
+	.dojoxGridSortNode{
+		text-align: center;	
+	}
+</style>
+<?php 
+	//User Access level for redirct url
+	$url = Application_Form_FrmMessage::getUrl("/exchange/index/edited?ex_id=");
+?>
+<script>
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dojox.grid.DataGrid");	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.Dialog");
+	dojo.require("dojo.number");
+	
+	dojo.ready(function(){		
+		//Creat data fror show			
+		loadData(<?php print_r($this->tranlist);?>);
+		
+		dojo.connect(grid, "onRowClick", grid, function(evt){
+			var idx = evt.rowIndex,
+				item = this.getItem(idx);
+			
+			window.location = '<?php echo $url;?>' + this.store.getValue(item, "id");
+		});
+		<?php /*
+		dojo.connect(grid, "onRowClick", grid, function(evt){
+			var idx = evt.rowIndex,
+				item = this.getItem(idx);
+			
+			window.location = '<?php echo $url;?>' + this.store.getValue(item, "id");
+		});
+		*/?>
+
+		
+
+	});
+
+	function formatDispaly(f){
+		return dojo.number.format(f[0]) + " " + f[1];
+    }
+    
+	function loadData(data){			
+		// create an object store
+		var objectStore = new dojo.store.Memory({
+		       data: data
+		 });
+
+		//load data into data grid
+		grid = new dojox.grid.DataGrid({
+			store: dojo.data.ObjectStore({objectStore: objectStore}),
+			autoHeight: true,	
+			structure: [
+				{ name: "ល.រ", field: "num", width: "50px", cellStyles: "text-align: center;" },
+				{ name: "id", field: "id", hidden: true },					
+				{ name: "ថ្ងៃ​ប្រតិបត្តិ", field: "statusDate", width: "115px", cellStyles: "text-align: center;" },
+				{ name: "ការប្តូរប្រាក់", field: "from_to", width: "115px", cellStyles: "text-align: center;"},
+				{ name: "ចំនួនទឹកប្រាក់", fields: ["fromAmount", "fromAmountType"], width: "150px", cellStyles: "text-align: right;", formatter: formatDispaly},
+				{ name: "អត្រាប្តូរប្រាក់",fields: ["rate", "toAmountType"], width: "150px", cellStyles: "text-align: right;",formatter: formatDispaly},
+				{ name: "ចំនួនទឹកប្រាក់បានប្តូររួច",fields: ["toAmount", "toAmountType"], width: "auto", cellStyles: "text-align: right;",formatter: formatDispaly},
+				{ name: "ប្រាក់​ទទួល​បាន​",fields: ["recievedAmount", "fromAmountType"], width: "auto", cellStyles: "text-align: right;",formatter: formatDispaly},
+				{ name: "ប្រាក់​អាប់", fields: ["changedAmount", "fromAmountType"], width: "auto", cellStyles: "text-align: right;",formatter: formatDispaly},
+			]
+		}, "grid");
+		grid.startup();
+	}
+	
+	// Hide the dialog
+	function hideDialog() {		
+		dijit.byId("viewcounter").hide();		
+	}
+
+	//show Dialog
+	function showDialog() {		
+		dijit.byId("viewcounter").show();
+	}
+</script>
+
+<form name="frmlist_mt" action="<?php echo $this->url(array('module'=>'exchange','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+<table class="fullside">	  
+	  <tr>
+			<td>
+				<label>ឈ្មោះ​អ្នក​ប្រើប្រាស់</label>
+				<select style="text-align: left;" onchange="document.frmlist_mt.submit();" name="user_id" id="select_user_id" dojoType="dijit.form.FilteringSelect" required="true">
+					<option value="-1" <?php echo (-1 == $this->user_id)?"selected":"";?>>All</option> 
+					<?php foreach ($this->users as $key => $u) : ?>
+						<option value="<?php echo $u['id'];?>" <?php echo ($u['id'] == $this->user_id)?"selected":"";?>><?php echo  $u['name'];?></option>
+					<?php endforeach;?> 
+				</select>
+			</td>
+	    <td align="right" colspan="2">	    	
+			ពី៖&nbsp;
+			<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+				dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+				rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+				constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+				onchange="dijit.byId('to_date').constraints.min = arguments[0]; document.frmlist_mt.submit();" />
+			ដល់៖&nbsp;
+			<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+				dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+				rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+				constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+				onChange="dijit.byId('from_date').constraints.max = arguments[0]; document.frmlist_mt.submit();" />
+		</td>
+	  </tr>	
+	  
+	  <tr>
+	  	<td colspan="2">&nbsp;</td>
+	  </tr>
+	  <tr>
+	  	<td>	  		
+	  		<?php echo $this->result_row;?>
+	  	</td>
+	  	<td align="right" >
+	  		<?php echo $this->rows_per_page;?>
+	  	</td>
+	  </tr>
+	  <tr>
+	  	<td colspan="2">
+	  		<div id="grid" ></div>
+	  	</td>
+	  </tr>	
+	  <tr>
+	  	<td colspan="2" align="center">
+	  		<div id="navigetion" style="margin: 0 auto;"><?php echo $this->nevigation;?></div>	  		
+	  	</td>
+	  </tr>		  
+</table>
+</form>
+
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'ចំនួន​នៃ​ប្រតិបត្តិការណ៍​សរុប'" id="viewcounter" >
+		<table border="1" cellpadding="0" cellspacing="0" style="color: #fff; font-size: 2em;">
+			<tr style="background-color: #dddddd; height: 60px; color: #000;">
+				<td align="center" style="font-size: 12px; padding: 0px 5px">ប្រតិបត្តិការណ៍​សរុប<br/>ប្រចាំ​ថ្ងៃ</td>
+				<td align="center" width="200px">ផ្ញើរ</td>
+				<td align="center" width="200px">ផ្ញើររួច</td>
+				<td align="center" width="200px">ទទួល</td>
+				<td align="center" width="200px">បើក​រួច</td>
+			</tr>
+			<tr style="background-color: #012a15; height: 50px;">
+				<td align="center" style="font-size: 12px;">​អ្នកប្រើប្រាស់នេះ</td>
+				<td align="center"><?php echo $this->trancounter['user_send']?></td>
+				<td align="center"><?php echo $this->trancounter['user_sent']?></td>
+				<td align="center"><?php echo $this->trancounter['user_recieved']?></td>
+				<td align="center"><?php echo $this->trancounter['user_paid']?></td>
+			</tr>
+			<tr style="background-color: #016315; height: 50px;">
+				<td align="center" style="font-size: 12px;">គ្រប់​អ្នកប្រើប្រាស់</td>
+				<td align="center"><?php echo $this->trancounter['total_send']?></td>
+				<td align="center"><?php echo $this->trancounter['total_sent']?></td>
+				<td align="center"><?php echo $this->trancounter['total_recieved']?></td>
+				<td align="center"><?php echo $this->trancounter['total_paid']?></td>
+			</tr>
+		</table>
+	</div>
+</div>

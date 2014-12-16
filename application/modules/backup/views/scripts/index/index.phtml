@@ -1,0 +1,59 @@
+<?php 
+$baseurl=$this->baseUrl();
+?>
+<script type="text/javascript" src="<?php echo $baseurl;?>/js/css3/src.js"></script>
+
+<script type="text/javascript">
+//dojo.require('dijit.form.NumberTextBox');
+//dojo.require('dijit.form.FormattingPhone');
+dojo.require('dijit.form.ValidationTextBox');
+dojo.require('dijit.form.ValidationTextBox');
+
+
+
+	dojo.require('dijit.form.Button');	
+	 dojo.require("dojox.validate.web");
+     dojo.require("dojox.validate._base");
+     dojo.require("dojox.validate.creditCard");
+     dojo.require("dojox.validate.isbn");
+     function testIt() {
+         var s = dojox.validate.isNumberFormat("(555)/123-3456",{ format : "(###)/###-####" });
+         alert(s)
+
+       }
+
+     declare('calpoly/form/FormattingPhoneNumber', [ValidationTextBox], {
+
+ 	    regExp:"\\d{3}-\\d{3}-\\d{4}",
+ 	    invalidMessage:"Please enter a 10-digit phone number",
+
+ 	    filter:function(val){
+ 	        val = lang.trim(val);
+ 	        var s = [];
+ 	        for(var i=0; i<val.length;i++){
+ 	            if(!isNaN(val[i])){
+ 	                s.push(val[i]);
+ 	            }
+ 	        }
+ 	        if(s.length!=10){
+ 	            // Not a 10-digit phone number, return what the user typed, regex will invalidate.
+ 	            return val;
+ 	        }
+ 	        s.splice(3,0,'-');
+ 	        s.splice(7,0,'-');
+ 	        return s.join('');
+ 	    }
+ 	});
+</script>
+  <body >
+  <!--
+   <body onLoad="testIt();">
+   <input type="text" name="amount" id="amount"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'amount',
+									class:'fullside',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'"> -->
+    									
+  </body>

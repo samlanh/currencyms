@@ -1,0 +1,77 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('Add CO'));
+?>	
+<?php  $techer= $this->frm_co;?>
+<form  id='add_techer' action="<?php echo $this->url(array('module'=>'other','controller'=>'co','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				/*if(dijit.byId('province').get('value')==''){
+					alert('Province required');
+					return false;
+			    }*/
+				return true;
+			} else {
+				return false;
+			}
+</script>
+<table cellspacing="10" width="90%" style="margin: 0 auto;">
+	<tr>
+		<td>
+		<fieldset style="background-color:menu;">
+					<legend align="center" ><strong><?php echo $tr->translate("Add CO");?></strong></legend>
+					
+					<table style="margin: 0 auto; width: 95%;" cellspacing="10">
+						<tr>
+							<td><?php echo $tr->translate("CO Id")?></td>
+							<td><?php  echo $techer->getElement('co_id');  echo $techer->getElement('id');?></td>
+							<td><?php echo $tr->translate("Name In Khmer")?></td>
+							<td><?php  echo $techer->getElement('name_kh');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Name In English")?></td>
+							<td><?php  echo $techer->getElement('first_name');?></td>
+						
+						<!--<tr>
+							<td><?php //echo $tr->translate("Last Name")?></td>
+							<td><?php  //echo $techer->getElement('last_name');?></td>
+						</tr> -->
+							<td><?php echo $tr->translate("Display By")?></td>
+							<td><?php  echo $techer->getElement('display');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Sex")?></td>
+							<td><?php  echo $techer->getElement('co_sex');?></td>
+							<td><?php echo $tr->translate("National Id")?></td>
+							<td><?php  echo $techer->getElement('national_id');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("POB")?></td>
+							<td><?php  echo $techer->getElement('pob');?></td>
+							<td><?php echo $tr->translate("Current Address")?></td>
+							<td><?php  echo $techer->getElement('address');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Degree")?></td>
+							<td><?php  echo $techer->getElement('degree');?></td>
+							<td><?php echo $tr->translate("Tel")?></td>
+							<td><?php  echo $techer->getElement('tel');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Email")?></td>
+							<td><?php  echo $techer->getElement('email');?></td>
+							<td><?php echo $tr->translate("STATUS")?></td>
+							<td><?php  echo $techer->getElement('status');?></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+							<input type="submit" value="GO_SAVE" label="<?php echo $tr->translate('GO_SAVE');?>" id="submitButton" dojoType="dijit.form.Button" 
+								 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId("add_techer").submit();"/>
+							</td>
+						</tr>
+					</table>	
+		</fieldset>		
+		</td>
+	</tr>
+</table>	
+</form>

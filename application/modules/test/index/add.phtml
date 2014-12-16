@@ -1,0 +1,60 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+
+<form action="<?php echo $this->url(array('module'=>'inserttable','controller'=>'Test','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+		
+	<table cellspacing="1" width="100%">
+		<tr>
+			<td>
+				<fieldset>
+					<legend><strong>start test</strong></legend>
+					<table>
+						<tr>
+							<td>input</td>
+							<td><?php echo $form->getElement('input');?></td>
+							<td>output</td>
+							<td><?php echo $form->getElement('output');?></td>
+							<td>insert</td>
+							<td><?php echo $form->getElement('insert');?></td>
+						</tr>
+						<tr>
+							<td>delet</td>
+							<td><?php echo $form->getElement('delet');?></td>
+							<td>updete</td>
+							<td><?php echo $form->getElement('updete');?></td>
+							<td>edit</td>
+							<td><?php echo $form->getElement('edit');?></td>
+						</tr>
+					</table>
+					
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>
+
+

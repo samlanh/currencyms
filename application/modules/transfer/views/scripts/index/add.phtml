@@ -1,0 +1,124 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+
+<form action="<?php echo $this->url(array('module'=>'Trasfer','controller'=>'Creatmoney','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+		
+	<table cellspacing="1" width="100%">
+		<tr>
+			<td>
+					<fieldset>
+						<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន អត្រាប្តូប្រាក់</strong></legend>
+						<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
+<!-- 							<tr> -->
+								<td><?php //echo $form->getElement('list');?></td>
+<!-- 								<td>ជំពាក់ប្រាក់ដើម</td> -->
+<!-- 								<td>ដុល្លា</td> -->
+								<td><?php //echo $form->getElement('usa');?></td>
+<!-- 								<td>បាត</td> -->
+								<td><?php //echo $form->getElement('bath');?></td>
+<!-- 								<td>រៀល</td> -->
+								<td><?php //echo $form->getElement('rial');?></td>
+<!-- 							</tr>	 -->
+							<tr>
+								<td></td>
+								<td></td>
+								<td>ដុល្ល-បាត</td>
+								<td><?php echo $form->getElement('usa_bath');?></td>
+								<td>ដុល្លា-រៀល</td>
+								<td><?php echo $form->getElement('usa_rial');?></td>
+								<td>បាត-រៀល</td>
+								<td><?php echo $form->getElement('bath_rial');?></td>
+							</tr>
+						</table>
+					</fieldset>
+				<fieldset>
+					<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
+					<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
+						<tr>
+							<td>ទូទាត់ប្រាក់ក្នុងKBANK</td>
+							<td><?php echo $form->getElement('money_bank');?></td>
+							<td>ជំពាក់ប្រាក់</td>
+							<td><?php echo $form->getElement('loan');?></td>
+							<td>ដកទឹកប្រាក់</td>
+							<td><?php echo $form->getElement('cash');?></td>
+						</tr>
+						<tr>
+							<td>ប្រភេទទឹកប្រាក់</td>
+							<td><?php echo $form->getElement('currency_type');?></td>
+							<td>ចំនួនទឹកប្រាក់</td>
+							<td><?php echo $form->getElement('number_money');?></td>
+							<td>អត្រាកាប្រាក់</td>
+							<td><?php echo $form->getElement('rate_perday');?></td>
+						</tr>
+						<tr>
+							<td>ប្រភេទប្រតិបត្តិការណ៏</td>
+							<td><?php echo $form->getElement('tran_type');?></td>
+							<td>ថ្លៃសេវា</td>
+							<td><?php echo $form->getElement('commission');?></td>
+							<td>ថ្លៃសេវាសាខា</td>
+							<td><?php echo $form->getElement('commission_agent');?></td>
+						</tr>
+						<tr>
+							<td>ខេត្តក្រុង</td>
+							<td><?php echo $form->getElement('provinc');?></td>
+							<td>សាខាមេ</td>
+							<td><?php echo $form->getElement('agent_id');?></td>
+							<td>សាខាកូន</td>
+							<td><?php echo $form->getElement('sub_agant');?></td>
+						</tr>
+						<tr>
+							<td>ឈ្មោះអ្នកផ្ញើ</td>
+							<td><?php echo $form->getElement('sender');?></td>
+							<td>ឈ្មោះអ្នកទទួល</td>
+							<td><?php echo $form->getElement('getter');?></td>
+							<td>លេខទូរស័ព្ទអ្នកទទូល</td>
+							<td><?php echo $form->getElement('phone_getter');?></td>
+						</tr>
+						<tr>
+							<td>ប្រាក់ត្រូវបើក</td>
+							<td><?php echo $form->getElement('gave');?></td>
+							<td>ប្រាក់សរុប</td>
+							<td><?php echo $form->getElement('Total_amount');?></td>
+							<td>ប្រាក់ទទួល</td>
+							<td><?php echo $form->getElement('money_gave');?></td>
+						</tr>
+						<tr>
+							<td>ប្រាក់អាប់</td>
+							<td><?php echo $form->getElement('return_money');?></td>
+							<td>កាលបរិច្ឆេត</td>
+							<td><?php echo $form->getElement('send_date');?></td>
+							<td>ផុតកំណត់ត្រឹមថ្ងៃ</td>
+							<td><?php echo $form->getElement('epx_date');?></td>
+						</tr>
+					</table>
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>
+
+

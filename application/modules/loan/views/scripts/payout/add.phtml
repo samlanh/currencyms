@@ -1,0 +1,1563 @@
+﻿<?php
+	$this->headTitle('Currency Smart | Payment page'); 
+	echo $this->headTitle();
+	$base_url = Application_Form_FrmMessage::getUrl("/");
+?>	
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $base_url;?>js/help.js"  type="text/javascript"></script>
+<script src="<?php echo $base_url;?>js/moment.min.js"  type="text/javascript"></script>
+<script src="<?php echo $base_url?>js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $base_url?>js/convertion.js"> </script>
+<style>
+.select{height: 28px;}
+.special_cus{ color:#F00;}
+</style>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script type="text/javascript">
+    dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');	
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dojo.number");
+    dojo.require("dojo.date.locale");
+    dojo.require("dijit.Dialog");
+    dojo.require("dijit.form.DateTextBox");
+    dojo.require("dijit.Dialog");
+
+    dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+    
+
+	/** init data for list**/    
+    var sender_store = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->senderlist));?> );  
+    var pay_currencytype = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->pay_currencytype));?> );
+      
+	var baseurl = '<?php echo $baseurl;?>';
+
+	var dollar_owe =0;
+	var bath_owe =0;
+	var riel_owe =0;
+	
+	var pay_refund_dollar =0;
+	var pay_refund_bath =0;
+	var pay_refund_kh =0;
+
+	is_dollar = 0;
+	is_bath = 0;
+	is_riel = 0;
+
+	var all_rate = <?php echo $this->rate;?> ;
+
+	$(function(){
+		dijit.byId("exchange_dollar").set('value',dojo.number.format(all_rate[0]['rate_out'], { pattern: "##.##"}));
+		dijit.byId("exchange_bath").set('value',dojo.number.format(all_rate[1]['rate_out'], { pattern: "##.##"}));
+		dijit.byId("exchange_riel").set('value',dojo.number.format(all_rate[2]['rate_out'], { pattern: "##.##"}));
+	});
+</script>
+<script type="text/javascript">
+	dojo.ready(function(){
+		new dijit.form.FilteringSelect({
+            store: sender_store,
+            autoComplete: true,                        
+            required: true,
+            id: "sender_name",
+            name: "sender_name",
+            searchAttr: "name",           
+            class: 'fullside',            
+            missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ផ្ញើរ!",            
+            onChange: function() {  
+               is_dollar = 0;//set defaul if not debt 
+               is_bath =0;
+               is_riel=0;  
+               dijit.byId('pay_all').set('checked',false);    
+               dijit.byId('pay_amount').set('readOnly',true); 
+               dijit.byId('pay_currencytype').set('value',-1); 
+               dijit.byId('pay_currencytype').set('readOnly',false); 
+                
+               
+             getAllMoneyloanByName();
+             //DisabledPopupButton(1);
+            }
+        }, "sender_name");	
+		 dijit.byId('refund_dollar').set('disabled',true);
+		 dijit.byId('refund_bath').set('disabled',true);
+		 dijit.byId('refund_kh').set('disabled',true);	
+
+		 dijit.byId('showPopupD').set('disabled',true);
+		 dijit.byId('showPopupB').set('disabled',true);
+		 dijit.byId('showPopupR').set('disabled',true);	
+
+		 dijit.byId('pay_amount').set('readOnly',true);
+		 dijit.byId('all_total_convert').set('readOnly',true);
+		 //dijit.byId('from_amount_type').set('readOnly',true);
+		 
+		 dijit.byId('remain_dollar').set('disabled',true);
+		 dijit.byId('remain_bath').set('disabled',true);
+		 dijit.byId('remain_riel').set('disabled',true);	
+		 
+		var curency_type_data = new dojo.store.Memory({
+				       data: <?php print_r(Zend_Json::encode($this->currency));?>
+		});
+		new dijit.form.FilteringSelect({
+		store: dojo.data.ObjectStore({objectStore: curency_type_data}),
+		autoComplete: true,           
+		required: true,
+	    id: "from_amount_type",
+		name: "from_amount_type",
+		class: 'fullside',
+		searchAttr: "name",
+		value:'1',
+		missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ប្រភេទ​លុយ!",
+		onChange: function() {
+			DisabledPopup();
+
+			dijit.byId('pay_amount').set('value','0');
+			dijit.byId('all_total_convert').set('value','0');
+			dijit.byId('refund_dollar').set('value','0');
+			dijit.byId('refund_bath').set('value','0');
+			dijit.byId('refund_kh').set('value','0');	
+
+			pay_refund_dollar = 0;
+			pay_refund_bath = 0;
+			pay_refund_kh = 0;
+
+			//clear fund information 
+			dojo.byId("convertto_dollar").innerHTML ='';
+			dojo.byId("convertto_bath").innerHTML ='';
+			dojo.byId("convertto_riel").innerHTML ='';
+			dijit.byId('rgconvertto_dollar').attr('value',0);
+			dijit.byId('rgconvertto_bath').attr('value',0);
+			dijit.byId('rgconvertto_riel').attr('value',0);
+
+			
+		}
+
+	}, "from_amount_type");
+
+
+		var curency_type_data = new dojo.store.Memory({
+		       data: <?php print_r(Zend_Json::encode($this->currency));?>
+		});
+		new dijit.form.FilteringSelect({
+		store: pay_currencytype,
+		autoComplete: true,           
+		required: true,
+		id: "pay_currencytype",
+		name: "pay_currencytype",
+		class: 'fullside',
+		searchAttr: "name",
+		value:'-1',
+		missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ប្រភេទ​លុយ!",
+		onChange: function() {
+			//checkEnablePopupOption();
+			enablePopupByDebt();
+		}
+		
+		}, "pay_currencytype");
+		
+
+		new dijit.form.FilteringSelect({
+	        store: dojo.data.ObjectStore({objectStore: curency_type_data}),
+	        autoComplete: true,           
+	        required: true,
+	        id: "to_amount_type",
+	        name: "to_amount_type",
+	        class: 'fullside',
+	        searchAttr: "name",
+	        missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ប្រភេទ​លុយ!",
+	        onChange: function() {
+	        	//clearText(true);
+	        	//var lblid = '';
+	        	var from_type = dijit.byId('from_amount_type').item.id;
+	        	
+	        	if(from_type == 1){
+		        	if(this.item.id == 2){
+		        		//lblrateid="DB";
+		    		  //calcSysble = "*";
+		        	}
+		        	else if(this.item.id == 3){
+		        		//lblrateid="DR";
+		        		//calcSysble = "*";
+		        	}
+			    } 
+		    	else if(from_type == 2){
+		    		if(this.item.id == 1){
+		    			//lblrateid="BD";		 
+		    			//calcSysble = "/";   		  
+		        	}
+		        	else if(this.item.id == 3){
+		        		//lblrateid="BR";
+		        		//calcSysble = "*";
+		        	}
+		  	    }
+		    	else if(from_type == 3){
+		    		if(this.item.id == 1){
+		    			//lblrateid="RD";		
+		    			//calcSysble = "/";    		  
+		        	}
+		        	else if(this.item.id == 2){
+		        		//lblrateid="RB";
+		        		//calcSysble = "/";
+		        	}
+			    }
+	        	//dojo.byId("rate").value = dojo.byId(lblrateid).innerHTML;
+	        	//dojo.byId("lbl_to_amount").innerHTML = " ជា " + dijit.byId('to_amount_type').item.name;
+	        }
+
+	    }, "to_amount_type");
+
+		var refund_dollar = dojo.byId("refund_dollar");
+		dojo.connect(refund_dollar, "onkeyup", function(evt){
+			checkFund(1);
+			calcu_remain();
+	    });	
+
+		var refund_bath = dojo.byId("refund_bath");
+		dojo.connect(refund_bath, "onkeyup", function(evt){
+			checkFund(2);
+			calcu_remain();
+	    });	
+
+		var refund_kh= dojo.byId("refund_kh");
+		dojo.connect(refund_kh, "onkeyup", function(evt){
+			checkFund(3);
+			calcu_remain();
+	    });	
+	}); 
+	 function enablePopupByDebt(){
+		 pay_curtype = dijit.byId('pay_currencytype').get('value');
+		if(is_dollar==1 ){
+		    dijit.byId('showPopupD').set('disabled',false);
+			if(pay_curtype==1){
+				dijit.byId('showPopupD').set('disabled',true);
+			}
+		}
+		if(is_bath==1){
+			dijit.byId('showPopupB').set('disabled',false);
+			if(pay_curtype==2){
+				dijit.byId('showPopupB').set('disabled',true);
+			}
+		
+		}
+		if(is_riel==1){
+			dijit.byId('showPopupR').set('disabled',false);	
+			if(pay_curtype==3){
+				dijit.byId('showPopupR').set('disabled',true);
+			}
+		}
+		if(pay_curtype==-1){
+			dijit.byId('showPopupD').set('disabled',true);
+			dijit.byId('showPopupB').set('disabled',true);
+			dijit.byId('showPopupR').set('disabled',true);
+
+
+			dojo.byId("convertto_dollar").innerHTML ='';
+			dojo.byId("convertto_bath").innerHTML ='';
+			dojo.byId("convertto_riel").innerHTML ='';
+			dijit.byId('refund_dollar').attr('value',0);
+			dijit.byId('refund_bath').attr('value',0);
+			dijit.byId('refund_kh').attr('value',0);
+			dijit.byId('rgconvertto_dollar').attr('value',0);
+			dijit.byId('rgconvertto_bath').attr('value',0);
+			dijit.byId('rgconvertto_riel').attr('value',0);
+
+		}
+	}
+	
+
+		
+</script>
+<table cellspacing="0" class='fullside'>
+	<tr>
+		<td>
+			<form id='frm_payment' action="<?php echo $this->url(array('module'=>'loan','controller'=>'payout','action'=>'add')); ?>" 
+				dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+		<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				f_dollar=0;f_bath=0;f_riel=0;
+				if(is_dollar==1){
+				f_dollar = dijit.byId('refund_dollar').get('value');
+				}
+				if(is_bath==1){
+					f_bath = dijit.byId('refund_bath').get('value');
+				}
+				if(is_riel==1){
+					f_riel = dijit.byId('refund_kh').get('value');
+				}
+
+	            if(f_dollar!=0 || f_bath!=0 || f_riel!=0 ){
+                  return true;
+                }else{
+					alert('សូមបញ្ចូលចំនួនទឹកប្រាក់ដែលត្រូវសង !');
+					return false;
+                }
+			} else {
+				return false;
+			}
+
+		</script>	
+				<fieldset>
+					<legend><strong>ព៌ត៏មាន  អ្នក​ជំពាក់</strong></legend>
+					<table class="center" cellspacing="5" width="100%">
+						<tr>
+							<td valign="top">
+								<table width="100%" cellspacing="5">
+									<tr>						
+										<td>&nbsp;</td>
+										<td >
+										</td>
+									</tr>
+									<tr>
+										<td>ឈ្មោះ​អ្នកជំពាក់</td>
+										<td>
+											<input id="sender_name" />								
+										</td>
+									</tr>									
+									<tr>
+										<td>ជំពាក់ជា ដុល្លា</td>
+										<td >
+											<input id="money_dollar" name="money_dollar"  type="text" dojoType="dijit.form.NumberTextBox" style="color: red;"
+												constraints="{pattern: '#,###.##'}"  class="fullside" value="0" disabled>		
+											
+											<input type="hidden" id="money_dollar_id" name="money_dollar_id" value="">							
+										</td>
+									</tr>
+									<tr>
+										<td>ជំពាក់ជា បាត</td>
+										<td>								
+											<input id="money_bath" name="money_bath" type="text" dojoType="dijit.form.NumberTextBox" style="color: red;"
+												constraints="{ pattern: '#,###.##'}" placeholder="ដុល្លា"   class="fullside"
+												value="0" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!" disabled>
+											<input type="hidden" id="money_bath_id" name="money_bath_id" value="">	
+										</td>
+									</tr>
+									<tr>
+										<td>ជំពាក់ជា រៀល</td>
+										<td >
+												<input id="money_khmer" name="money_kh" type="text" dojoType="dijit.form.NumberTextBox" style="color: red;"
+												constraints="{ pattern: '#,###.##'}" placeholder="ដុល្លា"   class="fullside"
+												value="0" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!" disabled>
+											<input type="hidden" id="money_kh_id" name="money_kh_id" value="">	
+										</td>
+									</tr>
+									
+								</table>
+							</td>
+							<td valign="bottom">
+								<table cellspacing="10" width="100%">
+								   <tr>
+										<td>ថ្ងៃខែ សង</td>
+										<td >
+											<input type="text" name="refund_date" id="refund_date" value="<?php echo date("Y-m-d")?>"
+												dojoType="dijit.form.DateTextBox" class="fullside"												
+												constraints="{datePattern:'dd/MM/yyyy'}"/>
+											<input type="hidden" name="invoice_no" value="<?php echo $this->invoice_no;?>">					
+										</td>
+									</tr>
+									<tr>
+										<td>សងរួម</td>
+										<td><input type="checkbox" name="pay_all" id="pay_all" value="1"
+												dojoType="dijit.form.CheckBox" onClick="EnableText();" class="fullside"/>	
+										</td>
+									</tr>
+									<tr>
+										<td>សងរួមជាប្រាក់</td>
+										<td><input id="from_amount_type" ></td>
+									</tr>
+									<tr>
+										<td>ចំនួនសរុប&nbsp;<label id="all_from"></label></td>
+										<td>								
+											<input id="pay_amount" Onkeyup="callRemain();" name="pay_amount" type="text" dojoType="dijit.form.NumberTextBox" 
+												constraints="{ pattern: '#,###.##'}"  class="fullside" 
+												value="" missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!"​ />
+										</td>
+									</tr>																	
+									<tr>
+										<td>ទឹកប្រាក់នៅសល់<label id="all_to"></label></td>
+										<td >
+											<input id="all_total_convert" onkeyup="changExchangeRate();"  name="all_total_convert" type="text" dojoType="dijit.form.NumberTextBox"
+												constraints="{pattern: '#,###.##'}" value="" class="fullside" 
+												value="" missingMessage="ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td valign="bottom">
+							
+								<table cellspacing="10" width="100%">
+									<tr>
+										<td colspan="2"> សងជាប្រាក់</td>
+										<td><input id="pay_currencytype" ></td></td>
+									</tr>
+									<tr>		
+										<td><input type="hidden" id='rgconvertto_dollar' name='rrconvertto_dollar' dojoType="dijit.form.TextBox" /><label id="convertto_dollar"></label></td>
+										<td>សងជា ដុល្លា</td>
+										<td>
+											<input type="text" id="refund_dollar" name="refund_dollar"  data-dojo-type="dijit.form.NumberTextBox"
+												data-dojo-props="required:true,
+												name:'refund_dollar',
+												value:'0',
+												class:'fullside',
+												constraints:{pattern:'#,###.##'},
+												missingMessage:'ភ្លេច​បំពេញចំនួនទឹកប្រាក់!',
+											    rangeMessage:'ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!',
+												invalidMessage:'ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!'" >
+										
+										</td>
+										<td>
+											<button id="showPopupD" dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconInsertTable"
+												showLabel="true" type="button" onclick="checkTranConvertion(1);">Exchange</button>
+										</td>
+									</tr>
+									<tr>
+										<td><input type="hidden" id='rgconvertto_bath' name='rrconvertto_bath' dojoType="dijit.form.TextBox" /><label id="convertto_bath"></label></td>
+										<td>សងជា បាត</td>
+										<td>								
+											<input type="text" id="refund_bath" name="refund_bath"  data-dojo-type="dijit.form.NumberTextBox"
+												data-dojo-props="required:true,
+												name:'refund_bath',
+												value:'0',
+												class:'fullside',
+												constraints:{pattern:'#,###.##'},
+												missingMessage:'ភ្លេច​បំពេញចំនួនទឹកប្រាក់!',
+											    rangeMessage:'ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!',
+												invalidMessage:'ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!'" >
+										</td>
+										<td>
+											<button id="showPopupB" dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconInsertTable"
+												showLabel="true" type="button" onclick="checkTranConvertion(2);">Exchange</button>
+										</td>
+									</tr>																	
+									<tr>
+										<td><input type="hidden" id='rgconvertto_riel' name='rrconvertto_riel' dojoType="dijit.form.TextBox" /> <label id="convertto_riel"></label></td>
+										<td>សងជា រៀល</td>
+										<td >
+											<input type="text" id="refund_kh" name="refund_kh"  data-dojo-type="dijit.form.NumberTextBox"
+												data-dojo-props="required:true,
+												name:'refund_kh',
+												value:'0',
+												class:'fullside',
+												constraints:{pattern:'#,###.##'},
+												missingMessage:'ភ្លេច​បំពេញចំនួនទឹកប្រាក់!',
+											    rangeMessage:'ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!',
+												invalidMessage:'ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!'" >
+										</td>
+										<td>
+											<button id="showPopupR" dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconInsertTable"
+												showLabel="true" type="button" onclick="checkTranConvertion(3);">Exchange</button>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table cellspacing="10" width="100%">
+									<tr>
+										<td><b>អត្រាប្ដូរប្រាក់</b></td>
+										<td>	
+										</td>
+									</tr>
+									<tr>
+										<td>ដុល្លា ទៅ បាត</td>
+										<td>
+											<input id="exchange_dollar" Onkeyup="exchange_rate('exchange_dollar',0);" name="exchange_dollar" type="text" dojoType="dijit.form.NumberTextBox" 
+												constraints="{ pattern: '#,###.##'}"  class="fullside" 
+												value="0" missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" />
+										</td>
+									</tr>
+									<tr>
+										<td>ដុល្លា ទៅ​ រៀល</td>
+										<td>								
+											<input id="exchange_bath" Onkeyup="exchange_rate('exchange_bath',1);" name="exchange_bath" type="text" dojoType="dijit.form.NumberTextBox" 
+												constraints="{ pattern: '#,###.##'}"  class="fullside" 
+												value="0" missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" />
+										</td>
+									</tr>																	
+									<tr>
+										<td>រៀល ទៅ​ បាត</td>
+										<td >
+											<input id="exchange_riel" Onkeyup="exchange_rate('exchange_riel',2);" name="exchange_riel" type="text" dojoType="dijit.form.NumberTextBox" 
+												constraints="{ pattern: '#,###.##'}"  class="fullside" 
+												value="0" missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="ចំនួន​ទឹកប្រាក់​មិន​ត្រឹម​ត្រូវ!" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table cellspacing="10" width="100%">
+									<tr>
+										<td><b>ទឹកប្រាក់ជំពាក់បន្ទាប់ពីសង</b></td>
+										<td>	
+										</td>
+									</tr>
+									<tr>
+										<td>ជា ដុល្លា</td>
+										<td>
+											<input id="remain_dollar" name="remain_dollar" type="text" dojoType="dijit.form.NumberTextBox" class="fullside" value="0"/>
+										</td>
+									</tr>
+									<tr>
+										<td>ជា បាត</td>
+										<td>								
+											<input id="remain_bath" name="remain_bath" type="text" dojoType="dijit.form.NumberTextBox" class="fullside" value="0"/>
+										</td>
+									</tr>																	
+									<tr>
+										<td>ជា រៀល</td>
+										<td >
+											<input id="remain_riel" name="remain_riel" type="text" dojoType="dijit.form.NumberTextBox" class="fullside" value="0"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table cellspacing="10" width="100%">
+									<tr>
+										<td><b>អត្រាការ​ប្រាក់ប្រចាំខែ (%)</b></td>
+										<td><input id="remain_rate_perday" name="remain_rate_perday" type="text" dojoType="dijit.form.NumberTextBox" value="2"/></td>
+									</tr>
+									<tr>
+										<td>ប្រាក់អាប់ ដុល្លា($)</td>
+										<td><label id='lbl_returndollar' style="color: red;font-weight:bold;"></label></td>
+									</tr>
+									<tr>
+										<td>ប្រាក់អាប់ បាត(B)</td>
+										<td><label id='lbl_returnbath' style="color: red;font-weight:bold;"></label></td>
+									</tr>
+									<tr>
+										<td>ប្រាក់អាប់រៀល(៛)</td>
+										<td><label id='lbl_returnriel' style="color: red;font-weight:bold;"></label></td>
+									</tr>																
+								</table>
+							</td>
+						</tr>
+					</table>
+					<div id='panel_hiden'></div>
+				</fieldset>	
+			</form>
+		</td>
+	</tr>		
+	<tr>
+		<td align="center">
+			<input type="button" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" onclick="dijit.byId('frm_payment').submit();"  
+				 iconClass="dijitEditorIcon dijitEditorIconSave"/>
+			<input type="button" value="រក្សាទុក & បោះពុម្ព" label="រក្សាទុក & បោះពុម្ព" id="busyButton" dojoType="dijit.form.Button" 
+													iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="printSave();"/> 
+		</td>
+	</tr>	
+</table>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" style="width:7cm;" data-dojo-props="title:'របាយការណ៍ សងប្រាក់', onCancel:hideDialog" id="terms" >
+		<div id="divPrint"​ style="width: 7cm; padding: 0px; margin: 0px;">
+			<style>
+				.fontbig{
+					font-size: 12px;	
+				}
+				.fonttel{
+					font-size: 11px;	
+				}
+				.pleft{
+					width: 110px;	
+				}
+			</style>	
+			<table style="width: 7cm; font-size: 8pt; padding: 0px; margin: 0px; line-height: 17px;">
+				   <tr>
+					   	<td align="center" colspan="3">	
+					   	<table  width="100%" cellspacing="0" cellpadding="0">
+					   		<tr style="line-height:10px;">
+					   			<td width="36%" rowspan="2" style="valign:top;"><img style="margin-top: 1px;" src="<?php echo $base_url;?>images/logobrand.jpg" height="34px;"/></td>
+						   		<td width="35%" align="center"><strong style="font-size:16px;font-family:'KH Koulen';text-align:center"><?php echo $this->keycode['rpt-transfer-title-kh'];?></strong></td>
+								<td width="32%" rowspan="2" style="valign:top;"><img style="align:top; float:right;" src="<?php echo $base_url;?>images/logo-right.png" height="34px;"/></td>
+							</tr>
+							<tr>
+								<td align="center" style="font-family:'KH Koulen';font-size:11px;font-weight:bold; text-align:center;"><b><?php echo $this->keycode['rpt-transfer-title-eng'];?></td>
+					   		</tr>
+					   	</table>
+			            </td>	   	        
+				   </tr> 
+					<tr>
+					   	<td align="center" colspan="3" style="font-family:'KH Koulen';"><?php echo $this->keycode['rpt-transfer-business-meaning-kh'];?></td>	   	        
+					</tr>            
+				   <tr>
+						<td align="center" colspan="3" style="font-size: 8pt;">
+							<?php echo $this->keycode['rpt-transfer-business-meaning-eng'];?><br/>
+							<?php echo $this->keycode['rpt-transfer-location-adr-kh'];?><br/>
+							<strong class="fontbig"><?php echo $this->keycode['rpt-transfer-tel-eng'];?></strong>
+						</td>
+				   </tr>
+				   <tr>
+					   	<td colspan="2" class="pleft" style="border-bottom:1px solid #000;"><strong style="font-size: 10px;"><label id="lblinvioice">ប័ណ្ណសងប្រាក់</label></strong></td>
+						<td colspan="2" align="center" style="border-bottom:1px solid #000;">ទទួលដោយ៖​  <?php print($this->user_name);?> 
+						</td>
+				   </tr>
+				   <tr>
+						<td colspan="4">
+							ឈ្មោះអ្នកជំពាក់ : <label id="lblsendername"></label> 
+						</td>
+				   </tr>
+				   <tr>
+				   		<td colspan="2"><strong style="font-size: 14px;"> + មុនទូទាត់</strong> </td>
+				   		<td colspan="2"><strong style="font-size: 14px;"> + ប្រាក់សង</strong></td>
+				   </tr>
+				   <tr>
+						<td colspan="2"> <label id="lbmoney_dollar" style="font-weight: bold;"></label>&nbsp;&nbsp; ដុល្លា </td>
+						<td colspan="2">​ <label id="lbfound_dollar" style="font-weight: bold;"></label>&nbsp;&nbsp;ដុល្លា</td>
+				   </tr>
+				   <tr>
+						<td colspan="2"> <label id="lbmoney_bath" style="font-weight: bold;"></label>&nbsp;&nbsp; បាត</td>
+						<td colspan="2"> <label id="lbfound_bath" style="font-weight: bold;"></label>&nbsp;&nbsp;បាត</td>
+				   </tr>
+				   <tr>
+						<td colspan="2"> <label id="lbmoney_riel" style="font-weight: bold;"></label>&nbsp;&nbsp; រៀល</td>
+						<td colspan="2"> <label id="lbfound_riel" style="font-weight: bold;"></label>&nbsp;&nbsp;រៀល</td>
+				   </tr>
+				    <tr>
+						<td colspan="2"><strong style="font-size: 14px;" style="font-weight: bold;"> + ក្រោយទូទាត់</strong> </td>
+						<td colspan="2"><strong style="font-size: 14px;" style="font-weight: bold;"> + អត្រាប្ដូរប្រាក់</strong> </td>
+				   </tr>
+				   <tr>
+						<td colspan="2"> <label id="lbremain_dollar" style="font-weight: bold;"></label>&nbsp;&nbsp;ដុល្លា</td>
+						<td colspan="2"> ដុល្លា ទៅ បាត&nbsp;:&nbsp;<label id="lbexchange_dollar" style="font-weight: bold;"></label> ฿/$</td>
+				   </tr>
+				    <tr>
+						<td colspan="2"> <label id="lbremain_bath" style="font-weight: bold;"></label>&nbsp;&nbsp;បាត</td>
+						<td colspan="2"> ដុល្លា ទៅ​ រៀល&nbsp;:&nbsp;<label id="lbexchange_bath" style="font-weight: bold;"></label> ៛/$</td>
+				   </tr>
+				    <tr>
+						<td colspan="2"> <label id="lbremain_reil" style="font-weight: bold;"></label>&nbsp;&nbsp;រៀល</td>
+						<td colspan="2"> រៀល ទៅ បាត&nbsp;:&nbsp;<label id="lbexchange_reil" style="font-weight: bold;"></label> ៛/฿</td>
+				   </tr>
+				    <tr>
+						<td>កាលបរិច្ឆេទ​</td>
+						<td colspan="3">: <?php echo date("d/m/Y H:i:s");?></td>
+				   </tr>
+				   <tr>
+						<td colspan="4" align="center" style="border-top:1px solid #000;">
+							<?php echo $this->keycode['rpt-transfer-warnning-kh'];?>
+							<br />
+						</td>			
+				   </tr>
+				   <tr style="border:1px solid #000;">
+						<td colspan="3" align="center" style="border-top:2px dashed #000;">
+								<?php echo $this->keycode['comment'];?>
+						</td>			
+				   </tr>
+				   <tr>
+						<td colspan="4">
+							<hr style="background: transparent; border-left:  none;	border-right: none;	border-top:   none;
+								border-bottom: 2px dashed #000;" />
+						</td>
+				   </tr>
+				    <tr>
+						<td>
+							<img src="<?php echo $baseurl."/".$this->keycode['imgPath'];?>" width="50%"/>
+						</td>	
+						<td align='right'  valign="top" colspan="3">
+						</td>
+				   </tr>
+			</table>
+		</div>
+		<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>	
+		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+				showLabel="false" type="button" onclick="doPrint();">Print</button>
+		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel"
+				showLabel="false" type="button" onclick="hideDialog();">Cancel</button>
+	</div>
+</div>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'ប្តូរ​ប្រាក់មកដុល្លា'" id="showdialog_dollar" >	
+		<table width="500px">
+			<tr>
+				<td>អត្រាប្តូរប្រាក់</td>
+				<td>
+					<input required="true" id="rate_dollar" class="select fullside" onkeyup="changRateDollar(1);" name="rate_dollar" type="text" dojoType="dijit.form.NumberTextBox" 
+						constraints="{ pattern: '#,###.##'}"  class="fullside" 
+						value="" readOnly missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="អត្រាការប្រាក់ មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!"​ />
+					</td>
+			</tr>
+			<tr>		
+				<td></td>
+				<td><input id="special_cus_dollar" name="special_cus_dollar" dojoType="dijit.form.CheckBox" value="1"
+					onChange="ExchangRate(1);"><label for="special_cus_dollar" class="special_cus">អតិថិជនពិសេស</label>
+				</td>
+			</tr>
+			<tr>		
+				<td>ពីទឹកប្រាក់ជា&nbsp;<label class="special_cus">ដុល្លា</label></td>
+				<td>ទៅទឹកប្រាក់ជា&nbsp;<label id="change_dollar" class="special_cus"></label></td>
+			</tr>
+			<tr>		
+				<td><input id="pay_dollar_amount" name="pay_dollar_amount" class="select fullside" dojoType="dijit.form.NumberTextBox" constraints="{pattern: '#,###.##'}"
+											 onkeyup="changRateDollar();"></td>
+				<td><input id="pay_as_dollar" name="pay_as_dollar" class="select fullside" dojoType="dijit.form.NumberTextBox" constraints="{pattern: '#,###.##'}" onkeyup="changRateDollar(1);"></td>
+			
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="button" value="យល់ព្រម" label="យល់ព្រម" id="ExchangeDollar" dojoType="dijit.form.Button" onclick="CalculateFund(1);"  
+				 iconClass="dijitEditorIcon dijitEditorIconSave"/></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'ប្តូរ​ប្រាក់មកជាបាត'" id="showdialog_bath" >	
+		<table width="500px">
+			<tr>
+				<td>អត្រាប្តូរប្រាក់</td>
+				<td>
+					<input required="true" id="rate_bath" class="select fullside" onkeyup="changeRateBath(1);" name="rate_bath" type="text" dojoType="dijit.form.NumberTextBox" 
+						constraints="{ pattern: '#,###.##'}"  class="fullside" 
+						value="" readOnly missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="អត្រាការប្រាក់ មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!"​ />
+					</td>
+			</tr>
+			<tr>		
+				<td></td>
+				<td><input id="special_cus_bath" name="special_cus_bath" dojoType="dijit.form.CheckBox" value="1"
+					onChange="ExchangRate(2);"><label for="special_cus_bath" class="special_cus">អតិថិជនពិសេស</label>
+				</td>
+			</tr>
+			<tr>		
+				<td>ពីទឹកប្រាក់ជា&nbsp;<label class="special_cus">បាត</label></td>
+				<td>ទៅទឹកប្រាក់ជា&nbsp;<label id="change_bath" class="special_cus"></label></td>
+				
+			</tr>
+			<tr>		
+				<td><input id="pay_bath_amount" name="pay_bath_amount" class="select fullside" dojoType="dijit.form.NumberTextBox"
+											 onkeyup="changeRateBath();"></td>
+				<td><input id="pay_as_bath" name="pay_as_bath" class="select fullside" dojoType="dijit.form.NumberTextBox" onkeyup="changeRateBath(1);"></td>
+			
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="button" value="យល់ព្រម" label="យល់ព្រម" id="ExchangeBath" dojoType="dijit.form.Button" onclick="CalculateFund(2);"  
+				 iconClass="dijitEditorIcon dijitEditorIconSave"/></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" data-dojo-props="title:'ប្តូរ​ប្រាក់មកជារៀល'" id="showdialog_riel" >	
+		<table width="500px">
+			
+			<tr>
+				<td>អត្រាប្តូរប្រាក់</td>
+				<td>
+					<input required="true" id="rate_riel" class="select fullside" onkeyup="changeRateRiel(1);" name="rate_riel" type="text" dojoType="dijit.form.NumberTextBox" 
+						constraints="{ pattern: '#,###.##'}"  class="fullside" 
+						value="" readOnly missingMessage="​ភ្លេច​បំពេញចំនួនទឹកប្រាក់!" invalidMessage="អត្រាការប្រាក់ មិន​ត្រឹម​ត្រូវ!" rangeMessage="ចំនួន​ទឹកប្រាក់មិន​អាច​ធំ​ជាង​លុយ​ជំពាក់​ទេ!"​ />
+					</td>
+			</tr>
+			<tr>		
+				<td></td>
+				<td><input id="special_cus_riel" name="special_cus_riel" dojoType="dijit.form.CheckBox" value="1"
+					onChange="ExchangRate(3);"><label for="special_cus_riel" class="special_cus">អតិថិជនពិសេស</label>
+				</td>
+			</tr>
+			<tr>		
+				<td>ពីទឹកប្រាក់ជា&nbsp;<label class="special_cus">រៀល</label></td>
+				<td>ទៅទឹកប្រាក់ជា&nbsp;<label id="change_riel" class="special_cus"></label></td>
+				
+			</tr>
+			<tr>		
+				<td><input id="pay_riel_amount" name="pay_riel_amount" class="select fullside" dojoType="dijit.form.NumberTextBox"
+											 onkeyup="changeRateRiel();"></td>
+				<td><input id="pay_as_riel" name="pay_as_riel" class="select fullside" dojoType="dijit.form.NumberTextBox" onkeyup="changeRateRiel(1);"></td>
+			
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="button" value="យល់ព្រម" label="យល់ព្រម" id="ExchangeRiel" dojoType="dijit.form.Button" onclick="CalculateFund(3);"  
+				 iconClass="dijitEditorIcon dijitEditorIconSave"/></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+
+function checkFund(type){
+// 	refund_dollar = dijit.byId("refund_dollar").value;
+// 	//alert(refund_dollar);
+// 	//alert(dollar_owe);
+// 	if(refund_dollar>dollar_owe){
+//alert("សូមត្រួតពិនិត្យម្តងទៀត លោកអ្នកសងលើសចំនួន !");
+		
+// 		}
+	//alert(type);
+	pay_amount = dijit.byId("pay_amount").get('value');//លុយសងរួម
+	from_amount_type = dijit.byId("from_amount_type").get('value');
+	
+	if(from_amount_type != type){
+		if((type == 1 && from_amount_type == 2) ||(type == 2 && from_amount_type == 1)){
+			rate_cur = all_rate[0]['rate_out'];
+		}else if((type == 1 && from_amount_type == 3) ||(type == 3 && from_amount_type == 1)){
+			rate_cur = all_rate[1]['rate_out'];
+		}else{
+			rate_cur = all_rate[2]['rate_out'];
+		}
+	}else{
+		rate_cur = 1;
+	}
+	
+	if(type == 1){
+		pay_refund_dollar = dijit.byId('refund_dollar').get('value');
+		if(!pay_refund_dollar){pay_refund_dollar=0;}
+		
+		pay_refund_dollar = pay_refund_dollar * rate_cur;
+		if(dijit.byId('pay_all').checked){
+			if(pay_refund_dollar>pay_amount){
+				alert("សូមត្រួតពិនិត្យម្តងទៀត លោកអ្នកសងលើសចំនួន !");
+				pay_refund_dollar = 0;
+				dijit.byId('refund_dollar').set('value',pay_refund_dollar);
+
+				
+			}else{
+				}
+			TotalAllAmountToPay();
+			calcu_remain();
+		}else{
+			if(from_amount_type!=1){
+				//dijit.byId('refund_dollar').set('disabled',true);	
+			}
+			//alert('0 not all payment');
+		}
+
+	}else if(type == 2){
+		pay_refund_bath = dijit.byId('refund_bath').get('value');
+		if(!pay_refund_bath){pay_refund_bath=0;}
+		
+		if(from_amount_type == 1){
+			pay_refund_bath = pay_refund_bath / rate_cur;
+		}else{
+			pay_refund_bath = pay_refund_bath * rate_cur;
+		}
+		
+		if(pay_refund_bath>pay_amount){
+			alert("សូមត្រួតពិនិត្យម្តងទៀត លោកអ្នកសងលើសចំនួន !");
+			pay_refund_bath = 0;
+			dijit.byId('refund_bath').set('value',pay_refund_bath);
+		}
+		
+		TotalAllAmountToPay();
+		calcu_remain();
+		
+	}else{
+		pay_refund_kh = dijit.byId('refund_kh').get('value');
+		if(!pay_refund_kh){pay_refund_kh=0;}
+		
+		pay_refund_kh = pay_refund_kh / rate_cur;
+
+		if(pay_refund_kh>pay_amount){
+			alert("សូមត្រួតពិនិត្យម្តងទៀត លោកអ្នកសងលើសចំនួន !");
+			pay_refund_kh = 0;
+			dijit.byId('refund_kh').set('value',pay_refund_kh);
+		}
+		
+		TotalAllAmountToPay();
+
+		calcu_remain();
+	}
+}
+//sopharat
+function exchange_rate(id,i){
+	var val = dijit.byId(id).get('value');
+	if(!val)val=1;
+	all_rate[i]['rate_out'] = val;
+}
+function calcu_remain(){
+
+	refund_dollar = dijit.byId("refund_dollar").get('value');
+	refund_bath = dijit.byId("refund_bath").get('value');
+	refund_riel = dijit.byId("refund_kh").get('value');
+
+	remain_dollar = dollar_owe - refund_dollar;
+	remain_bath = bath_owe - refund_bath;
+	remain_riel	= riel_owe - refund_riel;
+	dojo.byId("lbl_returndollar").innerHTML='';
+	dojo.byId("lbl_returnbath").innerHTML='';
+	dojo.byId("lbl_returnriel").innerHTML='';
+	if(remain_dollar<0){
+		dojo.byId("lbl_returndollar").innerHTML =dojo.number.format(-remain_dollar.toFixed(2));
+		remain_dollar=0;
+	}
+	if(remain_bath<0){
+		dojo.byId("lbl_returnbath").innerHTML =dojo.number.format(-remain_bath.toFixed(2));
+		remain_bath=0;
+	}
+	if(remain_riel<0){
+		dojo.byId("lbl_returnriel").innerHTML =-dojo.number.format(-remain_riel.toFixed(2));
+		remain_riel=0;
+	}
+	
+	dijit.byId("remain_dollar").set('value',dojo.number.format(remain_dollar.toFixed(2)));
+	dijit.byId("remain_bath").set('value',dojo.number.format(remain_bath.toFixed(2)));
+	dijit.byId("remain_riel").set('value',dojo.number.format(remain_riel.toFixed(2)));
+}
+
+function DisableText(){
+	 cur_type=dijit.byId('curency_type').get('value');
+	 dijit.byId('refund_dollar').attr('value',0);
+	 dijit.byId('refund_bath').attr('value',0);
+	 dijit.byId('refund_kh').attr('value',0);
+	  
+	 if(cur_type==1){
+		 dijit.byId('refund_dollar').set('disabled',false);
+		 dijit.byId('refund_bath').set('disabled',true);
+		 dijit.byId('refund_kh').set('disabled',true);
+	  }
+	 else if(cur_type==2){
+		 dijit.byId('refund_bath').set('disabled',false);
+		 dijit.byId('refund_dollar').set('disabled',true);
+		 dijit.byId('refund_kh').set('disabled',true);
+	  }
+	 else{
+		 dijit.byId('refund_kh').set('disabled',false);
+		 dijit.byId('refund_bath').set('disabled',true);
+		 dijit.byId('refund_dollar').set('disabled',true);
+		 }
+}
+function printSave(){		
+	if(dijit.byId('frm_payment').validate()){
+		f_dollar=0;f_bath=0;f_riel=0;
+		if(is_dollar==1){
+			f_dollar = dijit.byId('refund_dollar').get('value');
+		}
+		if(is_bath==1){
+			f_bath = dijit.byId('refund_bath').get('value');
+		}
+		if(is_riel==1){
+			f_riel = dijit.byId('refund_kh').get('value');
+		}
+		
+		if(f_dollar!=0 || f_bath!=0 || f_riel!=0 ){
+			showDialog();
+		}else{
+			alert('សូមបញ្ចូលចំនួនទឹកប្រាក់ដែលត្រូវសង !');
+		}
+	}
+}
+function showDialog() {	
+	refund_dollar = dijit.byId("refund_dollar").get('value');
+	refund_bath = dijit.byId("refund_bath").get('value');
+	refund_riel = dijit.byId("refund_kh").get('value');
+	if(isNaN(refund_dollar)){
+		refund_dollar = 0;
+	}
+	if(isNaN(refund_bath)){
+		refund_bath = 0;
+	}
+	if(isNaN(refund_riel)){
+		refund_riel = 0;
+	}
+	
+	dojo.byId("lblsendername").innerHTML = dijit.byId("sender_name").value;
+	dojo.byId("lbfound_dollar").innerHTML = dojo.number.format(refund_dollar, { pattern: "##.##"});
+	dojo.byId("lbfound_bath").innerHTML = dojo.number.format(refund_bath, { pattern: "##.##"});
+	dojo.byId("lbfound_riel").innerHTML = dojo.number.format(refund_riel, { pattern: "##.##"});
+	dojo.byId("lbmoney_dollar").innerHTML = dojo.number.format(dollar_owe, { pattern: "##.##"});
+	dojo.byId("lbmoney_bath").innerHTML = dojo.number.format(bath_owe, { pattern: "##.##"});
+	dojo.byId("lbmoney_riel").innerHTML = dojo.number.format(riel_owe, { pattern: "##.##"});
+
+	dojo.byId("lbremain_dollar").innerHTML = dojo.number.format(dollar_owe - refund_dollar, { pattern: "##.##"});
+	dojo.byId("lbremain_bath").innerHTML = dojo.number.format(bath_owe - refund_bath, { pattern: "##.##"});
+	dojo.byId("lbremain_reil").innerHTML = dojo.number.format(riel_owe - refund_riel, { pattern: "##.##"});
+	
+	dojo.byId("lbexchange_dollar").innerHTML = dijit.byId("exchange_dollar").get('value');
+	dojo.byId("lbexchange_bath").innerHTML = dijit.byId("exchange_bath").get('value');
+	dojo.byId("lbexchange_reil").innerHTML = dijit.byId("exchange_riel").get('value');
+		
+	dijit.byId("terms").show();
+}
+function doPrint() {
+	window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
+    hideDialog();
+}
+function hideDialog() {		
+	dijit.byId("terms").hide();
+	dijit.byId('frm_payment').submit();
+}
+var url_add_sender = '<?php echo $this->url(array('module'=>'loan','controller'=>'payout','action'=>'get-amount')); ?>';//for get payment date of sender 
+function getAllMoneyloanByName(){
+	 dijit.byId('money_dollar').attr('value',0);
+	 dijit.byId('money_bath').attr('value',0);
+	 dijit.byId('money_khmer').attr('value',0);
+	 
+	 dijit.byId('remain_dollar').attr('value',0);
+	 dijit.byId('remain_bath').attr('value',0);
+	 dijit.byId('remain_riel').attr('value',0);
+	 
+	 dijit.byId('refund_dollar').set('disabled',true);
+	 dijit.byId('refund_bath').set('disabled',true);
+	 dijit.byId('refund_kh').set('disabled',true);
+
+	 dijit.byId('showPopupD').set('disabled',true);
+	 dijit.byId('showPopupB').set('disabled',true);
+	 dijit.byId('showPopupR').set('disabled',true);
+	 
+		dojo.xhrPost({
+		    url: url_add_sender,	
+		    content : { 
+			    'sender_id':dijit.byId('sender_name').get('value'),
+			},		    
+			handleAs:"json", 
+		    load: function(response) {	
+		    	console.log(response);
+				dollar_owe =0;bath_owe =0;riel_owe =0;
+				pay_refund_dollar =0;pay_refund_bath =0;pay_refund_kh =0;
+				
+		    	var from_amount_type = dijit.byId('from_amount_type').attr('value');
+		    	var end = '<?php echo date('Y-m-d');?>';
+		    	var arr_amount = [[],[],[],[]];
+		    	var cur = 0;
+		        for(i=0; i<response.length;i++){
+		        	day = countDays(response[i].loan_date,end);
+		        	
+		        	var rate_amount = parseFloat(response[i].laon_rate);
+		        	if(!rate_amount)rate_amount=0;
+		        	var money_amount = parseFloat(response[i].loan_amount);
+		        	if(!money_amount)money_amount=0;
+		        	var amount_cur = money_amount;
+		        	var rate_perday = (money_amount * (rate_amount/100))/30;//rate amount per day
+		        	if(day>0){
+		        	    amount_cur = money_amount + rate_perday*day;
+		        	}
+		        	
+		        	if(cur != response[i].currency_type){
+			        	var arr_tmp = [response[i].b_id,amount_cur];
+		        		arr_amount[response[i].currency_type] = arr_tmp;
+		        		cur = response[i].currency_type;
+		        	}else{
+			        	var money_id = arr_amount[response[i].currency_type][0]+","+response[i].b_id;
+			        	var amount_tmp = arr_amount[response[i].currency_type][1]+amount_cur;
+		        		arr_amount[response[i].currency_type][0] = money_id;
+		        		arr_amount[response[i].currency_type][1] = amount_tmp;
+		        	}
+		        	
+		    	}
+// 		    	console.log(arr_amount);
+		        if(arr_amount[1]){//dollar
+    				if(arr_amount[1][1]){
+    					dollar_owe = arr_amount[1][1];
+    					is_dollar = 1;
+    					dijit.byId('money_dollar').attr('value',dollar_owe);
+    					$('input#money_dollar_id').val(arr_amount[1][0]);
+    				     dijit.byId('refund_dollar').set('disabled',false);
+    				     dijit.byId('money_dollar').set('disabled',false);
+    				     dijit.byId('money_dollar').set('readOnly',true);
+
+    				     if(from_amount_type != 1){
+    						dijit.byId('showPopupD').set('disabled',false);
+    				     }
+    				}
+    			 
+    			}
+    			if(arr_amount[2]){//baht
+    				if(arr_amount[2][1]){
+    					bath_owe = arr_amount[2][1];
+    					is_bath = 1;
+    				    dijit.byId('money_bath').attr('value',bath_owe);
+    					$('input#money_bath_id').val(arr_amount[2][0]);
+    				    dijit.byId('refund_bath').set('disabled',false);
+    				    dijit.byId('money_bath').set('disabled',false);
+    				   	dijit.byId('money_bath').set('readOnly',true);
+
+    				    if(from_amount_type != 2){
+    				    	dijit.byId('showPopupB').set('disabled',false);
+    				    }
+    				}
+
+    			}
+    			if(arr_amount[3]){//riel
+    				if(arr_amount[3][1]){
+    					riel_owe = arr_amount[3][1];
+    					is_riel = 1;
+    				    dijit.byId('money_khmer').attr('value',riel_owe);
+    					$('input#money_kh_id').val(arr_amount[3][0]);
+    				    dijit.byId('refund_kh').set('disabled',false);
+    				    dijit.byId('money_khmer').set('disabled',false);
+    				    dijit.byId('money_khmer').set('readOnly',true);
+    				    if(from_amount_type != 3){
+    				    	dijit.byId('showPopupR').set('disabled',false);
+    					}
+    				}
+    			}
+				calcu_remain();
+		    },
+			error: function(err) {
+				alert(err);
+				alert("Your message could not be sent, please try again!.");
+			}
+		}); 
+}
+
+function countDays(start,end){
+	var durationperday = 24 * 60 * 60 * 1000;
+	var s_date= moment(start,'YYYY M D');
+	var e_date= moment(end,'YYYY M D');
+	var days = moment.duration(e_date - s_date);
+	
+	var amount_day = (days / durationperday);
+	return amount_day;
+
+}
+function showExchage(){
+	if(dijit.byId('pay_all').checked){
+		alert("this is a man");
+	}
+}
+function checkRate(type,from,to){
+	url = "<?php echo $this->baseUrl();?>/payment/index/check-rate";
+	dojo.xhrPost({
+	      url: url,
+	      content : { 
+			    'from':from,
+			    'to':to,
+			},
+	      load: function(data){
+	    	 tmp = dojo.fromJson(data);
+		    	// dijit.byId('rate').attr('value',tmp.rate_out);   
+		    	//alert(tmp.rate_out);
+	    	  setRateToTextbox(type,tmp);
+		    	 //return data; 	  
+	      },
+	      error: function(err){	        
+	        alert(err);
+	      }
+    });
+}
+
+function DisabledPopupButton(type){//if type==1 enable ,0 =disabled 
+	if(type==1){//
+		DisabledPopuExchange();
+	}else{
+		//EnableText();
+     }
+}
+function DisabledPopuExchange(){
+	 dijit.byId('from_amount_type').set('disabled',true);
+	 dijit.byId('showPopupD').set('disabled',true);
+	 dijit.byId('showPopupB').set('disabled',true);
+	 dijit.byId('showPopupR').set('disabled',true);	
+}
+function checkTranConvertion(type){
+	if(dijit.byId('pay_all').checked){
+		resourcemoney = dijit.byId('pay_amount').get('value');
+		if(resourcemoney=='' || resourcemoney == 0 || isNaN(resourcemoney)){
+			alert('សូមបញ្ចូលចំនួនលុយដែលចង់សងសរុបសិន!');
+			dojo.byId('pay_amount').focus();
+		}else{
+			showConvertDialogMulti(type);
+		}
+	}else{
+		showConvertDialogSignle(type);
+	}
+	
+}
+function showConvertDialogSignle(type)//for mult convertion
+{
+	rs_type_money = dijit.byId('pay_currencytype').get('value');
+	label=dijit.byId('pay_currencytype').attr('displayedValue');
+	from_amount_type = dijit.byId('pay_currencytype').get('value');
+	
+	if(from_amount_type != type){
+		if((type == 1 && from_amount_type == 2) ||(type == 2 && from_amount_type == 1)){
+			rate_cur = all_rate[0]['rate_out'];
+		}else if((type == 1 && from_amount_type == 3) ||(type == 3 && from_amount_type == 1)){
+			rate_cur = all_rate[1]['rate_out'];
+		}else{
+			rate_cur = all_rate[2]['rate_out'];
+		}
+	}else{
+		rate_cur = 1;
+	}
+	if(type==1){
+		dojo.byId("change_dollar").innerHTML=label;
+		dijit.byId('rate_dollar').set('value',rate_cur);
+		dijit.byId('showdialog_dollar').show();
+	}
+	else if(type==2){
+		dojo.byId("change_bath").innerHTML=label;
+		dijit.byId('rate_bath').set('value',rate_cur);
+		dijit.byId('showdialog_bath').show();
+	}
+	else{
+		dojo.byId("change_riel").innerHTML=label;
+		dijit.byId('rate_riel').set('value',rate_cur);
+		dijit.byId('showdialog_riel').show();
+	}
+	
+}
+
+function showConvertDialogMulti(type)//for mult convertion
+{
+	invalid = dijit.byId('pay_amount').get('value');
+	if(isNaN(invalid)){
+		//alert("value must first");
+		//return false;
+	}
+	rs_type_money = dijit.byId('from_amount_type').get('value');
+	pay_all = dijit.byId('pay_all').get('value');
+	label=dijit.byId('from_amount_type').attr('displayedValue');
+	from_amount_type = dijit.byId('from_amount_type').get('value');
+	
+	if(from_amount_type != type){
+		if((type == 1 && from_amount_type == 2) ||(type == 2 && from_amount_type == 1)){
+			rate_cur = all_rate[0]['rate_out'];
+		}else if((type == 1 && from_amount_type == 3) ||(type == 3 && from_amount_type == 1)){
+			rate_cur = all_rate[1]['rate_out'];
+		}else{
+			rate_cur = all_rate[2]['rate_out'];
+		}
+	}else{
+		rate_cur = 1;
+	}
+	
+	
+	if(type==1){
+// 		if(rs_type_money==2){
+// 			dijit.byId('to_mondey_dollar').attr('value',rs_type_money);
+// 		}
+		if(pay_all){
+			dojo.byId("change_dollar").innerHTML=label;
+			dijit.byId('rate_dollar').set('value',rate_cur);
+		}
+		dojo.byId("change_dollar").innerHTML=label;
+		dijit.byId('rate_dollar').set('value',rate_cur);
+		dijit.byId('showdialog_dollar').show();
+	}
+	else if(type==2){
+		if(pay_all){
+			dojo.byId("change_bath").innerHTML=label;
+			dijit.byId('rate_bath').set('value',rate_cur);
+		}
+		dojo.byId("change_bath").innerHTML=label;
+		dijit.byId('rate_bath').set('value',rate_cur);
+		dijit.byId('showdialog_bath').show();
+	}
+	else{
+		if(pay_all){
+			dojo.byId("change_riel").innerHTML=label;
+			dijit.byId('rate_riel').set('value',rate_cur);
+		}
+		dojo.byId("change_riel").innerHTML=label;
+		dijit.byId('rate_riel').set('value',rate_cur);
+		dijit.byId('showdialog_riel').show();
+	}
+}
+function setRateToTextbox(type,rate){//add rate value to rate texbox by currency type filter
+	if(type==1){
+		dijit.byId('rate_dollar').attr('value',rate.rate_out);
+	}
+	else if(type==2){
+		dijit.byId('rate_bath').attr('value',rate.rate_out);
+	}
+	else if(type==3){
+		dijit.byId('rate_riel').attr('value',rate.rate_out);
+	}
+}
+
+function changRateDollar(reverse){//calculate amount with rate in dollar and reverse
+		rate = dijit.byId('rate_dollar').get('value');
+		dollar = dijit.byId('pay_as_dollar').get('value');
+		totalconvert = dijit.byId('pay_dollar_amount').get('value');
+		
+		if(reverse==1){
+			total = dollar/rate;
+			dijit.byId('pay_dollar_amount').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+		}
+		else{
+			total = totalconvert*rate;
+			dijit.byId('pay_as_dollar').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+		}
+}
+function changeRateBath(reverse){//calculate amount with rate in bath and reverse
+	rate = dijit.byId('rate_bath').get('value');
+	bath = dijit.byId('pay_as_bath').get('value');
+	totalconvert = dijit.byId('pay_bath_amount').get('value');
+	
+	if(dijit.byId('pay_all').checked){
+		pay_curtype = dijit.byId('from_amount_type').get('value');
+		
+	}else{
+		pay_curtype = dijit.byId('pay_currencytype').get('value');
+	}
+	if(reverse==1){
+		if(pay_curtype==3){
+				total = rate/bath;// for r->b
+			}else{
+				total = rate*bath;//for d->b
+			}
+		dijit.byId('pay_bath_amount').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+	}
+	else{
+		if(pay_curtype==3){
+			total = rate*totalconvert;
+			dijit.byId('pay_as_bath').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+		}
+		else{
+			total = totalconvert/rate;
+			dijit.byId('pay_as_bath').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+		}
+		
+	}
+}
+function changeRateRiel(reverse){//calculate amount with rate in riel and reverse
+	rate = dijit.byId('rate_riel').get('value');
+	bath = dijit.byId('pay_as_riel').get('value');
+	totalconvert = dijit.byId('pay_riel_amount').get('value');
+	if(reverse==1){
+		total = rate*bath;
+		dijit.byId('pay_riel_amount').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+	}
+	else{
+		total = totalconvert/rate;
+		dijit.byId('pay_as_riel').attr('value',dojo.number.format(total, { pattern: "##.##"}));
+	}
+}
+function ExchangRate(type){//if check special customer
+	if(type==1){
+		if(dijit.byId('special_cus_dollar').checked){
+			dijit.byId('rate_dollar').set('readOnly',false);	
+		}
+		else{
+			dijit.byId('rate_dollar').set('readOnly',true);
+		}
+	}
+	else if(type==2){
+		if(dijit.byId('special_cus_bath').checked){
+			dijit.byId('rate_bath').set('readOnly',false);	
+		}
+		else{
+			dijit.byId('rate_bath').set('readOnly',true);
+		}
+	}
+	else if(type==3){
+		if(dijit.byId('special_cus_riel').checked){
+			dijit.byId('rate_riel').set('readOnly',false);	
+		}
+		else{
+			dijit.byId('rate_riel').set('readOnly',true);
+		}
+	}
+	
+	
+}
+function CalculateFund(type){//submit button popup
+	if(dijit.byId('pay_all').checked){
+		CulculateFundByRefundMulti(type);//pay multy
+	}else{
+		CulculateFundSignle(type);
+	}
+	
+}
+function CulculateFundByRefundMulti(type){//mullty
+	if(type==1){
+		pay_as_dollar = dijit.byId('pay_as_dollar').get('value');
+		pay_dollar_amount = dijit.byId('pay_dollar_amount').get('value');
+		if(pay_dollar_amount==''){pay_dollar_amount=0;pay_as_dollar=0;}
+		
+		dijit.byId('refund_dollar').attr('value',dojo.number.format(pay_dollar_amount,{ pattern: "##.##"}));//add to dollar fund
+		pay_refund_dollar = pay_as_dollar;
+		
+		dijit.byId('showdialog_dollar').hide();
+		//for desplay value,label converted($)
+		dojo.byId("convertto_dollar").innerHTML = dojo.number.format(pay_as_dollar)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_dollar').attr('value',pay_as_dollar);
+		
+		TotalAllAmountToPay();
+		calcu_remain();
+	}
+	if(type==2){
+		pay_as_bath = dijit.byId('pay_as_bath').get('value');
+		pay_bath_amount = dijit.byId('pay_bath_amount').get('value');
+		if(pay_bath_amount==''){pay_bath_amount=0;pay_as_bath=0;}
+		
+		dijit.byId('refund_bath').attr('value',dojo.number.format(pay_bath_amount, { pattern: "##.##"}));//add to bath fund
+		pay_refund_bath = pay_as_bath;
+		//for desplay value,label converted(B)
+		
+		dojo.byId("convertto_bath").innerHTML = dojo.number.format(pay_as_bath)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_bath').attr('value',pay_as_bath);
+		
+		dijit.byId('showdialog_bath').hide();
+		TotalAllAmountToPay();
+		calcu_remain();
+	}
+	if(type==3){
+		pay_as_riel = dijit.byId('pay_as_riel').get('value');
+		pay_riel_amount = dijit.byId('pay_riel_amount').get('value');
+		if(pay_riel_amount==''){pay_riel_amount=0;pay_as_riel=0;}
+		
+		dijit.byId('refund_kh').attr('value',dojo.number.format(pay_riel_amount, { pattern: "##.##"}));//add to riel fund
+		pay_refund_kh = pay_as_riel;
+		dojo.byId("convertto_riel").innerHTML = dojo.number.format(pay_refund_kh)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_riel').attr('value',pay_refund_kh);
+		
+		dijit.byId('showdialog_riel').hide();
+		TotalAllAmountToPay();
+		calcu_remain();
+	}
+	clearText();
+}
+function CulculateFundSignle(type){//sigle
+	if(type==1){
+		pay_as_dollar = dijit.byId('pay_as_dollar').get('value');
+		pay_dollar_amount = dijit.byId('pay_dollar_amount').get('value');
+		if(pay_dollar_amount=='')pay_dollar_amount=0;
+		dijit.byId('refund_dollar').attr('value',dojo.number.format(pay_dollar_amount, { pattern: "##.##"}));//add to dollar fund
+		dijit.byId('showdialog_dollar').hide();
+		dojo.byId("convertto_dollar").innerHTML = dojo.number.format(pay_as_dollar)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_dollar').attr('value',pay_as_dollar);
+		dollar_owe = dijit.byId('money_dollar').get('value');//for culculate remain ;
+		calcu_remain();
+	}
+	if(type==2){
+		pay_as_bath = dijit.byId('pay_as_bath').get('value');
+		pay_bath_amount = dijit.byId('pay_bath_amount').get('value');
+		if(pay_bath_amount=='')pay_bath_amount=0;
+		
+		dijit.byId('refund_bath').attr('value',dojo.number.format(pay_bath_amount, { pattern: "##.##"}));//add to bath fund
+		pay_refund_bath = pay_as_bath;
+		
+		dijit.byId('showdialog_bath').hide();
+		dojo.byId("convertto_bath").innerHTML = dojo.number.format(pay_as_bath)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_bath').attr('value',pay_as_bath);
+		bath_owe = dijit.byId('money_bath').get('value');//for culculate remain ;
+		calcu_remain();
+	}
+	if(type==3){
+		pay_as_riel = dijit.byId('pay_as_riel').get('value');
+		pay_riel_amount = dijit.byId('pay_riel_amount').get('value');
+		if(pay_riel_amount=='')pay_riel_amount=0;
+		
+		dijit.byId('refund_kh').attr('value',dojo.number.format(pay_riel_amount, { pattern: "##.##"}));//add to riel fund
+		pay_refund_kh = pay_as_riel;
+		
+		dijit.byId('showdialog_riel').hide();
+		dojo.byId("convertto_riel").innerHTML = dojo.number.format(pay_as_riel)+' '+label+ ' = ';
+		dijit.byId('rgconvertto_riel').attr('value',pay_as_riel);
+		riel_owe  = dijit.byId('money_kh').get('value');//for culculate remain ;
+		calcu_remain();
+	}
+	clearText();
+}
+function TotalAllAmountToPay(){
+	var all_fund = dijit.byId('pay_amount').get('value');
+	var total = pay_refund_dollar + pay_refund_bath + pay_refund_kh;
+	if(all_fund<total){
+		pay_refund_dollar = 0;
+		dijit.byId('refund_dollar').set('value',0);
+		alert("សូមត្រួតពិនិត្យម្តងទៀត លោកអ្នកសងលើសចំនួន !");//code for check again
+	}else{
+		remain = all_fund - total;
+		dijit.byId('all_total_convert').attr('value',dojo.number.format(remain, { pattern: "##.##"}));
+	}
+	//alert(remain);
+}
+function clearText(){//clear all control popup
+    dojo.byId('pay_dollar_amount').value="";
+    dojo.byId('pay_bath_amount').value="";
+    dojo.byId('pay_riel_amount').value="";
+    dojo.byId('rate_dollar').value="";
+    dojo.byId('rate_bath').value="";
+    dojo.byId('rate_riel').value="";
+    dojo.byId('pay_as_dollar').value="";
+    dojo.byId('pay_as_dollar').value="";
+    dojo.byId('pay_as_riel').value="";
+}
+function EnableText(){//enable textbox if ckeck all payment
+	if(dijit.byId('pay_all').checked){
+		dijit.byId('pay_amount').set('readOnly',false);	
+		dijit.byId('from_amount_type').set('disabled',false);
+		dijit.byId('pay_currencytype').attr('value',-1);
+		dijit.byId('pay_currencytype').set('readOnly',true);
+		DisabledPopup();
+	}
+	else{
+		dijit.byId('pay_amount').set('readOnly',true);	
+		dijit.byId('all_total_convert').set('readOnly',true);
+		dijit.byId('from_amount_type').set('disabled',true);
+		dijit.byId('pay_currencytype').set('readOnly',false);
+	}
+	
+}
+function DisabledPopup(){
+	type = dijit.byId('from_amount_type').get('value');
+	money_dollar = dijit.byId('money_dollar').get('value');
+	money_bath = dijit.byId('money_bath').get('value');
+	money_kh = dijit.byId('money_khmer').get('value');
+	if(type==1){
+		dijit.byId('showPopupD').set('disabled',true);
+		if(money_bath != 0){
+			dijit.byId('showPopupB').set('disabled',false);
+		}
+		if(money_kh != 0){
+			dijit.byId('showPopupR').set('disabled',false);
+		}
+	}
+	else if(type==2){
+		dijit.byId('showPopupB').set('disabled',true);
+		if(money_dollar != 0){
+			dijit.byId('showPopupD').set('disabled',false);
+		}
+		if(money_kh != 0){
+			dijit.byId('showPopupR').set('disabled',false);
+		}
+	}
+	else{
+		dijit.byId('showPopupR').set('disabled',true);
+		if(money_bath != 0){
+			dijit.byId('showPopupB').set('disabled',false);
+		}
+		if(money_dollar != 0){
+			dijit.byId('showPopupD').set('disabled',false);
+		}
+	}
+}
+function callRemain(){
+	dojo.byId('all_total_convert').value=0;
+	type = dijit.byId('from_amount_type').get('value');
+	all_fund = dijit.byId('pay_amount').get('value');
+	if(type==1){
+		dojo.byId('refund_dollar').value="";
+		owe_dollar = dijit.byId('money_dollar').get('value');
+		if(all_fund>owe_dollar){
+			dijit.byId('refund_dollar').attr('value',dojo.number.format(owe_dollar, { pattern: "##.##"}));
+			pay_refund_dollar = owe_dollar;
+		}
+		else{
+			dijit.byId('refund_dollar').attr('value',dojo.number.format(all_fund, { pattern: "##.##"}));
+			pay_refund_dollar = all_fund;
+		}
+	}
+	else if(type==2){
+		owe_bath = dijit.byId('money_bath').get('value');
+		if(all_fund>owe_bath){
+			dijit.byId('refund_bath').attr('value',dojo.number.format(owe_bath, { pattern: "##.##"}));
+			pay_refund_bath = owe_bath;
+		}
+		else{
+			dijit.byId('refund_bath').attr('value',dojo.number.format(all_fund, { pattern: "##.##"}));
+			pay_refund_bath = all_fund;
+		}
+	}
+	else{
+		owe_riel = dijit.byId('money_khmer').get('value');
+		if(all_fund>owe_riel){
+			dijit.byId('refund_kh').attr('value',dojo.number.format(owe_riel, { pattern: "##.##"}));
+			pay_refund_kh = owe_riel;
+		}
+		else{
+			dijit.byId('refund_kh').attr('value',dojo.number.format(all_fund, { pattern: "##.##"}));
+			pay_refund_kh = all_fund;
+		}
+	}
+	TotalAllAmountToPay();
+	calcu_remain();
+	
+	
+}
+</script>
+

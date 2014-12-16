@@ -1,0 +1,357 @@
+<?php
+	$this->headTitle('Currency Smart | Report Current Balance page'); 
+	echo $this->headTitle();
+	$base_url = Application_Form_FrmMessage::getUrl("/");
+	$session_user=new Zend_Session_Namespace('auth');
+?>	
+<style>
+<!--
+	.tbtable{		
+		font-weight: bolder;
+		line-height: 40px;
+		text-align: center;
+	}
+	.tbtable .tbheader{
+		background-color: #012a15;
+		text-align: left;
+		color: #fff;
+	}
+	.tbtable .first{
+		background-color: #016315;
+		color: #fff;
+	}
+	.tbtable .first td{
+		width: 33.33%
+	}
+	.tbtable .second{
+		background-color: #fff; 
+		color: black;
+	}
+	.nevg-value{
+		color: RED;
+	}
+	.tbtable .second .input-inner {
+		margin: 0px;
+		padding: 0px;
+		width: 99%;	
+		border: none;
+	}
+	
+	#dollar.dijitInputInner, #bath.dijitInputInner, #rail.dijitInputInner{
+		text-align: center;		
+		background-color: #FFFFFF !important;
+	}
+	
+	.bg-white{
+		background-color: #FFFFFF !important;		
+	}
+}
+-->
+</style>
+<?php if($session_user->level == 1): //Admin View Only?>
+<form id='frm_search_capital' name='frm_search_capital' action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpt-allsummary')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<input type="hidden" name="actions" value="search">
+</form>
+<?php endif;?>
+
+<?php if(!empty($this->rs_tran['err']) && $this->rs_tran['err']){?>
+	<script type="text/javascript">
+	<!--
+		alert("<?php echo $this->rs_tran['msg']?>");
+	//-->
+	</script>
+	<style>
+		.table_print{
+			width: 100%; 
+			line-height: 40px;
+			font-size:12pt; 
+		}
+		.header{
+			font-size: 16pt;
+			font-weight: bolder;
+			text-align: center;
+		}
+	</style>
+	<table class="table_print">
+		<tr>
+			<td class="header">បញ្ជីសរុបគ្រប់ប្រតិបត្តិការ</td>
+		</tr>
+		<tr>
+			<td style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->rs_tran['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php }else{?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint();">Print</button><br/>
+<div id="grid">
+	<style>
+		.lblname{
+			padding-left: 20px;
+			text-align: left !important;
+			background-color: #C3C2C2;
+			font-weight: bolder;
+		}
+		.lblsymbol{
+			padding-left: 20px;
+			text-align: left !important;
+			background-color: #F7F6F6;
+			font-weight: bolder;
+		}
+		.lblsummary{
+			background-color: #999999;
+			color: #ffffff;
+			font-weight: bolder;
+		}
+		.header{
+			font-size: 16pt;
+			font-weight: bolder;
+			text-align: center;
+		}
+		.sub-header{
+			font-weight: bolder;
+			text-align: center;
+		}
+		.table_print{
+			width: 100%; 
+			line-height: 22px;
+			font-size:12pt; 
+		}
+		.table_print table{
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.table_print table th{
+			font-weight: bolder;
+			text-align: center;
+		}
+		.table_print table th.no{
+			width: auto;
+		}
+		
+		.table_print table th.name{
+			width: 25%;
+		}
+		.table_print table td.amount{
+			text-align: right;
+			padding-right: 10px;
+		}
+		
+		.table_print table td{
+			text-align: center;
+		}
+	</style>
+	<table class="table_print">
+		<tr>
+			<td class="header" colspan="2">បញ្ជីសំរាយសំរាប់ប្រតិ. <?php echo $this->tran_type[$this->tran_id];?> </td>
+		</tr>
+		<tr>
+			<td class="sub-header" colspan="2"><?php echo date_format(date_create($this->from_date), "d-m-Y")." - ".date_format(date_create($this->to_date), "d-m-Y") ;?></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<table width="100%" style="border-collapse:collapse; border: 1px solid #000;" border="1">
+				<?php $l_name = '';
+					$all_amt = array(10,0,0,0,0,0);
+					$dollar_in=0;$dollar_out = 0; $bath_in = 0;$bath_out = 0;$riel_in = 0;$riel_out = 0;
+					
+					$dollar_in_come=0;$dollar_out_come =0;;$dollar_in_noncome = 0;$dollar_out_noncome =0;
+					$bath_in_come = 0;$bath_out_come = 0;$bath_in_noncome = 0; $bath_out_noncome = 0;
+					$riel_in_come = 0;$riel_out_come = 0; $riel_in_noncome=0; $riel_out_noncome =0;
+					
+					$num = 0;$tran_type = '';
+				?>
+	<?php foreach ($this->rs_tran as $index =>$rs){?>
+					<?php $staff_name = ($rs['staff_name']!="" ? $rs['staff_name'] : "Unknow");?>					
+						<?php  if ($l_name != $staff_name){?>
+						<?php if($index > 0) {
+							$num =0;
+					?>	
+						</table>
+						<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+						  <tr class="bgtop style-bold"​ style="font-size: 12px; font-weight: bolder;">
+							  <td align="center" style="border:1px solid #000;" colspan="3">&nbsp;សរុបគ្រប់ប្រតិបត្តិការ&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;" colspan="2">&nbsp;ប្រតិ.មិនប្រើសាច់ប្រាក់&nbsp;</td>
+						 </tr> 
+						  <tr class="bgtop style-bold"​ style="font-size: 12px; font-weight: bolder;">
+							  <td align="center" style="border:1px solid #000;">&nbsp;ប្រភេទលុយ($)&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចូល&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចេញ&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចូល&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចេញ&nbsp;</td>
+						 </tr> 
+						 <tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>ដុល្លា($)<?php  ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_in_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_out_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_in_noncome); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_out_noncome); ?></b></td>
+						</tr>
+						<tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>បាត(B)</b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_in_come);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_out_come); ?></b></td>
+							   <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_in_noncome);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_out_noncome); ?></b></td>
+						</tr>
+						<tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>រៀល(៛)</b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_in_come);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_out_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_in_noncome);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_out_noncome); ?></b></td>
+						</tr>
+				 	  </table>
+						<table width="100%" style="border-collapse:collapse; border: 1px solid #000;" border="1">
+					 <?php
+						 $dollar_in=0;$dollar_out=0;$bath_in=0;$bath_out=0;$riel_in=0; $riel_out = 0;
+					 } }?>
+					<?php  if ($l_name != $staff_name){?>
+						<tr style="font-size: 14px; line-height: 30px; background:rgba(119, 119, 119, 1);">
+							<th colspan="5"​>ឈ្មោះបុគ្គលិក: <?php echo $staff_name;?></th>
+						</tr>
+						<tr style="font-size: 14px; line-height: 30px;">
+							<th>លេខ</th>
+							<th width="10%">ប្រភេទលុយ</th>
+							<th width="28%">លុយចេញ/ចូល</th>
+							<th width="28%">ប្រើសាច់ប្រាក់</th>
+							<th width="28%">ចំនួនសាច់ប្រាក់</th>
+						</tr>
+					<?php 
+					}?>
+					<?php  if ($tran_type != $rs['tran_type'] OR $l_name != $staff_name ){ // if other transaction?>
+							<tr style="font-size: 14px; line-height: 30px;">
+								<th colspan="6"​ style="background:#ccc;text-align: left;">&nbsp;&nbsp;* ប្រភេទប្រតិ:<a style="color:#blue; font-w" href="rpt-trantype-detail/u=2&tr=2"><?php echo $this->tran_type[$rs['tran_type']];?>សរុប</a></th>
+							</tr>
+					<?php } ?>
+					<?php 
+					
+					if($rs['sign']==1){//in
+						if($rs['curr_type']==1 AND $rs['income']==1){
+							$dollar_in_come=$dollar_in_come+$rs['amount'];
+						}elseif($rs['curr_type']==1 AND $rs['income']==0){
+							$dollar_in_noncome=$dollar_in_noncome+$rs['amount'];
+						}
+						elseif($rs['curr_type']==2 AND $rs['income']==1){
+							$bath_in_come=$bath_in_come+$rs['amount'];
+						}elseif($rs['curr_type']==1 AND $rs['income']==0){
+							$bath_in_noncome=$bath_in_come+$rs['amount'];
+						}
+						elseif($rs['curr_type']==3 AND $rs['income']==1){
+							$riel_in_come=$riel_in_come+$rs['amount'];
+						}elseif($rs['curr_type']==3 AND $rs['income']==0){
+							$reil_in_noncome=$reil_in_noncome+$rs['amount'];
+						}
+							
+					}else{
+						if($rs['curr_type']==1 AND $rs['income']==1){
+							$dollar_out_come=$dollar_out_come+$rs['amount'];
+						}elseif($rs['curr_type']==1 AND $rs['income']==0){
+							$dollar_out_noncome=$dollar_out_noncome+$rs['amount'];
+						}
+						elseif($rs['curr_type']==2 AND $rs['income']==1){
+							$bath_out_come=$bath_out_come+$rs['amount'];
+						}elseif($rs['curr_type']==1 AND $rs['income']==0){
+							$bath_non_come=$bath_non_come+$rs['amount'];
+						}
+						elseif($rs['curr_type']==3 AND $rs['income']==1){
+							$riel_out_come=$riel_out_come+$rs['amount'];
+						}elseif($rs['curr_type']==3 AND $rs['income']==0){
+							$reil_out_noncome=$reil_out_noncome+$rs['amount'];
+						}
+							
+					}
+					
+
+					$l_name = $staff_name;
+					$tran_type = $rs['tran_type'];
+					$num++;
+					?>
+					<tr style="font-size: 11px;">
+						<th><?php echo $num;?> </th>
+						<th><?php echo $rs['currency_name'];?> </th>
+						<th><?php echo ($rs['sign']==1)?'ចូល':'<span style="color:red;">ចេញ</span>';?></th>
+						<th><?php echo ($rs['income']==1)?'ប្រើ':'មិនប្រើ'; ?></th>
+						<th style="text-align:left;">&nbsp;&nbsp;&nbsp;<?php echo number_format($rs['amount']);?></th>
+					</tr>
+	<?php }?>
+				</table>
+					<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+						  <tr class="bgtop style-bold"​ style="font-size: 12px; font-weight: bolder;">
+							  <td align="center" style="border:1px solid #000;" colspan="3">&nbsp;សរុបគ្រប់ប្រតិបត្តិការ&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;" colspan="2">&nbsp;ប្រតិ.មិនប្រើសាច់ប្រាក់&nbsp;</td>
+						 </tr> 
+						  <tr class="bgtop style-bold"​ style="font-size: 12px; font-weight: bolder;">
+							  <td align="center" style="border:1px solid #000;">&nbsp;ប្រភេទលុយ($)&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចូល&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចេញ&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចូល&nbsp;</td>
+							  <td align="center" style="border:1px solid #000;">&nbsp;ចេញ&nbsp;</td>
+						 </tr> 
+						 <tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>ដុល្លា($)<?php  ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_in_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_out_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_in_noncome); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($dollar_out_noncome); ?></b></td>
+						</tr>
+						<tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>បាត(B)</b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_in_come);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_out_come); ?></b></td>
+							   <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_in_noncome);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($bath_out_noncome); ?></b></td>
+						</tr>
+						<tr>
+							  <td align="center" style="border:1px solid #000; font-size: 12px; font-weight: bolder;"><b>រៀល(៛)</b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_in_come);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_out_come); ?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_in_noncome);?></b></td>
+							  <td align="center" style="border:1px solid #000;"><b><?php echo number_format($riel_out_noncome); ?></b></td>
+						</tr>
+				 	  </table>
+			</td><!-- end of over td -->
+		</tr>
+	</table><!-- cover all table -->
+	<?php if($session_user->level == 1){ //Admin View Only?>
+			<?php if(!empty($this->tranlist['summary'])){?>
+					<table style="width: auto; min-width:100%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+						<tr>
+							<td colspan="3" class="lblsummary" style="background:rgba(106, 112, 122, 1);">&nbsp;&nbsp;សរុបរួម</td>							
+						</tr>
+						<tr>
+							<th class="name">&nbsp;ប្រភេទ​លុយ&nbsp;</th>
+							<th>&nbsp;ទិញចូល&nbsp;</th>
+							<th>&nbsp;លក់ចេញ&nbsp;</th>
+						</tr>
+						<?php foreach ($this->tranlist['summary'] as $i => $rs):?>
+							<tr>	
+								<td align="center" style="border:1px solid #000; font-size: 14px; font-weight: bolder;"><?php echo $rs['currncytype'] . "(" . $rs['currncysymbol'].")"?></td>
+								<td class="amount" align="center" ><b><?php echo number_format($rs['boughtamount'],(!strrpos($rs['boughtamount'],"."))? 0 : 2) . " " . $rs['currncysymbol'];?></b></td>
+								<td class="amount" align="center" ><b><?php echo number_format($rs['saleamount'],(!strrpos($rs['saleamount'],"."))? 0 : 2). " " . $rs['currncysymbol'];?></b></td>
+							</tr>
+						<?php endforeach;?>
+					</table>
+				<?php }
+		 }		
+		?>
+</div>
+<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+<?php }?>
+
+<script type="text/javascript">
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.NumberTextBox');
+
+	function doPrint() {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid').innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();	    
+	}	
+</script>

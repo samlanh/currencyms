@@ -1,0 +1,104 @@
+<title>3PC System | User Type List</title>
+<?php 
+	$url_new = $this->url(array(
+		'module'=>'rsvAcl',
+		'controller'=>'user-type',
+		'action'=>'add-user-type',
+	));
+	$url = Application_Form_FrmMessage::getUrl("/rsvAcl/user-type/edit-user-type?id=");
+?>
+
+<div class="btn" align="right">
+	<input  type="button" value="បន្ថែម​ថ្មី" label="បន្ថែម​ថ្មី" id="btadd" dojoType="dijit.form.Button" onclick="window.location = '<?php echo $url_new; ?>';"/>
+</div>
+
+<form name="frmlist" action="" dojoType="dijit.form.Form" method="post">
+	<table class="fullside">
+		  <tr>
+		  	<td>	  		
+		  		<?php echo $this->result_row;?>
+		  	</td>
+		  	<td align="right" >
+		  		<?php echo $this->rows_per_page;?>
+		  	</td>
+		  </tr>
+		  <tr>
+		  	<td colspan="2">
+		  		<div id="grid" ></div>
+		  	</td>
+		  </tr>	
+		  <tr>
+		  	<td colspan="2" align="center">
+		  		<div id="navigetion" style="margin: 0 auto;"><?php echo $this->nevigation;?></div>	  		
+		  	</td>
+		  </tr>		  
+	</table>
+</form>
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojox/grid/resources/tundraGrid.css"/>
+<style>
+	#grid{
+	    margin-top: 10px;		
+	}
+	.dojoxGridSortNode{
+		text-align: center;	
+		height: 24px;		
+	}
+</style>
+
+<script>
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dojox.grid.DataGrid");	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.FilteringSelect');
+	
+	dojo.ready(function(){
+		
+		//Creat data fror show			
+		loadData(<?php print_r($this->tranlist);?>);
+		
+		
+		dojo.connect(grid, "onRowClick", grid, function(evt){
+			var idx = evt.rowIndex,
+				item = this.getItem(idx);
+			
+			window.location = '<?php echo $url;?>' + this.store.getValue(item, "user_type_id");
+		});
+
+		//dijit.byId('from_date').constraints.max = '18/10/2011'; 
+		//dijit.byId('to_date').constraints.min = document.getElementsByName('from_date')[0].value;
+	});
+
+	function loadData(data){			
+		// create an object store
+		var objectStore = new dojo.store.Memory({
+		       data: data
+		 });
+
+		//load data into data grid
+		grid = new dojox.grid.DataGrid({
+			store: dojo.data.ObjectStore({objectStore: objectStore}),
+			autoHeight: true,	
+			structure: [
+				{ name: "No", field: "num", width: "50px", cellStyles: "text-align: center;" },
+				{ name: "id", field: "user_type_id", hidden: true },	
+				{ name: "User Type", field: "user_type", width: "auto" },
+				{ name: "Parent Name", field: "parent_id", width: "auto" },
+				{ name: "Status", field: "status", width: "auto", cellStyles: "text-align: center;",
+					formatter: function(value) { 
+			           var src = "<?php echo BASE_URL?>/images/icon/"; 
+			           if(value == 1){
+			        	   src += "tick.png";
+			           }
+			           else{
+			        	   src += "none.png";
+			           }
+			           return "<img src=\"" + src + "\" />"; 
+			       } 
+			    }			
+			]
+		}, "grid");
+		grid.startup();
+	}
+</script>

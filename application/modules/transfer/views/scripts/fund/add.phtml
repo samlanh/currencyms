@@ -1,0 +1,116 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.form.CheckBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+
+<form action="<?php echo $this->url(array('module'=>'Func','controller'=>'Fund','action'=>'Fund')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+		
+	<table cellspacing="1" width="100%">
+		<tr>
+			<td>
+				<fieldset>
+					<legend><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
+					<table width="100%">
+						<tr>
+							<td>ជំពាក់</td>
+							<td><?php echo $form->getElement('Fund_name');?></td>
+							<td>ថ្ងៃសង​ ប្រាក់</td>
+							<td><?php echo $form->getElement('pay_day');?></td>
+							<td>សងជាប្រាក់</td>
+							<td><?php echo $form->getElement('pay_money');?></td>
+						</tr>
+						<tr>
+							<td>ជំពាក់ជា ដុល្លា</td>
+							<td><?php echo $form->getElement('Fund_usa');?></td>
+							<td>ជំពាក់ ជាបាត</td>
+							<td><?php echo $form->getElement('Fund_bath');?></td>
+							<td>ជំពាក់​ ជារៀល</td>
+							<td><?php echo $form->getElement('Fund_rial');?></td>
+						</tr>
+						<tr>
+							<td>សងជា ដុល្លា</td>
+							<td><?php echo $form->getElement('pay_usa');?></td>
+							<td>សងជា បាត</td>
+							<td><?php echo $form->getElement('pay_bath');?></td>
+							<td>សងជា​ រៀល</td>
+							<td><?php echo $form->getElement('pay_rial');?></td>
+						</tr>
+						<tr>
+							<td>សងរួមជាប្រាក</td>
+							<td><?php echo $form->getElement('pay_amount');?></td>
+							<td>ចំនួនសរុប</td>
+							<td><?php echo $form->getElement('amount');?></td>
+							<td>ទឹកប្រាក់នៅសល់</td>
+							<td><?php echo $form->getElement('return_money');?></td>
+						</tr>
+						<tr>
+							<td>សងរួម</td>
+							<td><?php echo $form->getElement('pay_amounts');?></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><b>អត្រាប្តូប្រាក់</b></td>
+							<td></td>
+							<td><b>ទឹកប្រាក់ជំពាក់បន្ទាប់ពីសង</b></td>
+							<td></td>
+							<td><b>អត្រាការប្រាក់ប្រចាំខែរ(%)</b></td>
+							<td><?php echo $form->getElement('persent_exchang');?></td>
+						</tr>
+						<tr>
+							<td>ដុល្លាទៅបាត</td>
+							<td><?php echo $form->getElement('usa_bath');?></td>
+							<td>ជាដុល្លា</td>
+							<td><?php echo $form->getElement('usa_rail');?></td>
+							<td>ប្រាក់អាប់ ដុល្លា($)</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>ដុលា្លទៅរៀល</td>
+							<td><?php echo $form->getElement('rail_bath');?></td>
+							<td>ជាបាត</td>
+							<td><?php echo $form->getElement('usa');?></td>
+							<td>ប្រាក់អាប់ រៀល(៛)</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>បាតទៅរៀល</td>
+							<td><?php echo $form->getElement('bath');?></td>
+							<td>ជាបាត</td>
+							<td><?php echo $form->getElement('rail');?></td>
+							<td>ប្រាក់អាប់ បាត(b)</td>
+							<td></td>
+						</tr>
+					</table>
+					
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>
+
+

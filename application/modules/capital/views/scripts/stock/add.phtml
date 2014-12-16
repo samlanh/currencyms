@@ -1,0 +1,243 @@
+<?php
+	$this->headTitle('Currency Smart | Add Money Stock'); 
+	echo $this->headTitle();
+	$session_user=new Zend_Session_Namespace('auth');
+?>	
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script type="text/javascript">
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.NumberTextBox');
+	dojo.require("dojo.NodeList-manipulate");
+	dojo.require("dojo.html");
+	dojo.require('dijit.form.Select');	
+	dojo.ready(function(){		
+		addAmountTypeMoney();
+		addSubTotalMoney();
+	});  
+	    
+</script>
+<style>
+<!--
+	.tbtable{		
+		font-weight: bolder;
+		line-height: 40px;
+		text-align: center;
+	}
+	.tbtable .tbheader{
+		background-color: #012a15;
+		text-align: left;
+		color: #fff;
+	}
+	.tbtable .first{
+		background-color: #016315;
+		color: #fff;
+	}
+	.tbtable .first td{
+		width: 33.33%
+	}
+	.tbtable .second{
+		background-color: #fff; 
+		color: black;
+	}
+	.nevg-value{
+		color: RED;
+	}
+	.tbtable .second .input-inner {
+		margin: 0px;
+		padding: 0px;
+		width: 99%;	
+		border: none;
+	}
+	
+	#dollar.dijitInputInner, #bath.dijitInputInner, #rail.dijitInputInner{
+		text-align: center;		
+		background-color: #FFFFFF !important;
+	}
+	
+	.bg-white{
+		background-color: #FFFFFF !important;		
+	}
+table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1); padding:2px;}
+}
+-->
+</style>
+<form id='frm_add_capital' action="<?php echo $this->url(array('module'=>'capital','controller'=>'stock','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				/*if(dijit.byId('doloar').get('value') == 0 && dijit.byId('bath').get('value') == 0 && dijit.byId('rail').get('value') == 0){
+					dijit.byId('doloar').focus();
+					return false;
+				}*/
+
+				return true;
+			} else {
+				return false;
+			}
+	</script>	 
+	
+	<table class="tbtable" style="margin:10px auto; width:100%; border-collapse: collapse; border:1px solid #ccc;" border="1" >
+		<tr class="tbheader">
+			<td colspan="2">&nbsp;ប្រតិបត្តិការស្តុកលុយ !</td>
+		</tr>
+		<tr>
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			<td colspan="2">	
+				<table cellspacing='0' border="1" style="width: 100%;">									
+					<tr>
+						<td>សំរាប់ថ្ងៃ</td>
+						<td><input type="text" name="date" id="date" data-dojo-type="dijit.form.DateTextBox"
+									data-dojo-props="required:true,																		
+									name:'date',
+									id:'date',	
+									value:'<?php echo date('Y-m-d');?>',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+									<input type="hidden" name="record_row" id="record_row" dojoType="dijit.form.TextBox" />
+									<input type="hidden" name="sub_record_row" id="sub_record_row" dojoType="dijit.form.TextBox" />
+									
+									</td>
+					</tr>									
+				</table>	
+			</td>
+		</tr>
+		
+		<tr>
+			<td width="50%" valign="top">
+			 	<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
+					<tr>
+						<td  colspan="4" align="center">ចំណូល</td>
+					</tr>
+					<tr id="head_title" class="head-title" align="center"></tr>
+				</table>
+			</td>
+			<td valign="top">
+				<table id="sub_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
+					<tr>
+						<td align="center" colspan="4">ចំណាយ</td>
+					</tr>
+					<tr id="sub_head_title" class="head-title" align="center"></tr>
+				</table>
+			</td>
+		</tr>
+		<tr style="border:1px solid #ccc !important;">
+			<td align="left" valign="top">
+				<input id="add-append" value="បន្ថែម" label="បន្ថែម" dojoType="dijit.form.Button" iconClass="dijitIconApplication" Onclick="addAmountTypeMoney();" />
+			</td>
+			<td align="left" valign="top">
+				<input value="បន្ថែម" label="បន្ថែម" dojoType="dijit.form.Button" iconClass="dijitIconApplication" Onclick="addSubTotalMoney();" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="submit" value="1" name='submit_tran' label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" iconClass="dijitIconSave" />				 
+			</td>
+			<td>
+				<input type="submit" value="-1" name='submit_tran' label="រក្សាទុក"  dojoType="dijit.form.Button" iconClass="dijitIconSave" />				 
+			</td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+function deleteRecord(index){
+	var ids =dijit.byId('record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('record_row').attr('value','');
+		dojo.query("#row_capital"+ids).remove();
+		
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('record_row').attr('value',strings);
+		dojo.query("#row_capital"+index).remove();
+	}
+	
+}
+function deleteRecordSub(key){
+	var ids =dijit.byId('sub_record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('sub_record_row').attr('value','');
+		dojo.query("#sub_row_capital"+ids).remove();
+		
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == key) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('sub_record_row').attr('value',strings);
+		dojo.query("#sub_row_capital"+key).remove();
+	}
+}
+
+	curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
+	curr_bath_amountoption = '<?php echo $this->currency_type;?>';
+	curr_riel_amountoption = '<?php echo $this->currency_type;?>';
+	temp='';
+	r = 0;
+	fund_title=0;
+	function addAmountTypeMoney(){
+			r++;
+			if(fund_title!=1){
+				thead='<th>លុប</th>';
+				thead+='<th>​ប្រភេទប្រាក់</th>';
+				thead+='<th>ចំនួនទឹកប្រាក់</th>';
+				thead+='<th>ចំណាំ </th>';
+				fund_title=1;
+				dojo.query("#head_title").append(thead);
+	        }
+			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp+='<td><select style="width:120px" id="currency_type1_'+r+'" name="currency_type1_'+r+'" dojoType="dijit.form.FilteringSelect"  >'+curr_dollar_amountoption+'</select></td>';
+			temp+='<td><input type="text" required="true" name="amount1_'+r+'" id="amount1_'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" name="note1_'+r+'" id="note1_'+r+'" dojoType="dijit.form.TextBox" s/></td>';
+			tmp='<tr style="border:1px solid #ccc;" id="row_capital'+r+'">'
+			tmp+="</tr>";
+				dojo.query("#t_amountmoneytype").append(tmp);
+				dojo.html.set(dojo.byId("row_capital"+r),temp, {
+			    parseContent: true,
+			     
+			});
+			if(dijit.byId("record_row").value!="") {
+				var ids = dijit.byId("record_row").value;
+				dijit.byId("record_row").attr('value',ids+','+r);
+			} else { dijit.byId("record_row").attr('value',r);}
+	}	
+//sub money
+	sub_title=0;
+	s=0;
+function addSubTotalMoney(){
+		s++;
+		if(sub_title!=1){
+			thead='<th>លុប</th>';
+			thead+='<th>​ប្រភេទប្រាក់</th>';
+			thead+='<th>ចំនួនទឹកប្រាក់</th>';
+			thead+='<th>ចំណាំ </th>';
+			sub_title=1;
+			dojo.query("#sub_head_title").append(thead);
+        }
+		temp='<td style="width:30px !important;" ><img style="cursor:pointer" onclick="deleteRecordSub('+s+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+		temp+='<td><select style="width:120px" id="currency_type2_'+s+'" name="currency_type2_'+s+'" dojoType="dijit.form.FilteringSelect"  >'+curr_dollar_amountoption+'</select></td>';
+		temp+='<td><input type="text" required="true" name="amount2_'+s+'" id="amount2_'+s+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
+		temp+='<td><input type="text" name="note2_'+s+'" id="note2_'+s+'" dojoType="dijit.form.TextBox" s/></td>';
+		tmp='<tr style="border:1px solid #ccc;" id="sub_row_capital'+s+'">'
+		tmp+="</tr>";
+			dojo.query("#sub_amountmoneytype").append(tmp);
+			dojo.html.set(dojo.byId("sub_row_capital"+s),temp, {
+		    parseContent: true,
+		     
+		});
+		if(dijit.byId("sub_record_row").value!="") {
+			var ids = dijit.byId("sub_record_row").value;
+			dijit.byId("sub_record_row").attr('value',ids+','+s);
+		} else { dijit.byId("sub_record_row").attr('value',s);}
+}	
+</script>
