@@ -1,0 +1,200 @@
+<?php
+	$this->headTitle('Currency Smart | Report Ower'); 
+	echo $this->headTitle();
+?>	
+<style>
+.style-bold{font-weight: bold;}
+</style>
+<script>
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+	
+	function doPrint(div_id) {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid_'+ div_id).innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    confirmSubmit(div_id);	
+	    	    
+	}
+	function confirmSubmit(div_id){
+		if (confirm("តើ​អ្នកជំពាក់នេះពិតជាបានសងរួចហើយរឺទេ ?")){
+			dijit.byId('frmlist_mt_rpt_'+ div_id).submit();			
+		}
+	}
+
+</script>
+
+<form name="frmlist_mt_rpt" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rptowe')); ?>" dojoType="dijit.form.Form" method="post">
+	<table width="100%">
+		<tr>
+			<td>
+				<select name="sender" id="sender"   style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+					<option value="-1" <?php if($this->sender == -1) echo 'selected="selected"';?> >ជ្រើសរើសឈ្មោះអ្នកជំពាក់</option> 
+					<?php foreach ($this->sender_list as $key => $sd) : ?>
+						<option value="<?php echo $sd['sender_name'];?>" <?php if($sd['sender_name'] == $this->sender) echo 'selected'?>><?php echo $sd['sender_name'];?></option>
+					<?php endforeach;?>	 
+					<option value=""​ <?php if(empty($this->sender)) echo 'selected="selected"';?> >មិនមានឈ្មោះ</option> 
+				</select>
+					<br />
+					<input type="submit" value="ស្វែង​រក" label="ស្វែង​រក" id="submitButton" 
+						dojoType="dijit.form.Button"  iconClass="dijitIconSearch"/>
+			</td>
+			<td align="right">
+			ពី៖&nbsp;
+			<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+				dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+				rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+				constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+				onchange="dijit.byId('to_date').constraints.min = arguments[0]; " />
+			ដល់៖&nbsp;
+			<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+				dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+				rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+				constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+				onChange="dijit.byId('from_date').constraints.max = arguments[0]; " />
+			</td>
+		</tr>
+	</table>
+</form>
+<br/>
+
+<?php if(!empty($this->tranlist['err']) && $this->tranlist['err']):?>
+	<script type="text/javascript">
+	<!--
+		alert("<?php echo $this->tranlist['msg']?>");
+	//-->
+	</script>
+	<table style="width: 100%; line-height: 25px;">		
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->tranlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('1');">Print</button><br/>
+<div id="grid_1" >
+	<form name="frmlist_mt_rpt_1" id="frmlist_mt_rpt_1" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'updateowe')); ?>"  method="post">
+		<table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+			<?php $l_agent = ''; $pa = '5px'; $row_id=1; $div_id=2; 
+			$all_r =array(0,0,0,0,0,0);//store money 
+			?>	
+			<?php if(!empty($this->tranlist))  foreach ( $this->tranlist as $key => $tran) { ?>
+			<?php //$sub_agent = (empty($tran['subname']))? null:"(បើក​នៅ  ".$tran['subname'].")";?>
+			
+			<?php $getsender = ($tran['sender_name']!="" ? $tran['sender_name'] : "Unknow");//not used if ($l_agent !== $getsender){?>					
+				<?php  if ($l_agent !== $getsender){?>
+				<?php if($key > 0) {?>	
+					<tr class="bgtop style-bold">
+						  	<td align="right" colspan="2" style="border:1px solid #000;"><b style="font-size: 17px;">សរុប ​ &nbsp;</b></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[0])) echo number_format($all_r[0],(!strrpos($all_r[0],"."))? 0 : 2); $all_r[0]=0; ?></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[1])) echo number_format($all_r[1],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[1]=0; ?></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[2])) echo number_format($all_r[2],(!strrpos($all_r[2],"."))? 0 : 2); $all_r[2]=0; ?></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[3])) echo number_format($all_r[3],(!strrpos($all_r[3],"."))? 0 : 2); $all_r[3]=0; ?></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[4])) echo number_format($all_r[4],(!strrpos($all_r[4],"."))? 0 : 2); $all_r[4]=0; ?></td>
+						  	<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[5])) echo number_format($all_r[5],(!strrpos($all_r[5],"."))? 0 : 2); $all_r[5]=0; ?></td>
+					  </tr>
+					  <tr class="bg-center style-bold">
+						  	<td align="right" colspan="2" style="border:1px solid #000;"><b style="font-size: 17px;">សរុប​រួម  &nbsp;</b>​</td>
+						  	<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[0])) echo number_format($_totalmoney[0],(!strrpos($_totalmoney[0],"."))? 0 : 2); ?></strong></td>
+						  	<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[1])) echo number_format($_totalmoney[1],(!strrpos($_totalmoney[1],"."))? 0 : 2); ?> </strong></td>
+						  	<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[2])) echo number_format($_totalmoney[2],(!strrpos($_totalmoney[2],"."))? 0 : 2); ?></strong></td>
+					  </tr>
+		</table><br/><br/>
+	</form>
+</div>
+				<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+					showLabel="false" type="button" onclick="doPrint('<?php echo $div_id;?>');">Print</button><br/>
+				<div id="grid_<?php echo $div_id;?>" >					
+   <form name="frmlist_mt_rpt_<?php echo $div_id;?>" id="frmlist_mt_rpt_<?php echo $div_id;?>" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'deleteowe')); ?>"  method="post">
+		<table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" cellspacing="2" border="1px">
+				<?php $div_id++;?>
+				
+			<?php }  
+			}//end if do print?>
+			<?php //$getsender = ($tran['sender_name']!="" ? $tran['sender_name'] : "Unknow");//if sender blank ass value Unknow to sender?>
+			<?php  if ($l_agent !== $getsender){?>
+			<?php $l_agent = $getsender; $row_id=1;?>
+			<tr class="bgtop" height="40px">
+				<td colspan="2" style="border:1px solid #000;">&nbsp;			
+					<strong><?php echo $this->mainbranch?></strong>					
+				</td>
+				<td colspan="4" style="border:1px solid #000;">&nbsp;ឈ្មោះអតិថិជន​ <strong><?php echo $getsender; ?></strong></td>
+				<td colspan="2" align="right" style="padding-right: <?php echo $pa;?>; border:1px solid #000;">
+					<strong>ថ្ងៃ ផ្ញើរ <?php echo date( "Y-m-d"); ?></strong>
+				</td>
+				 <?php foreach($this->get_trans[$tran['sender_name']] as $index =>$val):?>
+					<input type="hidden" name="get_transac<?php echo $index;?>" value="<?php echo $val["tran_id"] ?>" />
+      		  ​​​   <?php endforeach;?>
+      		   
+			</tr>
+			<tr class="bgafter-top" height="35px">
+				<td rowspan="2"​ align="center" style="border:1px solid #000;">ទូរស័ព្ទ<br />អ្នកទទួល</td>
+				<td rowspan="2" align="center" style="border:1px solid #000;">បើកនៅ</td>
+				<td colspan="2" align="center" style="border:1px solid #000;"><b style="font-size: 17px;">រៀល</b></td>
+				<td colspan="2" align="center" style="border:1px solid #000;"><b style="font-size: 17px;">បាត</b></td>
+				<td colspan="3" align="center" style="border:1px solid #000;"><b style="font-size: 17px;">ដុល្លា</b></td>
+				
+			</tr>
+			<tr class="bgafter-top" style="text-align: center; height: 30px;">
+				<td width="150px" style="border:1px solid #000;">ផ្ញើរ​</td>
+				<td width="150px" style="border:1px solid #000;">សេវា​</td>
+				<td width="150px" style="border:1px solid #000;">ផ្ញើរ​</td>
+				<td width="150px" style="border:1px solid #000;">សេវា​</td>
+				<td width="150px" style="border:1px solid #000;">ផ្ញើរ</td>
+				<td width="150px" style="border:1px solid #000;">សេវា​</td>
+			</tr>
+		<?php };//endif of->($l_agent != $tran['agentname'].$sub_agent)//good?>
+			<?php 
+			$all_r[0] = $all_r[0]+(empty($tran['money_reil'])? 0 : $tran['money_reil'] );
+			$all_r[1] = $all_r[1]+(empty($tran['comm_reil'])? 0 : $tran['comm_reil'] );
+			$all_r[2] = $all_r[2]+(empty($tran['money_bat'])? 0 : $tran['money_bat'] );
+			$all_r[3] = $all_r[3]+(empty($tran['comm_bat'])? 0 : $tran['comm_bat'] );
+			$all_r[4] = $all_r[4]+(empty($tran['money_dollar'])? 0 : $tran['money_dollar'] );
+			$all_r[5] = $all_r[5]+(empty($tran['comm_dollar'])? 0 : $tran['comm_dollar'] );
+			
+			//all total of currency type
+			$_totalmoney[0] = $all_r[0]+$all_r[1];
+			$_totalmoney[1] = $all_r[2]+$all_r[3];
+			$_totalmoney[2] = $all_r[4]+$all_r[5];
+				
+			?>
+			<?php $open_location = ($tran['subagent_id']== 0 ? $tran['agentname'] : $tran['subname']);?>
+				<tr>
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; border:1px solid #000;"><?php echo $tran['reciever_tel'];?></td>
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; border:1px solid #000"><?php echo $open_location;?>&nbsp;</td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><strong><?php if(!empty($tran['money_reil'])) echo number_format($tran['money_reil'],(!strrpos($tran['money_reil'],"."))? 0 : 2);?></strong></td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><?php if(!empty($tran['comm_reil'])) echo number_format($tran['comm_reil'],(!strrpos($tran['comm_reil'],"."))? 0 : 2); ?></td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><strong><?php if(!empty($tran['money_bat'])) echo number_format($tran['money_bat'],(!strrpos($tran['money_bat'],"."))? 0 : 2); ?><s/trong></td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><?php if(!empty($tran['comm_bat'])) echo number_format($tran['comm_bat'],(!strrpos($tran['comm_bat'],"."))? 0 : 2); ?></td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><strong><?php if(!empty($tran['money_dollar'])) echo number_format($tran['money_dollar'],(!strrpos($tran['money_dollar'],"."))? 0 : 2); ?></strong></td>
+						<td align="center" class="td_line" style="border:1px solid #000;"><?php if(!empty($tran['comm_dollar'])) echo number_format($tran['comm_dollar'],(!strrpos($tran['comm_dollar'],"."))? 0 : 2); ?></td>
+			  </tr>
+			 
+		<?php }//end forearch ?>
+		<tr class="bgtop">
+				<td align="right" colspan="2" style="border:1px solid #000;"><b style="font-size: 17px;">សរុប &nbsp;​</b></td>
+				<td align="center" style="border:1px solid #000;"><strong><?php if(!empty($all_r[0])) echo number_format($all_r[0],(!strrpos($all_r[0],"."))? 0 : 2); $all_r[0]=0; ?></strong></td>
+				<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[1])) echo number_format($all_r[1],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[1]=0; ?></td>
+				<td align="center" style="border:1px solid #000;"><strong><?php if(!empty($all_r[2])) echo number_format($all_r[2],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[2]=0; ?></strong></td>
+				<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[3])) echo number_format($all_r[3],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[3]=0; ?></td>
+				<td align="center" style="border:1px solid #000;"><strong><?php if(!empty($all_r[4])) echo number_format($all_r[4],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[4]=0; ?></strong></td>
+				<td align="center" style="border:1px solid #000;"><?php if(!empty($all_r[5])) echo number_format($all_r[5],(!strrpos($all_r[1],"."))? 0 : 2); $all_r[5]=0; ?></td>
+		</tr>
+		 <tr class="bg-center">
+				<td align="right" colspan="2" style="border:1px solid #000;"><b style="font-size: 17px;">សរុប​រួម  &nbsp;</b>​</td>
+				<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[0])) echo number_format($_totalmoney[0],(!strrpos($_totalmoney[0],"."))? 0 : 2);  ?></strong></td>
+				<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[1])) echo number_format($_totalmoney[1],(!strrpos($_totalmoney[1],"."))? 0 : 2); ?></strong></td>
+				<td align="center" colspan="2" style="border:1px solid #000;"><strong><?php if(!empty($_totalmoney[2])) echo number_format($_totalmoney[2],(!strrpos($_totalmoney[2],"."))? 0 : 2); ?></strong></td>
+		</tr>	  	  
+	</table>
+	</form>
+</div>
+
+<iframe marginwidth="45" marginheight="45" name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+<?php endif;?>

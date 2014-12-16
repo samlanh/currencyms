@@ -1,0 +1,153 @@
+<?php
+$this->headTitle('Currency Smart | log in page'); 
+echo $this->headTitle();
+$base_url = Application_Form_FrmMessage::getUrl("/");
+?>
+<!DOCTYPE HTML> 
+<html>
+<head>
+<?php /*
+<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js"  djConfig="isDebug: true,parseOnLoad: true"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/tundra/tundra.css"/>
+*/?>
+
+<script src="<?php echo $base_url;?>js/dojo-1.6.1/dojo/dojo.js"  djConfig="isDebug: true,parseOnLoad: true"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $base_url;?>js/dojo-1.6.1/dijit/themes/tundra/tundra.css"/>
+	
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+	.btn{
+		height: 40px;
+		min-width: 100px;	
+	}
+</style>
+<link rel="stylesheet" href="css/stylelogin.css"/>
+<link rel="shortcut icon" href="images/favicon.png" type="image/x-icon"/>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.Button');
+</script>
+</head>
+<body class="tundra">
+<div id="header">
+	<table width="100%">
+		<tr rowspan="2">
+			<td width="80%" rowspan="2">
+				<div style="width:750px;height:100px; background-image: url('images/Logo_Resovol--gif_Animation.gif');">
+				</div>
+			</td>
+			<td class="title" align="center" width="20%">
+				<div style="width:233px;height:62px; background-image: url('images/currency_smart.png');"></div>
+				<?php /*echo $this->data['mainbranch'];*/?>
+			</td>
+		</tr>
+		<tr>
+			<td class="subtitle" align="center"><?php echo $this->data['mainbranch-subtitle'];?></td>
+		</tr>
+	</table>
+</div>
+<div id="content">
+	<div id='marquee'>
+		<marquee behavior="scroll" direction="left" scrollamount="5"><?php echo $this->data['marquee-word'];?></marquee>
+	</div>
+	<table cellpadding="0" cellspacing="0" id="main">
+		<tr>
+			<td style="width: 472px">				
+				<img alt="<?php echo $this->data['mainbranch'];?>" title="<?php echo $this->data['mainbranch'];?>" src="images/front.png">
+			</td>
+			<td valign="top" style="width: 120px">
+				<label class="lblheader">សេវាកម្ម</label>
+				<ul>
+					<?php						
+						$services = explode("," , $this->data['services']);						
+						foreach ($services AS $i =>$s){
+							echo "<li>". $s ."</li>";
+						}
+					?>
+				</ul>
+			</td>
+			<td align="right">
+				<div id="login">
+					<form id="frmLogin" dojoType="dijit.form.Form" method="post" action="">
+						<script type="dojo/method" event="onSubmit">				
+								if(this.validate()) {						
+									return true;
+								}
+								return false;
+						</script>
+						<table id="login">		
+						<tr>
+							<td colspan="2" align="center" class="lblheader textwithe">
+								ប្រព័ន្ធ​សុវត្តិភាព
+							</td>				
+						</tr>	
+						<tr>
+							<td colspan="2" align="center" style="color: red; padding-bottom: 10px;">
+								<?php echo $this->msg;?>
+							</td>				
+						</tr>			
+						<tr>
+							<td id="field">ឈ្មោះ​អ្នក​ប្រើ​ប្រាស់*</td>
+							<td class="add-edit">
+								<input type="text" required="true" name="txt_user_name" id="txt_user_name" placeholder="ឈ្មោះ​អ្នក​ប្រើ​ប្រាស់" 
+								dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ប្រើ​ប្រាស់!" style="width: 100%;"/>
+							</td>
+						</tr>
+						<tr>
+							<td id="field">ពាក្យ​​សំងាត់*</td>
+							<td class="add-edit">
+								<input type="password" required="true" name="txt_password" id="txt_password" placeholder="ពាក្យ​​សំងាត់" 
+								dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ពាក្យ​​សំងាត់!" style="width: 100%;"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="right">
+								<input  type="submit" value="ចាប់​ផ្តើម" label="ចាប់​ផ្តើម" dojoType="dijit.form.Button" />
+								<input  type="reset" value="សារ​ដើម" id="clear_login" dojoType="dijit.form.Button" label="សារ​ដើម" /> 								
+							</td>				
+						</tr>
+					</table>
+					</form>
+				</div>
+			</td>
+		</tr>
+	</table>	
+</div>
+<div id="footer">
+	<table id="main">
+		<tr>
+			<td>
+				<dl>
+				  <dt>អាស័យដ្ឋាន</dt>
+				    <dd><?php echo $this->data['branch-add'];?></dd>
+				  <dt>ទំនាក់ទំនងទូរស័ព្ទ</dt>
+				  	<?php						
+						$tels = explode("," , $this->data['bracnch-tel']);						
+						foreach ($tels AS $i =>$t){
+							echo "<dd>". $t ."</dd>";
+						}
+					?>			   
+				</dl>
+			</td>
+			<td align="right" class="textwithe" rowspan="2" valign="bottom">
+				<label class="textgreen footertitle">Power By </label>
+				<a href="http://www.resolvocam.com" target="_blank"><label class="textyellow footertitle">Resolvo(Cambodia) Co., Ltd.</label></a><br/>
+				<label class="textgreenlight">
+					Address: Borei Akasajar BA 7, Sangkat Kakab, Khan Dangkor, Phnom Penh, Cambodia<br/>
+					Tel:(+855) 23 956 789<br/>
+					Fax:(+855) 23 957 777<br/>
+					Website:www.resolvocam.com
+				</label>				
+			</td>
+		</tr>
+		<tr>
+			<td class="textgreenlight">
+				<?php echo $this->data['copyright'];?>
+			</td>
+			
+		</tr>
+	</table>
+</div>
+</body>
+</html>

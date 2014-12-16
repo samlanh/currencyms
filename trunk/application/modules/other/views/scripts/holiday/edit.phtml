@@ -1,0 +1,58 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('Add Holiday'));
+?>	
+<?php  $holiday= $this->frm_holiday;?>
+<form  id='add_techer' action="<?php echo $this->url(array('module'=>'other','controller'=>'holiday','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+ <script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				return true;
+			} else {
+				return false;
+			}
+</script>
+<table cellspacing="10" width="45%" style="margin: 0 auto;">
+	<tr>
+		<td>
+		<fieldset style="background-color:menu;">
+					<legend align="center" ><strong><?php echo $tr->translate("Add Holiday");?></strong></legend>
+					
+					<table style="margin: 0 auto; width: 95%;" cellspacing="10">
+						<tr>
+							<td><?php echo $tr->translate("Holiday Name")?></td>
+							<td><?php  echo $holiday->getElement('holiday_name');?>
+							<?php  echo $holiday->getElement('id');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Start date")?></td>
+							<td><?php  echo $holiday->getElement('start_date');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Amount Day")?></td>
+							<td><?php  echo $holiday->getElement('amount_day');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("End Date")?></td>
+							<td><?php  echo $holiday->getElement('end_date');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("STATUS")?></td>
+							<td><?php  echo $holiday->getElement('status');?></td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+							<input type="submit" value="GO_SAVE" label="<?php echo $tr->translate('GO_SAVE');?>" id="submitButton" dojoType="dijit.form.Button" 
+								 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId("add_techer").submit();"/>
+							</td>
+						</tr>
+					</table>	
+		</fieldset>		
+		</td>
+	</tr>
+</table>	
+</form>
+<script>
+function CalculateDate(){
+	alert(22);
+}
+</script>

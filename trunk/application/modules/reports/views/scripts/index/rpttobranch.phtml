@@ -1,0 +1,103 @@
+<?php
+	$this->headTitle('Currency Smart | Report auto print page'); 
+	echo $this->headTitle();
+?>	
+<script>
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');
+	
+	function doPrint(div_id) {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid_'+ div_id).innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    confirmSubmit(div_id);	    
+	}
+
+	function confirmSubmit(div_id){
+		if (confirm("តើ​ការ​បោះ​ពុម្ព​របស់​អ្នក​ជោគ​ជ័យ ឬ ទេ?")){
+			dijit.byId('frmlist_mt_rpt_'+ div_id).submit();			
+		}
+	}
+</script>
+
+
+<?php if(!empty($this->tranlist['err']) && $this->tranlist['err']):?>
+	<script type="text/javascript">
+	<!--
+		alert("<?php echo $this->tranlist['msg']?>");
+	//-->
+	</script>
+	<table style="width: 100%; line-height: 25px;">		
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->tranlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('1');">Print</button><br/>
+<div id="grid_1" >
+	<form name="frmlist_mt_rpt_1" id="frmlist_mt_rpt_1" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpttobranch')); ?>"  method="post">
+	
+		<table style="width: 100%; margin:0 auto line-height: 25px; border:1px solid #000; border-collapse:collapse;" border="1px" cellspacing="0" cellpadding="0">
+			<?php $l_agent = ''; $pa = '5px'; $row_id=1; $div_id=2;?>	
+			<?php if(!empty($this->tranlist))  foreach ( $this->tranlist as $key => $tran) : ?>
+			<?php $sub_agent = (empty($tran['subname']))? null:"(បើក​នៅ  ".$tran['subname'].")";?>
+			<?php if ($l_agent !== $tran['agent_id']):?>					
+				<?php if($key > 0) :?>	
+		</table><br/><br/>
+	</form>
+</div>
+				<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+					showLabel="false" type="button" onclick="doPrint('<?php echo $div_id;?>');">Print</button><br/>
+				<div id="grid_<?php echo $div_id;?>" >					
+   <form name="frmlist_mt_rpt_<?php echo $div_id;?>" id="frmlist_mt_rpt_<?php echo $div_id;?>" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpttobranch')); ?>"  method="post">
+		<table style="width: 100%; line-height: 30px; border:1px solid #000; border-collapse:collapse;" border="1" cellspacing="0" cellpadding="0" >
+				<?php $div_id++;?>
+			<?php endif;?>
+			<?php $l_agent = $tran['agent_id']; $row_id=1; $l_currency='';?>
+			<div class="bgtop" style="height: 25px;padding:5px;">
+				<strong al><?php echo $this->mainbranch?> &nbsp;<strong>ជូន​<b style="font-size: 16px;font-weight: bolder;">&nbsp;<?php echo $tran['agentname']; ?></b></strong></strong>	
+				<strong style="float: right;">ថ្ងៃ ផ្ញើរ <?php echo date( "Y-m-d"); ?></strong>
+			</div>
+				<?php foreach($this->get_trans[$tran['agent_id']] as $index =>$val):?>
+				<input type="hidden" name="get_transac<?php echo $index;?>" value="<?php echo $val["tran_id"] ?>" />
+      		   <?php endforeach;?>
+			<tr class="bgafter-top" height="35px">
+				<td align="center" rowspan="2">ទូរស័ព្ទ <br />អ្នកទទួល</td>
+				<td rowspan="2" align="center">បើកនៅ</td>
+				<td colspan="2" align="center"><b style="font-size: 17px;">រៀល</b></td>
+				<td colspan="2" align="center"><b style="font-size: 17px;">បាត</b></td>
+				<td colspan="3" align="center"><b style="font-size: 17px;">ដុល្លា</b></td>
+				
+			</tr>
+			<tr class="bgafter-top" style="text-align: center; height: 30px;">
+				<td width="120px">ផ្ញើរ​</td>
+				<td width="100px">សេវា​</td>
+				<td width="110px">ផ្ញើរ​</td>
+				<td width="110px">សេវា​</td>
+				<td width="110px">ផ្ញើរ</td>
+				<td width="110px">សេវា​</td>
+			</tr>
+		<?php endif;//endif of->($l_agent != $tran['agentname'].$sub_agent)?>
+			<?php $open_location = ($tran['subagent_id']== 0 ? $tran['agentname'] : $tran['subname']);?>
+				<tr height="32px;">
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; "><?php echo $tran['reciever_tel'];?>&nbsp;</td>
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; "><?php echo $open_location?>&nbsp;</td>
+						<td align="center" class="td_line" "><strong><?php if(!empty($tran['money_reil'])) echo number_format($tran['money_reil'],(!strrpos($tran['money_reil'],"."))? 0 : 2); ?></strong>&nbsp;</td>
+						<td align="center" class="td_line" "><?php if(!empty($tran['comm_reil'])) echo number_format($tran['comm_reil'],(!strrpos($tran['comm_reil'],"."))? 0 : 2); ?>&nbsp;</td>
+						<td align="center" class="td_line" "><strong><?php if(!empty($tran['money_bat'])) echo number_format($tran['money_bat'],(!strrpos($tran['money_bat'],"."))? 0 : 2); ?></strong>&nbsp;</td>
+						<td align="center" class="td_line" "><?php if(!empty($tran['comm_bat'])) echo number_format($tran['comm_bat'],(!strrpos($tran['comm_bat'],"."))? 0 : 2);?>&nbsp;</td>
+						<td align="center" class="td_line" "><strong><?php if(!empty($tran['money_dollar'])) echo number_format($tran['money_dollar'],(!strrpos($tran['money_dollar'],"."))? 0 : 2);?></strong>&nbsp;</td>
+						<td align="center" class="td_line" "><?php if(!empty($tran['comm_dollar'])) echo number_format($tran['comm_dollar'],(!strrpos($tran['comm_dollar'],"."))? 0 : 2);?>&nbsp;</td>
+			</tr>
+		<?php endforeach; ?>
+	</table>
+	</form>
+</div>
+	<iframe marginwidth="45" marginheight="25" name=print_frame width=0 height=0 frameborder=0 src=about:blank>
+	</iframe>
+<?php endif;?>

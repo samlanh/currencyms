@@ -1,0 +1,78 @@
+<title>3PC System | Edit User</title>
+<script type="text/javascript">
+	jQuery(Document).ready(function(){
+		//binds form submission and fields to the validation engine
+		jQuery('#frm').validationEngine('attach', {promptPosition : "centerRight"});
+		
+	});
+</script>
+<?php $form=$this->form;?>
+<style>
+fieldset.fifthy {	
+	border-right: 0px;
+	width: 50%;
+}
+table.user td{
+	vertical-align: top;
+   
+}
+</style> 
+<br/>
+<?php 
+$cancel_url=$this->url(array(
+		'module'=>'rsvAcl',
+		'controller'=>'user',
+		'action'=>'index',
+	));
+$chg_pwd=$this->url(array('module'=>'rsvAcl',
+                              'controller'=>'user',
+                              'action'=>'change-password',
+                              'id'=>$this->user_id,
+						));
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+?>
+<form id="frm" action="<?php echo $form->getAction(); ?>" method="post" enctype="application/x-www-form-urlencoded" >
+	<div class="btn" align="right">
+			    <button name="save" class="bluebold" type="submit">
+			        <img alt="" src="<?php echo BASE_URL?>/images/icon/apply2.png">
+			        <?php echo $tr->translate('SAVE');?>
+			    </button>
+			    <a class="negative" href="<?php echo $cancel_url;?>">
+			        <img alt="" src="<?php echo BASE_URL?>/images/icon/cross.png">
+			        <?php echo $tr->translate('CANCEL');?>
+			    </a>
+	</div>
+	<fieldset>
+		<legend><?php echo $tr->translate('AUTHENTICATION');?></legend>
+		<table>
+			<tr>
+				<td class="field"><?php echo $tr->translate('GENDER_TITLE');?></td>
+				<td class="add-edit"><?php echo $form->getElement('title');?></td>				
+			</tr>
+			<tr>
+				<td class="field"><?php echo $tr->translate('FULL_NAME');?></td>
+				<td class="add-edit"><?php echo $form->getElement('name');?></td>				
+			</tr>
+			<tr>
+				<td class="field"><?php echo $tr->translate('CSO');?></td>
+				<td class="add-edit"><?php echo $form->getElement('cso_id');?></td>				
+			</tr>								
+			<tr>
+				<td class="field"><?php echo $tr->translate('USERNAME');?></td>
+				<td class="add-edit"><?php echo $form->getElement('username');?></td>				
+			</tr>
+			<tr>
+				<td class="field"><?php echo $tr->translate('EMAIL');?></td>
+				<td class="add-edit"><?php echo $form->getElement('email');?></td>				
+			</tr>			
+			<tr>
+				<td class="field"><?php echo $tr->translate('TYPE_OF');?></td>
+				<td class="add-edit"><?php echo $form->getElement('user_type_id');?></td>				
+			</tr>
+			<tr>
+				<td id="field"></td>
+				<td class="add-edit"><div class="access" style="float: left; color: blue;"> <span><a href="<?php echo $chg_pwd; ?>" style="color: blue;"><?php echo $tr->translate('CHANGE_PSW');?></a></span></div></td>				
+			</tr>							
+		</table>
+	</fieldset>	
+</form>

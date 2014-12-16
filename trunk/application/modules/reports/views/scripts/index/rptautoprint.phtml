@@ -1,0 +1,113 @@
+<?php
+	$this->headTitle('Currency Smart | Report auto print page'); 
+	echo $this->headTitle();
+?>	
+<script>
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');
+	
+	function doPrint(div_id) {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid_'+ div_id).innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    confirmSubmit(div_id);	    
+	}
+
+	function confirmSubmit(div_id){
+		if (confirm("តើ​ការ​បោះ​ពុម្ព​របស់​អ្នក​ជោគ​ជ័យ ឬ ទេ?")){
+			dijit.byId('frmlist_mt_rpt_'+ div_id).submit();			
+		}
+	}
+</script>
+
+
+<?php if(!empty($this->tranlist['err']) && $this->tranlist['err']):?>
+	<script type="text/javascript">
+	<!--
+		alert("<?php echo $this->tranlist['msg']?>");
+	//-->
+	</script>
+	<table style="width: 100%; line-height: 25px;">		
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->tranlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('1');">Print</button><br/>
+<?php $page_top = "<style tyle=\"text/css\"><!-- @page {margin-top: .4in;} --></style>";?>
+<div id="grid_1"  >
+	<?php echo $page_top;?>
+	<form name="frmlist_mt_rpt_1" id="frmlist_mt_rpt_1" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rptautoprint')); ?>"  method="post">
+	
+	<table style="width: 100%; line-height: 25px;">
+		<?php $l_agent = ''; $pa = '5px'; $row_id=1; $div_id=2;?>	
+		<?php foreach ( $this->tranlist as $key => $tran) : ?>
+		<?php $sub_agent = (empty($tran['subname']))? "":"(បើក​នៅ".$tran['subname'].")";?>
+				
+		<?php if ($l_agent != $tran['agentname'].$sub_agent) :?>						
+			<?php if($key > 0) :?>			
+				</table><br/><br/>
+				</form>
+				</div>
+				<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+					showLabel="false" type="button" onclick="doPrint('<?php echo $div_id;?>');">Print</button><br/>
+				<div id="grid_<?php echo $div_id;?>">
+					<?php echo $page_top;?>
+					<form name="frmlist_mt_rpt_<?php echo $div_id;?>" id="frmlist_mt_rpt_<?php echo $div_id;?>" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rptautoprint')); ?>"  method="post">
+					<table style="width: 100%; line-height: 25px;">
+				<?php $div_id++;?>
+			<?php endif;?>
+			<?php $l_agent = $tran['agentname'].$sub_agent; $row_id=1; $l_currency='';?>
+			
+			<tr>
+				<td colspan="5">				
+					<strong><?php echo $this->mainbranch." ជូន   ".$tran['agentname'].$sub_agent;?></strong>					
+				</td>
+				<td align="right" style="padding-right: <?php echo $pa;?>;">
+					<strong><?php echo date("d/m/Y");?></strong>
+				</td>			
+			</tr>
+			<tr>
+				<td colspan="5">&nbsp;</td>
+			</tr>
+			<tr style="text-align: center; height: 30px;">
+				<th>ល.រ</th>						
+				<th>ឈ្មោះ​អ្នក​ផ្ញើរ</th>
+				<th>ឈ្មោះ​អ្នក​ទទួល</th>
+				<th>ទូរស័ព្ទ​​</th>
+				<th>ចំនួន​</th>
+				<th>សេវា​</th>
+				<th>ថ្ងៃ ផ្ញើរ</th>
+			</tr>
+			<tr>
+			<td colspan="7">
+				<hr style="border: 1px dashed; border-bottom: 0px; border-left: 0px; border-right: 0px;"/>
+			</td>
+		</tr>	
+		<?php endif;?>
+		<tr>
+			<td align="center" class="td_line"><input type="hidden" name="tran_id_<?php echo $row_id;?>" value="<?php echo $tran['tran_id'];?>"><?php echo ($row_id++);?></td>
+			<td class="td_line" style="padding-left: <?php echo $pa;?>;"><?php echo $tran['sender_name'];?></td>
+			<td class="td_line" style="padding-left: <?php echo $pa;?>;"><?php echo $tran['reciever_name'];?></td>
+			<td align="center" class="td_line"><?php echo $tran['reciever_tel'];?></td>
+			<td align="right" class="td_line" style="padding-right: <?php echo $pa;?>;"><?php echo number_format($tran['transfer_money'],(!strrpos($tran['transfer_money'],"."))? 0 : 2)." ".$tran['amount_type'];?></td>
+			<td align="right" class="td_line" style="padding-right: <?php echo $pa;?>;"><?php echo number_format($tran['commission_agent'],(!strrpos($tran['commission_agent'],"."))? 0 : 2)." ".$tran['amount_type'];?></td>
+			<td align="center" class="td_line"><?php echo date_format(date_create($tran['send_date']), "Y-m-d");?></td>
+		</tr>
+		<tr>
+			<td colspan="7">
+				<hr style="border: 1px dashed; border-bottom: 0px; border-left: 0px; border-right: 0px;"/>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+	</table>
+	</form>
+</div>
+
+<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>
+<?php endif;?>

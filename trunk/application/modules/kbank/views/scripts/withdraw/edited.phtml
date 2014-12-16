@@ -1,0 +1,526 @@
+<?php
+	$this->headTitle('Currency Smart | Transfer edit withdraw'); 
+	echo $this->headTitle();
+	$base_url = Application_Form_FrmMessage::getUrl("/");
+	$rs = $this->rs;
+?>	
+<style>
+fieldset{
+	border-color: rgba(7, 171, 44, 1) -moz-use-text-color;
+}
+</style>
+<script src="<?php echo $base_url;?>js/help.js"  type="text/javascript"></script>
+<script src="<?php echo $base_url;?>js/moment.min.js"  type="text/javascript"></script>
+<script type="text/javascript">
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.NumberTextBox');
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dijit.form.CheckBox");     
+	dojo.require("dojo.number");
+	dojo.require('dojox.form.BusyButton');
+	dojo.require("dijit.Dialog");
+
+	var sender_store = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->sender));?> );
+	dojo.ready(function(){		
+		
+		var account_code = dojo.byId("account_code"); 
+		dojo.connect(account_code, "onkeyup", function(evt){	
+			var filtercode= function(items, request){
+			  if(items.length){
+				 dijit.byId('sender').attr( 'value',sender_store.getValue(items[0],'id'));
+			  }
+		  	};		  
+		  
+		  var request = sender_store.fetch({query: {acc_code: this.value}, queryOptions: {ignoreCase: true}, onComplete: filtercode});
+		});
+
+		var w_dollar = dojo.byId("withdraw_dollar"); 
+		dojo.connect(w_dollar, "onkeyup", function(evt){
+			w_dollar = dijit.byId("withdraw_dollar").get('value'); 
+			checkMoneyInAccount(1,w_dollar);
+			}
+		);
+		var w_bath = dojo.byId("withdraw_bath"); 
+		dojo.connect(w_bath, "onkeyup", function(evt){
+			w_bath = dijit.byId("withdraw_bath").get('value'); 
+			checkMoneyInAccount(2,w_bath);
+			}
+		);
+		var w_reil = dojo.byId("withdraw_riel"); 
+		dojo.connect(w_reil, "onkeyup", function(evt){
+			w_reil = dijit.byId("withdraw_riel").get('value'); 
+			checkMoneyInAccount(3,w_reil);
+		}
+		);
+		
+		new dijit.form.FilteringSelect({
+            store: sender_store,
+            autoComplete: true,                        
+            required: true,
+            id: "sender",
+            name: "sender",
+            searchAttr: "name",           
+            class: 'fullside',   
+            value:'<?php echo $rs['sender_id']?>',        
+            missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ផ្ញើរ!",            
+            onChange: function() {
+            	setValueToOther();
+            }
+        }, "sender");	
+		setValueToOther();
+		is_default = 1;
+		
+	});   
+</script>
+<script type="text/javascript">
+	function setOldDefaultValue(type,debt_money){
+		if(type==1){
+			wd_dollar = '<?php echo $rs['wd_amountdollar'];?>';
+			total_dollar = parseInt(debt_money)+parseInt(wd_dollar);
+			dijit.byId('debt_dollar').attr('value',total_dollar);
+		}
+		else if(type==2){
+			wd_bath = '<?php echo $rs['wd_amountbath'];?>';
+			total_bath = parseInt(debt_money)+parseInt(wd_bath);
+			dijit.byId('debt_bath').attr('value',total_bath);
+		}else{
+			wd_riel = '<?php echo $rs['wd_amountriel'];?>';
+			total_riel = parseInt(debt_money)+parseInt(wd_riel);
+			dijit.byId('debt_riel').attr('value',total_riel);
+		}
+		dijit.byId("debt_dollar").set('readOnly', true);
+		dijit.byId("debt_bath").set('readOnly', true);
+		dijit.byId("debt_riel").set('readOnly', true);
+		
+		
+	//	dijit.byId('withdraw_dollar').attr('value',<?php //echo $rs['wd_amountdollar'];?>);
+		//dijit.byId('withdraw_bath').attr('value',<?php //echo $rs['wd_amountbath'];?>);
+		//dijit.byId('withdraw_riel').attr('value',<?php // echo $rs['wd_amountriel'];?>);
+		
+	}
+	function checkMoneyInAccount(type,withdraw_amount){
+		if(type==1){
+			withdraw_dollar=dijit.byId('debt_dollar').get('value');
+			if(withdraw_dollar<withdraw_amount){
+				alert('មិនអាចដកប្រាក់លើសចំនួនប្រាក់ក្នុងគណនីបានទេ !');
+				dijit.byId('withdraw_dollar').focus();
+				return false;
+			}else{
+				remain_dollar= (withdraw_dollar - withdraw_amount)+'$ ';
+				withdraw_dollar = dijit.byId('withdraw_dollar').get('value')+'$ ';
+			}
+		}
+		else if(type==2){
+			withdraw_bath = dijit.byId('debt_bath').get('value');
+			if(withdraw_bath<withdraw_amount){
+				alert('មិនអាចដកប្រាក់លើសចំនួនប្រាក់ក្នុងគណនីបានទេ !');
+				dijit.byId('withdraw_bath').focus();
+				return false;
+			}else{
+				remain_bath= (withdraw_bath - withdraw_amount)+'B ';
+				withdraw_bath = dijit.byId('withdraw_bath').get('value')+'B ';}
+		}else{
+			withdraw_riel = dijit.byId('debt_riel').get('value');
+			if(withdraw_riel<withdraw_amount){
+				alert('មិនអាចដកប្រាក់លើសចំនួនប្រាក់ក្នុងគណនីបានទេ !');
+				dijit.byId('withdraw_riel').focus();
+				return false;
+			}else{
+				remain_riel= (withdraw_riel - withdraw_amount)+'R ';
+				withdraw_riel = dijit.byId('withdraw_riel').get('value')+'R';
+			}
+		}
+	}
+	function printSave(){		
+		if(dijit.byId('frm_add_tran').validate()) {
+			showDialog();			
+		}
+	}
+	function setValueToOther(){
+			if(dijit.byId('sender').item != null){	
+				account_no = dijit.byId('sender').item.acc_code;
+				sender_tel = dijit.byId('sender').item.tel;
+				dijit.byId("account_code").attr('value', account_no);	
+				getAllMoneyBySender(dijit.byId('sender').item.id);
+			}
+	}
+	function disabledWithDraw(){
+		df_dollar = dijit.byId('debt_dollar').get('value');
+		df_bath = dijit.byId('debt_bath').get('value');
+		df_riel = dijit.byId('debt_riel').get('value');
+		if(isNaN(df_dollar)){
+			dijit.byId('withdraw_dollar').attr('value','');
+			dijit.byId('withdraw_dollar').set('disabled',true);
+		}
+		if(isNaN(df_bath)){
+			dijit.byId('withdraw_bath').attr('value','');
+			dijit.byId('withdraw_bath').set('disabled',true);
+		}
+		if(isNaN(df_riel)){
+			dijit.byId('withdraw_riel').attr('value','');
+			dijit.byId('withdraw_riel').set('disabled',true);
+		}
+		
+	}
+	function clearDebtBysender(){
+		dijit.byId('debt_dollar').attr('value','');
+		dijit.byId('debt_bath').attr('value','');
+		dijit.byId('debt_riel').attr('value','');
+	}
+	var url_getallmoney= '<?php echo $this->url(array('module'=>'kbank','controller'=>'withdraw','action'=>'get-allmoneybysender')); ?>';//for get payment date of sender 
+	function getAllMoneyBySender(sender_id){
+				clearDebtMoney();
+				dojo.xhrPost({
+			    url: url_getallmoney,	
+			    content : { 
+					'sender_id': sender_id,
+						  },		    
+				handleAs:"json", 
+			    load: function(response) {	
+			    	clearDebtBysender();
+					 for(i=0; i<response.length;i++){
+						 money_debt=  response[i].money_debt;
+						 if(response[i].money_type==1){
+							 dijit.byId('debt_dollar').attr('value',money_debt);
+							 remain_dollar = money_debt+'$ ';
+							 dijit.byId('withdraw_dollar').set('disabled',false);
+							 setOldDefaultValue(1,money_debt); 
+						 }
+						 else if(response[i].money_type==2){
+							 dijit.byId('debt_bath').attr('value',money_debt);
+							 remain_bath = money_debt+'B ';
+							 dijit.byId('withdraw_bath').set('disabled',false);
+							 setOldDefaultValue(2,money_debt); 
+						 }
+						 else{
+							 dijit.byId('debt_riel').attr('value',money_debt);
+							 remain_riel = money_debt+'R ';
+							 dijit.byId('withdraw_riel').set('disabled',false);
+							 setOldDefaultValue(3,money_debt); 
+						 }
+					}
+					 disabledWithDraw();	
+				},
+				error: function(e) {
+					 alert(e);
+				}
+			}); 
+	}
+	function clearDebtMoney(){
+		dijit.byId('debt_dollar').attr('value','');
+		dijit.byId('debt_bath').attr('value','');
+		dijit.byId('debt_riel').attr('value','');
+	}
+	function hideDialog() {		
+		dijit.byId("terms").hide();
+		dijit.byId('frm_add_tran').submit();
+	}
+	// Force them to provide an answer
+	function doPrint() {
+		window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    hideDialog();
+	}
+</script>
+
+
+<form id='frm_add_tran' action="<?php echo $this->url(array('module'=>'kbank','controller'=>'withdraw','action'=>'edited')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+					draw_dollar = dijit.byId('withdraw_dollar').get('value');
+					draw_bath = dijit.byId('withdraw_bath').get('value');
+					draw_riel = dijit.byId('withdraw_riel').get('value');
+
+				if((draw_dollar <=0 && draw_bath <=0 && draw_riel <=0 ) || (isNaN(draw_dollar) && isNaN(draw_bath) && isNaN(draw_riel) ) ){
+					alert('សូម​ពិនិត្រ ទឹកប្រាក់​​ដែល​​ត្រូវដក​ម្តង ​ទៀត...!');
+					dijit.byId('withdraw_dollar').focus();
+					return false;
+				}
+				return true;
+			} else {
+				return false;
+			}
+	</script>	
+	<table cellspacing="20" width="100%" >
+		<tr>
+			<td colspan="2">
+			</td>
+		</tr>
+		<tr>
+			<td width="55%">	
+				<fieldset style="height: 400px;">
+					<legend><strong>ព៌ត័មានដកប្រាក់</strong></legend>			
+					<table style="margin: 0 auto; width: 90%;" cellspacing='10'>
+						<tr>
+							<td><input type="hidden" name="tran_id" id="tran_id" value="<?php echo $rs['id']; ?>" />
+								<input type="hidden" name="old_sender" id="old_sender" value="<?php echo $rs['sender_id']; ?>" />
+								លេខគណនី
+							</td>
+							<td>
+								<input type="text" required="true" name="account_code" id="account_code" placeholder="លេខកូដ​គណនី" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ លេខកូដ​គណនី!" class="fullside"/>
+							</td>
+					    </tr>
+						<tr>
+							<td>ឈ្មោះ​អ្នក​ផ្ញើរ</td>
+							<td>
+								<input id="sender" >
+							</td>
+							<td>ថ្ងៃដកប្រាក់ </td>							
+							<td>
+								<?php									
+								    $newdate = date('Y-m-d', mktime(date('h'), date('i'), date('s'), date('m'), date('d')+45, date('Y')));
+								?>
+								<input type="text" name="send_date" id="send_date" value="<?php echo  $rs['create_date'];?>" 
+								dojoType="dijit.form.DateTextBox" required="true" missingMessage="អ្នក​ភ្លេច​បំពេញ​ កាល​បរិច្ឆេទ វេ!" 
+								 rangeMessage='កាល​បរិច្ឆេទ  វេ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ផុតកំណត់​ ' class='fullside'
+								constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  $newdate;?>'}" 
+								onchange="dijit.byId('epx_date').constraints.min = arguments[0];"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 150px">ប្រាក់ជាដុល្លា</td>
+							<td>
+								<input type="text" name="debt_dollar" id="debt_dollar" class='setstyle' data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'debt_dollar',
+									class:'fullside',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+							<td style="width: 150px">ដកប្រាក់ជាដុល្លា</td>
+							<td>
+								<input type="text" name="withdraw_dollar" id="withdraw_dollar"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'withdraw_dollar',
+									class:'fullside',
+									value:'<?php echo $rs['wd_amountdollar'];?>',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់ត្រូវដក!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 150px">ប្រាក់ជាបាត</td>
+							<td>
+								<input type="text" name="debt_bath" id="debt_bath"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'debt_bath',
+									class:'fullside',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+							<td style="width: 150px">ដកប្រាក់ជាបាត</td>
+							<td>
+								<input type="text" name="withdraw_bath" id="withdraw_bath" class='setstyle' data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'withdraw_bath',
+									class:'fullside',
+									value:'<?php echo $rs['wd_amountbath'];?>',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់ត្រូវដក!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 150px">ប្រាក់ជារៀល</td>
+							<td>
+								<input type="text" name="debt_riel" id="debt_riel" class='setstyle' data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'debt_riel',
+									class:'fullside',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+							<td style="width: 150px">ដកប្រាក់ជារៀល</td>
+							<td>
+								<input type="text" name="withdraw_riel" id="withdraw_riel"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="name:'withdraw_riel',
+									class:'fullside',
+									value:'<?php echo $rs['wd_amountriel'];?>',
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់ត្រូវដក!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+								&nbsp;&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center">
+								<br />
+									<input type="button" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" 
+									 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId('frm_add_tran').submit();"/>
+									<input type="button" value="រក្សាទុក & បោះពុម្ព" label="រក្សាទុក & បោះពុម្ព" id="busyButton" dojoType="dijit.form.Button" 
+										iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="printSave();"/> 
+							</td>
+						</tr>
+													
+					</table>	
+				</fieldset>		
+			</td>
+		</tr>
+		<tr>
+		</tr>
+	</table>
+	<input type="hidden"" name="invoice_no" value="<?php echo $rs['invoice'] ;?>">
+</form>
+<div class="dijitHidden">
+	<div data-dojo-type="dijit.Dialog" style="width:7cm;" data-dojo-props="title:'របាយការណ៍   ដកប្រាក់បញ្ញើរ', onCancel:hideDialog" id="terms" >
+		<div id="divPrint" style="width: 7cm; padding: 0px; margin: 0px;">
+			<style>
+				.fontbig{
+					font-size: 12px;	
+				}
+			.fontmedium{
+					font-size: 10px;	
+				}
+				.fonttel{
+					font-size: 11px;	
+				}
+				.pleft{
+					width: 110px;	
+				}
+				.setstyle{ color: red; font-weight: 600;}
+			</style>	
+			<table style="width: 7cm; font-size: 8pt; padding: 0px; margin: 0px; line-height: 17px;">
+					<tr>
+					   	<td align="center" colspan="3">	
+					   	<table  width="100%" cellspacing="0" cellpadding="0">
+					   		<tr style="line-height:10px;">
+					   			<td width="36%" rowspan="2" style="valign:top;"><img style="margin-top: 1px;" src="<?php echo $base_url;?>images/logobrand.jpg" height="34px;"/></td>
+						   		<td width="35%" align="center"><strong style="font-size:16px;font-family:'KH Koulen';text-align:center"><?php echo $this->keycode['rpt-transfer-title-kh'];?></strong></td>
+								<td width="32%" rowspan="2" style="valign:top;"><img style="align:top; float:right;" src="<?php echo $base_url;?>images/logo-right.png" height="34px;"/></td>
+							</tr>
+							<tr>
+								<td align="center" style="font-family:'KH Koulen';white-space: nowrap;font-size:11px;font-weight:bold; text-align:center;"><b><?php echo $this->keycode['rpt-transfer-title-eng'];?></td>
+					   		</tr>
+					   	</table>
+			            </td>	   	        
+				   </tr> 
+					<tr>
+					   	<td align="center" colspan="3" style="font-family:'KH Koulen';"><?php echo $this->keycode['rpt-transfer-business-meaning-kh'];?></td>	   	        
+					</tr>            
+				   <tr>
+						<td align="center" colspan="3" style="font-size: 8pt;">
+							<?php echo $this->keycode['rpt-transfer-business-meaning-eng'];?><br/>
+							<?php echo $this->keycode['rpt-transfer-location-adr-kh'];?><br/>
+							<strong class="fontbig"><?php echo $this->keycode['rpt-transfer-tel-eng'];?></strong>
+						</td>
+				   </tr>
+				   <tr>
+					   	<td class="pleft" style="border-bottom:1px solid #000;"><strong style="font-size: 10px;"><label id="lblinvioice">ប័ណ្ណដកប្រាក់បញ្ញើរ</label></strong></td>
+						<td align="right" colspan="2" style="border-bottom:1px solid #000;">
+							ឈ្មោះបុគ្គលិក៖ <?php print($this->user_name);?>
+						</td>
+				   </tr>
+				   <tr>
+						<td>ឈ្មោះ​អ្នក​ផ្ញើរ</td>
+						<td>:</td>
+						<td><label id="lblsendername"></label></td>
+				   </tr>
+				    <tr>
+						<td>លេខទូរស័ព្ទ</td>
+						<td>:</td>
+						<td><label id="lblphone"></label></td>
+				   </tr>
+				   <tr>
+						<td>លេខគណនី</td>
+						<td>:</td>
+						<td><label id="lblaccountnumber"></label></td>
+				   </tr>
+				   <tr>
+						<td>ប្រាក់​បានដក</td>
+						<td>:</td>
+						<td align="right" style="border:1px solid rgba(156, 158, 159, 1)">
+							<b><label id="lblwidthraw_amount" class="fontmedium"></label></b>
+						</td>
+				   </tr>
+				   <tr>
+						<td>ប្រាក់​ក្នុងគណនី</td>
+						<td>:</td>
+						<td align="right" style="border:1px solid rgba(156, 158, 159, 1)"><b><label id="lblmoney_inacc" class="fontmedium"></label></b></td>
+				   </tr>
+				    <tr>
+						<td>ថ្ងៃដកប្រាក់	</td>
+						<td>:</td>
+						<td><label id="lblstartdate"></label></td>
+				   </tr>
+				    <tr>
+						<td colspan="3" align="center" style="border-top:1px solid #000;">
+							<label>
+								<?php echo $this->keycode['rpt-transfer-warnning-kh'];?>
+							</label>
+						</td>			
+				   </tr>
+				   <tr style="border:1px solid #000;">
+						<td colspan="3" align="center" style="border-top:2px dashed #000;padding-top:5px;">
+								<?php echo $this->keycode['comment'];?>
+						</td>			
+				   </tr>
+				   <tr>
+						<td colspan="3">
+							<hr style="background: transparent; border-left:  none;	border-right: none;	border-top:   none;
+								border-bottom: 2px dashed #000;" />
+						</td>			
+				   </tr>
+				   <tr>
+						<td>
+							<img src="<?php echo $base_url.$this->keycode['imgPath'];?>" width="50%"/>
+						</td>	
+						<td align='right'  valign="top" colspan="2">
+							<?php echo date("d/m/Y H:i:s");?>
+						</td>
+				   </tr>
+			</table>
+		</div>
+		<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>	
+		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+				showLabel="false" type="button" onclick="doPrint();">Print</button>
+		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel"
+				showLabel="false" type="button" onclick="hideDialog();">Cancel</button>
+	</div>
+</div>
+<script src="<?php echo $this->baseUrl()?>/js/pdbs_js.js" type="text/javascript" > </script>
+<script src="<?php echo $this->baseUrl()?>/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script>
+remain_dollar='';
+remain_bath='';
+remain_riel='';		
+withdraw_dollar='';
+withdraw_bath=''
+withdraw_riel='';
+function showDialog() {	
+	withdraw_dollar = dijit.byId('withdraw_dollar').get('value');
+	withdraw_bath = dijit.byId('withdraw_bath').get('value');
+	withdraw_riel = dijit.byId('withdraw_riel').get('value');
+	if(isNaN(withdraw_dollar)){ withdraw_dollar = 0;} if(isNaN(withdraw_bath)){ withdraw_bath = 0;}
+	if(isNaN(withdraw_riel)){ withdraw_riel = 0;}
+
+	if((withdraw_dollar <=0 && withdraw_bath <=0 && withdraw_riel <=0 ) || (isNaN(withdraw_dollar) && isNaN(withdraw_bath) && isNaN(withdraw_riel) ) ){
+		alert('សូម​ពិនិត្រ ទឹកប្រាក់​​ដែល​​ត្រូវដក​ម្តង ​ទៀត...!');
+		dijit.byId('withdraw_dollar').focus();
+		return false;
+	}
+
+	dojo.byId("lblsendername").innerHTML = dijit.byId("sender").attr('displayedValue');
+	dojo.byId("lblaccountnumber").innerHTML =account_no;
+	dojo.byId("lblphone").innerHTML =sender_tel;
+	all_widthdraw = withdraw_dollar+'$ '+withdraw_bath+'B '+withdraw_riel+'R';
+	dojo.byId("lblwidthraw_amount").innerHTML =all_widthdraw;
+	dojo.byId("lblmoney_inacc").innerHTML =remain_dollar+remain_bath+remain_riel;
+	
+	var mkh = new Array('មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូរ');
+	var d = dojo.byId("send_date").value.split('/');
+	dojo.byId("lblstartdate").innerHTML = d[0] + " " + mkh[(d[1]-1)] +" "+d[2];
+	dijit.byId("terms").show();
+}
+</script>

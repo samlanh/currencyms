@@ -1,0 +1,54 @@
+<?php
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	echo $this->headTitle($tr->translate('Edit District '));
+?>	
+<?php  $frm= $this->frm_district;?>
+<form  id='add_techer' action="<?php echo $this->url(array('module'=>'other','controller'=>'District','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+ <script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				return true;
+			} else {
+				return false;
+			}
+</script>
+<table cellspacing="10" width="45%" style="margin: 0 auto;">
+	<tr>
+		<td>
+		<fieldset style="background-color:menu;">
+					<legend align="center" ><strong><?php echo $tr->translate("Add District");?></strong></legend>
+					
+					<table style="margin: 0 auto; width: 95%;" cellspacing="10">
+						<tr>
+							<td><?php echo $tr->translate("District Name Khmer")?></td>
+							<td><?php  echo $frm->getElement('district_namekh');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("District Name")?></td>
+							<td><?php  echo $frm->getElement('district_name');?>
+								<?php  echo $frm->getElement('id');?>
+							</td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Display By")?></td>
+							<td><?php  echo $frm->getElement('display');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("Province Name")?></td>
+							<td><?php  echo $frm->getElement('province_name');?></td>
+						</tr>
+						<tr>
+							<td><?php echo $tr->translate("STATUS")?></td>
+							<td><?php  echo $frm->getElement('status');?></td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+							<input type="submit" value="GO_SAVE" label="<?php echo $tr->translate('GO_SAVE');?>" id="submitButton" dojoType="dijit.form.Button" 
+								 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId("add_techer").submit();"/>
+							</td>
+						</tr>
+					</table>	
+		</fieldset>		
+		</td>
+	</tr>
+</table>	
+</form>

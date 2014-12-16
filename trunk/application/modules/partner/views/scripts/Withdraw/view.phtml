@@ -1,0 +1,101 @@
+<?php
+	$this->headTitle('Currency Smart | Agent view page'); 
+	echo $this->headTitle();
+?>
+<script type="text/javascript">	
+	dojo.require('dijit.form.Button');
+</script>
+
+<table cellspacing="20" width="100%">
+	<tr>
+		<td>
+			<fieldset>
+				<legend><strong>ព៌ត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
+				<table width="100%">
+					<tr>
+						<td align="center" valign="top">
+							<table cellspacing="10">
+								<tr>
+									<td>ឈ្មោះ​ភ្នាក់​ងារ</td>
+									<td>
+										<?php echo $this->agent_view['name'];?>
+									</td>
+								</tr>								
+								<tr>
+									<td>ក្បែរ</td>
+									<td>
+										<?php echo $this->agent_view['block'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ផ្ទះ</td>							
+									<td>
+										<?php echo $this->agent_view['house_no'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ក្រុម</td>
+									<td>
+										<?php echo $this->agent_view['group_no'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ផ្លូវ</td>
+									<td>
+										<?php echo $this->agent_view['street_no'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>ឃុំ/សង្កាត់</td>							
+									<td>
+										<?php echo $this->agent_view['sangkat'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>ស្រុក/​ខ័ណ្ឌ</td>
+									<td>
+										<?php echo $this->agent_view['khan'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>ខេត្ត/ក្រុង</td>
+									<td>
+										<?php echo $this->agent_view['proname'];?>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td valign="top" align="center">
+							<table cellspacing="10">
+								<tr>
+									<td>លេខ​កូដ</td>
+									<td>
+										<?php echo $this->agent_view['code'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ទូរស័ព្ទ</td>
+									<td>
+										<?php echo $this->agent_view['tel'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ទូរស័ព្ទ Fax</td>
+									<td>
+										<?php echo $this->agent_view['fax'];?>
+									</td>
+								</tr>
+								<tr>
+									<td>លេខ​ទូរស័ព្ទដៃ</td>
+									<td>
+										<?php echo $this->agent_view['hp'];?>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>	
+			</fieldset>
+		</td>			
+	</tr>	
+</table>

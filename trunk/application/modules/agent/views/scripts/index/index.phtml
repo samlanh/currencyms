@@ -1,0 +1,111 @@
+<?php
+	$this->headTitle('Currency Smart | Agent page'); 
+	echo $this->headTitle();
+	$url = Application_Form_FrmMessage::getUrl("/agent/index/edited?ag_id=");
+?>	
+
+<style>
+	#grid{
+	    margin-top: 10px;		
+	}
+	.dojoxGridSortNode{
+		text-align: center;	
+		height: 30px;		
+	}
+</style>
+<script>
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dojox.grid.DataGrid");	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');	
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require('dijit.form.CheckBox');
+	
+	dojo.ready(function(){
+		
+		//Creat data fror show			
+		loadData(<?php print_r($this->agentlist);?>);
+		
+		
+		dojo.connect(grid, "onRowClick", grid, function(evt){
+			var idx = evt.rowIndex,
+				item = this.getItem(idx);
+
+			
+			window.location = '<?php echo $url;?>' + this.store.getValue(item, "id");
+		});
+	});
+
+	function loadData(data){			
+		// create an object store
+		var objectStore = new dojo.store.Memory({
+		       data: data
+		 });
+
+		//load data into data grid
+		grid = new dojox.grid.DataGrid({
+			store: dojo.data.ObjectStore({objectStore: objectStore}),
+			autoHeight: true,		
+			structure: [
+				{ name: "ល.រ", field: "num", width: "40px", cellStyles: "text-align: center;" },
+				{ name: "id", field: "id", hidden: true },
+				{ name: "ឈ្មោះ​​សាខា​មេ", field: "name", width: "auto" },
+				{ name: "លេខ​ទូ​រស័ព្ទ", field: "tel", width: "120px" },
+				{ name: "ខេត្ត/​ក្រុង", field: "proname", width: "120px" },
+				{ name: "ស្រុក/​ខ័ណ្ឌ", field: "khan", width: "120px" },
+				{ name: "ឃុំ/សង្កាត់", field: "sangkat", width: "120px" },
+				{ name: "ក្បែរ", field: "block", width: "150px" }
+			]
+		}, "grid");
+		grid.startup();
+	}
+	
+</script>
+
+<form name="frmlist_agent" action="<?php echo $this->url(array('module'=>'agent','controller'=>'index','action'=>'index')); ?>" dojoType="dijit.form.Form" method="post">
+<table class="fullside">	  	
+	  <tr>
+	    <td>
+	    	<input type="text" name="txtsearch" id="txtsearch" placeholder="តាម (​​សាខា​មេ, ​ទូ​រស័ព្ទ, fax, ​ទូរស័ព្ទដៃ នឹង លេខ​កូដ)"  dojoType="dijit.form.TextBox"
+			 style="width: 350px;  height: 30px;" value='<?php echo $this->txtsearch;?>'/>
+			 <button dojoType="dijit.form.Button" showLabel="true" type="submit">ស្វែង​រក</button>
+		</td>
+	    <td align="right">
+	    	<select name="province" id="province"  onChange="document.frmlist_agent.submit();" style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->province == -1) echo 'selected="selected"';?> >ជ្រើសរើស ខេត្ត/ក្រុង</option> 
+				<?php foreach ($this->provincelist as $key => $pro) : ?>
+					<option value="<?php echo $pro['id'];?>" <?php if($pro['id'] == $this->province) echo 'selected'?>><?php echo $pro['name'];?></option>
+				<?php endforeach;?>	 
+			</select> 
+	    	<select name="active" id="active"  onChange="document.frmlist_agent.submit();" style=" height: 30px;" dojoType="dijit.form.FilteringSelect"> 
+				<option value="-1" <?php if($this->active == -1) echo 'selected="selected"';?> >ជ្រើសរើស ស្ថានការណ៍</option> 
+				<?php foreach ($this->activelist as $key => $at) : ?>
+					<option value="<?php echo $key;?>" <?php if($key == $this->active) echo 'selected'?>><?php echo $at;?></option>
+				<?php endforeach;?>	 
+			</select>	    	
+		</td>			
+	  </tr>	
+	  <tr>
+	  	<td colspan="2">&nbsp;</td>
+	  </tr>
+	  <tr>
+	  	<td>	  		
+	  		<?php echo $this->result_row;?>
+	  	</td>
+	  	<td align="right" >
+	  		<?php echo $this->rows_per_page;?>
+	  	</td>
+	  </tr>	
+	  <tr>
+	  	<td colspan="2">
+	  		<div id="grid" ></div>
+	  	</td>
+	  </tr>	
+	  <tr>
+	  	<td colspan="2" align="center">
+	  		<div id="navigetion" style="margin: 0 auto;"><?php echo $this->nevigation;?></div>
+	  	</td>
+	  </tr>	  	  
+</table>
+</form>

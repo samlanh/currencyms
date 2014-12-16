@@ -1,0 +1,103 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	
+</script>
+<style>
+fieldset {
+text-align: left;
+font-size: 15px !important;
+}
+</style>
+
+<form action="<?php echo $this->url(array('module'=>'agent','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+
+	<table width="100%">
+		<tr>
+			<td>
+				<fieldset>
+					<legend align="right">ពត័មាន ​ដកប្រាក់</legend>
+					<table cellspacing="10" width="100%" cellpadding="0" style="font-size: 18px">
+						<tr>
+								<td width="12%">លេខគណី</td>
+								<td width="23%"><?php echo $form->getElement('nuber_account');?></td>
+								<td></td>
+								<td></td>
+						</tr>
+						<tr>
+						       ​<td width="12%">ឈ្មោះអ្នកអតិជន</td>
+								<td width="23%"><?php echo $form->getElement('namecustomer');?></td>
+								<td width="9%">លេខទូរស៏ព្ទ</td>
+								<td width="23%"><?php echo $form->getElement('phone');?></td>
+								<td width="9%">លេខប័ណ្ឌដកប្រាក់</td>
+								<td width="23%"><?php echo $form->getElement('note');?></td>
+						</tr>
+					</table>
+					<fieldset>
+						<legend>ប្រាក់ក្នុងគណនីបច្ជប្បន្ន</legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 18px">
+							<tr>
+								<td width="12%">ប្រាក់ជាដុល្លា</td>
+								<td width="23%"><?php echo $form->getElement('dola1');?></td>
+								<td width="9%">ប្រាក់ជាបាត</td>
+								<td width="23%"><?php echo $form->getElement('bath1');?></td>
+								<td width="9%">ប្រាក់ជារៀល</td>
+								<td width="23%"><?php echo $form->getElement('real1');?></td>
+							</tr>
+						</table>
+					</fieldset>
+					<fieldset>
+						<legend>ប្រាក់ត្រូវដកពីគណនី</legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 18px">
+							<tr>
+								<td width="12%">ប្រាក់ជាដុល្លា</td>
+								<td width="23%"><?php echo $form->getElement('dola2');?></td>
+								<td width="9%">ប្រាក់ជាបាត</td>
+								<td width="23%"><?php echo $form->getElement('bath2');?></td>
+								<td width="9%">ប្រាក់ជារៀល</td>
+								<td width="23%"><?php echo $form->getElement('real2');?></td>
+							</tr>
+						</table>
+					</fieldset>
+					<fieldset>
+						<legend>ប្រាក់ក្នុងគណនីបន្ទាប់ពីដក</legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 18px">
+							<tr>
+								<td width="12%">ប្រាក់ជាដុល្លា</td>
+								<td width="23%"><?php echo $form->getElement('dola3');?></td>
+								<td width="9%">ប្រាក់ជាបាត</td>
+								<td width="23%"><?php echo $form->getElement('bath3');?></td>
+								<td width="9%">ប្រាក់ជារៀល</td>
+								<td width="23%"><?php echo $form->getElement('real3');?></td>
+							</tr>
+						</table>
+					</fieldset>
+			</fieldset>
+					
+			</td>
+		</tr>
+		<tr>
+			<td colspan="1" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>
+</form>
+
+

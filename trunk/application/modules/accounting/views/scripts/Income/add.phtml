@@ -1,0 +1,61 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+
+
+	dojo.require("dijit.form.TextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+
+<form action="<?php echo $this->url(array('module'=>'Accounting','controller'=>'Expens','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+		
+	<table cellspacing="0" width="100%" >
+		<tr>
+			<td>
+				
+				<fieldset>
+					<legend><strong>ចំណូល</strong></legend>
+						<table width="100%" style="font-size: 16px;">
+							<tr>
+								<td>Income Name</td>
+								<td><?php echo $form->getElement('Income_name');?></td>
+								<td>Date</td>
+								<td><?php echo $form->getElement('Dates');?></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Status</td>
+								<td><?php echo $form->getElement('statuss');?></td>
+								<td>Amount Number</td>
+								<td><?php echo $form->getElement('Total_amounts');?></td>
+								<td>Description</td>
+								<td><?php echo $form->getElement('Descriptions');?></td>
+							</tr>
+					</table>
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>
+
+

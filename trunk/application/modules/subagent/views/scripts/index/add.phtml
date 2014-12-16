@@ -1,0 +1,167 @@
+<?php
+	$this->headTitle('Currency Smart | Sub Agent add page'); 
+	echo $this->headTitle();
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+
+<form action="<?php echo $this->url(array('module'=>'subagent','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				if(dojo.byId('password').value != dojo.byId('con_password').value ){
+					alert('សូម​ពិនិត្រ ពាក្យ​​សំងាត់​ទាំង​ 2 របស់​អ្នក មិន​ដូច​គ្នា​ទេ, សូម​បញ្ចូល ​ម្តង​ទៀត..');
+					dojo.byId('password').value = '';
+					dojo.byId('con_password').value = '';
+					dijit.byId('password').focus();
+					return false;
+				}				
+				return true;
+			}
+
+			return false;
+	</script>
+		
+	<table cellspacing="20" width="100%">
+		<tr>
+			<td>
+				<fieldset>
+					<legend><strong>ព៌ត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
+					<table cellspacing="20" width="100%">
+						<tr>
+							<td align="center" valign="top">
+								<table>
+									<tr>
+										<td>ឈ្មោះ​​សាខា​មេ</td>
+										<td>
+											<select name="agent_id" id="agent_id" class='fullside' dojoType="dijit.form.FilteringSelect" missingMessage="អ្នក​ភ្លេច​បំពេញ​  ឈ្មោះ​​សាខា​មេ!">												 
+												<?php foreach ($this->agentlist as $key => $ag) : ?>
+													<option value="<?php echo $ag['id'];?>"><?php echo $ag['name'];?></option>
+												<?php endforeach;?>	 
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>ឈ្មោះ​​សាខាកូន</td>
+										<td>
+											<input type="text" required="true" name="sub_agent_name" id="sub_agent_name" placeholder="ឈ្មោះ​​សាខាកូន" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​​សាខាកូន!" class='fullside'/>
+										</td>
+									</tr>
+																	
+									<tr>
+										<td>ក្បែរ</td>
+										<td>
+											<input type="text" required="false" name="block" id="block" placeholder="ឈ្មោះ​ទីកន្លែង ក្បែរ ផ្ទះ​របស់អ្នក" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​ទីកន្លែង ក្បែរ ផ្ទះ​របស់អ្នក!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>លេខ​ផ្ទះ</td>							
+										<td>
+											<input type="text" required="false" name="house_no" id="house_no" placeholder="លេខ​ផ្ទះ" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ លេខ​ផ្ទះ!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>លេខ​ក្រុម</td>
+										<td>
+											<input type="text" required="false" name="group_no" id="group_no" placeholder="លេខ​ក្រុម" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ លេខ​ក្រុម!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>លេខ​ផ្លូវ</td>
+										<td>
+											<input type="text" required="false" name="street_no" id="street_no" placeholder="លេខ​ផ្លូវ" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ លេខ​ផ្លូវ!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>ឃុំ/សង្កាត់</td>							
+										<td>
+											<input type="text" required="false" name="sangkat" id="sangkat" placeholder="ឃុំ/សង្កាត់" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ឃុំ/សង្កាត់!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>ស្រុក/​ខ័ណ្ឌ</td>
+										<td>
+											<input type="text" required="false" name="khan" id="khan" placeholder="ស្រុក/​ខ័ណ្ឌ" 
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ ស្រុក/​ខ័ណ្ឌ!" class='fullside'/>
+										</td>
+									</tr>
+									<tr>
+										<td>ខេត្ត/ក្រុង</td>
+										<td>
+											<select name="province" required="true" id="province" class='fullside' dojoType="dijit.form.FilteringSelect" missingMessage="អ្នក​ភ្លេច​បំពេញ​  ខេត្ត/ក្រុង​!"> 
+												<?php foreach ($this->provinces as $key => $pro) : ?>
+													<option value="<?php echo $pro['id'];?>"><?php echo $pro['name'];?></option>
+												<?php endforeach;?>									
+											</select> 
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td valign="top" align="center">
+								<table>						
+									<tr>
+										<td>លេខ​កូដ</td>
+										<td>
+											<input type="text" required="false" name="code" id="code" placeholder="លេខ​កូដ"  maxlength="6"
+											dojoType="dijit.form.ValidationTextBox" missingMessage="អ្នក​ភ្លេច​បំពេញ​ លេខ​កូដ" class='fullside'/>
+										</td>
+									</tr>				
+									<tr>
+										<td>លេខ​ទូរស័ព្ទ</td>
+										<td>
+											<input type="text" id="tel" placeholder="លេខ​ទូរស័ព្ទ"  class='fullside'
+											 data-dojo-Type="dijit.form.ValidationTextBox"   
+											data-dojo-props="regExp:'[0-9]{9,10}', required: true, 
+															 invalidMessage:'លេខ​ទូរស័ព្ទ​​ មិន​ត្រឹម​ត្រូវទេ. មិនមាន​  ចន្លោះ ឬ សញ្ញា​ពិសេស.',
+															 value: '<?php echo $this->editdata['reciever_tel'];?>',
+															 missingMessage:'អ្នក​ភ្លេច​បំពេញ​ លេខ​ទូរស័ព្ទ!',
+															 name:'tel'"/>
+										</td>
+									</tr>
+									<tr>
+										<td>លេខ​ទូរស័ព្ទ Fax</td>
+										<td>
+											<input type="text" id="fax" placeholder="លេខ​ទូរស័ព្ទ Fax"  class='fullside'
+											 data-dojo-Type="dijit.form.ValidationTextBox"   
+											data-dojo-props="regExp:'[0-9]{9,10}', required: false, 
+															 invalidMessage:'លេខ​ទូរស័ព្ទ​​ មិន​ត្រឹម​ត្រូវទេ. មិនមាន​  ចន្លោះ ឬ សញ្ញា​ពិសេស.',
+															 value: '<?php echo $this->editdata['reciever_tel'];?>',
+															 missingMessage:'អ្នក​ភ្លេច​បំពេញ​ លេខ​ទូរស័ព្ទ Fax!',
+															 name:'fax'"/>
+										</td>
+									</tr>
+									<tr>
+										<td>លេខ​ទូរស័ព្ទដៃ</td>
+										<td>
+											<input type="text" id="hp" placeholder="លេខ​ទូរស័ព្ទដៃ"  class='fullside'
+											 data-dojo-Type="dijit.form.ValidationTextBox"   
+											data-dojo-props="regExp:'[0-9]{9,10}', required: false, 
+															 invalidMessage:'លេខ​ទូរស័ព្ទ​​ មិន​ត្រឹម​ត្រូវទេ. មិនមាន​  ចន្លោះ ឬ សញ្ញា​ពិសេស.',
+															 value: '<?php echo $this->editdata['reciever_tel'];?>',
+															 missingMessage:'អ្នក​ភ្លេច​បំពេញ​ លេខ​ទូរស័ព្ទដៃ!',
+															 name:'hp'"/>
+										</td>
+									</tr>									
+								</table>
+							</td>
+						</tr>
+					</table>	
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>

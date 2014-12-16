@@ -1,0 +1,262 @@
+<?php
+	$this->headTitle('Currency Smart | Report withdraw money'); 
+	echo $this->headTitle();
+	$money_type = $this->money_type;
+?>	
+<style>
+.style-bold{font-weight: bold;}
+</style>
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script>
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');
+	dojo.require("dijit.form.DateTextBox");
+
+	 var sender_store = getDataStorefromJSON('id','name', <?php print_r(Zend_Json::encode($this->senderlist));?> );  
+	
+	function doPrint(div_id) {
+		window.frames["print_frame"].document.body.innerHTML = dojo.byId('grid_'+ div_id).innerHTML;
+	    window.frames["print_frame"].window.focus();
+	    window.frames["print_frame"].window.print();
+	    confirmSubmit(div_id);	
+	    	    
+	}
+	function confirmSubmit(div_id){
+		/*if (confirm("តើ​អ្នកជំពាក់នេះពិតជាបានសងរួចហើយរឺទេ ?")){
+			dijit.byId('frmlist_owe_'+ div_id).submit();			
+		}*/
+	}
+</script>
+<script type="text/javascript">
+	dojo.ready(function(){
+		new dijit.form.FilteringSelect({
+            store: sender_store,
+            autoComplete: true,                        
+            required: true,
+            id: "sender_name",
+            name: "sender_name",
+            searchAttr: "name",
+            value: "<?php echo $this->selected;?>",     
+            class: 'fullside',            
+            missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះ​អ្នក​ផ្ញើរ!",            
+            onChange: function() {                
+            }
+        }, "sender_name");
+	}); 
+
+</script>
+
+
+<form name="frmlist_fund" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpt-withdraw')); ?>" dojoType="dijit.form.Form" method="post">
+	<table width="100%">
+		<tr>
+		    <td width="25%" align="right">
+		   		 <input id="sender_name" >
+		   </td>
+		    <td width="25%" align="right">  
+		    	<select name="type_money" id="type_money" dojoType="dijit.form.FilteringSelect" 
+					style="width: 265px; height: 30px;" >
+					<option value="-1" <?php if($this->type_money == -1) echo 'selected="selected"';?> >ជ្រើសរើស ប្រភេទ​លុយ</option> 
+					<?php foreach ($this->currencylist as $key => $cur) : ?>
+						<option value="<?php echo $cur['id'];?>" <?php if($cur['id'] == $this->type_money) echo 'selected'?>><?php echo $cur['name'];?></option>
+					<?php endforeach;?> 
+				</select>
+		    </td>
+		    <td width="25%" align="right">  
+		    	ពី៖&nbsp;
+				<input type="text" name="from_date" id="from_date" value="<?php echo date_format(date_create($this->from_date), "Y-m-d");?>"
+					dojoType="dijit.form.DateTextBox" style="height: 30px; width: 210px;" 
+					rangeMessage="កាល​បរិច្ឆេទ  ពី មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ដល់"
+					constraints="{datePattern:'dd/MM/yyyy', max:'<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>'}" 
+					onchange="dijit.byId('to_date').constraints.min = arguments[0];" />	
+		    </td>
+		    <td width="25%" align="right">  
+		    	ដល់៖&nbsp;
+				<input type="text" name="to_date" id="to_date" value="<?php echo  date_format(date_create($this->to_date), "Y-m-d");?>" 
+					dojoType="dijit.form.DateTextBox" style=" height: 30px; width: 195px;"
+					rangeMessage='កាល​បរិច្ឆេទ  ដល់ មិន​អាច​តូច​ជាង កាល​បរិច្ឆេទ ពី' 
+					constraints="{min:'<?php echo date_format(date_create($this->from_date), "Y-m-d");?>', datePattern:'dd/MM/yyyy'}" 
+					onChange="dijit.byId('from_date').constraints.max = arguments[0]; " />	
+		    </td>
+		</tr>
+		<tr>
+			<td align="right" style="padding-top: 10px;"><input class="fullside" type="text" name="txt_search" id="txt_search" placeholder="លេខគណនី ឬ លេខទូរស័ព្ទ"  dojoType="dijit.form.TextBox"
+				  value='<?php echo $this->txtsearch;?>'/></td>
+			<td align="right"></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="2" >
+			</td>
+		    <td colspan="2" align="right">  
+				 <button dojoType="dijit.form.Button" showLabel="true" type="submit">ស្វែង​រក</button>	
+		    </td>
+		</tr>
+	</table>
+</form>
+<br/>
+
+<?php if(!empty($this->depositlist['err']) && $this->depositlist['err']):?>
+	<script type="text/javascript">
+		alert("<?php echo $this->depositlist['msg']?>");
+	</script>
+	<table style="width: 100%; line-height: 25px;">		
+		<tr>
+			<td colspan="2" style="color: red; text-align: center;">
+				<br/><br/>
+				<?php echo $this->depositlist['msg']?>
+			</td>
+		</tr>
+	</table>
+	<br/><br/><br/>
+<?php else:?>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('0');">Print All</button><br/>
+<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+	showLabel="false" type="button" onclick="doPrint('1');">Print</button><br/>
+<div id="grid_0" >
+	<center><strong></b>របាយការណ៏ដកប្រាក់ (<?php echo $this->from_date.' ដល់ '.$this->to_date;?>)</strong></center><br />
+<div id="grid_1" >
+	<form name="frmlist_owe_1" id="frmlist_owe_1" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'updateowe')); ?>"  method="post">
+		<table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+			<?php $num=1; $l_ower = ''; $pa = '5px'; $row_id=1; $div_id=2; 
+			$all_money = array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);//18
+			$_total_dollar=0;$_total_bath=0;$_total_riel=0;
+			?>	
+			<?php if(!empty($this->depositlist))  foreach ( $this->depositlist as $key => $tran) { ?>
+			
+			<?php $sender = ($tran['sender_name']!="" ? $tran['sender_name'] : "Unknow");//not used if ($l_ower !== $sender){?>					
+				<?php  if ($l_ower !== $sender){?>
+				<?php if($key > 0) {
+				?>	
+					</table><br />
+					<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+					<tr class="bgtop style-bold" style="font-size: 12px; background:#bbb;"​>
+						  	<td align="center" style="border:1px solid #000;">&nbsp;ប្រភេទប្រាក់&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;">&nbsp;ទឹកប្រាក់សល់ក្រោយដក &nbsp;</td>
+					 </tr> 
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;ដុល្លា ($)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[0],2); ?></b></td>
+					 </tr>
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;បាត (B)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[1],2); ?></b></td>
+					 </tr>
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;រៀល (R)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[2],2); ?></b></td>
+					 </tr>
+				 </table><?php $all_money[0]=0;$all_money[1]=0;$all_money[2]=0;$all_money[3]=0;$all_money[4]=0;$all_money[5]=0;
+				 $all_money[6]=0;$all_money[7]=0;$all_money[8]=0;?>
+					<br /><br /><br />
+					<br /><br />
+					</form>
+				</div>
+				<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
+					showLabel="false" type="button" onclick="doPrint('<?php echo $div_id;?>');">Print</button>
+				<div id="grid_<?php echo $div_id;?>" >
+				 <form name="frmlist_owe_<?php echo $div_id;?>" id="frmlist_owe_<?php echo $div_id;?>" dojoType="dijit.form.Form" action="<?php echo $this->url(array('module'=>'reports','controller'=>'index','action'=>'rpt-deposit')); ?>"  method="post">
+					<table style="width: 100%; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+				<br/>
+  <?php $div_id++;?>
+				<?php }  
+				}//end if do print?>
+			<?php  if ($l_ower !== $sender){?>
+			<?php //$l_ower = $sender; $row_id=1; 
+			?>
+			<tr class="bgtop" height="40px">
+				<td colspan="6" style="border:1px solid #000; background:#bbb;">&nbsp;ឈ្មោះ <strong><?php echo $sender.", លេខគណនី:  ".$tran['acc_no'].",ទូស័ព្ទ: ".$tran['tel']; ?></strong></td>
+			</tr>
+			<tr class="bgtop" align="center" style="font-size:10px;">
+				<td><b style="font-size: 12px;">&nbsp;ល.រ&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;លេខប្រតិ.&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ទឹកប្រាក់មុនដក .&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ទឹកប្រាក់បានដក&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ទឹកប្រាក់ក្រោយដក&nbsp;</b></td>
+				<td><b style="font-size: 12px;">&nbsp;ថ្ងៃប្រតិ&nbsp;</b></td>
+			</tr>
+			<?php 
+			$l_ower = $sender; $row_id=1;?>
+			
+		<?php };//endif of->($l_ower != $tran['agentname'].$sub_agent)//good?>
+			
+		<?php 
+		$amount_bath="";$amount_bath="";$amount_reil="";
+				if($tran['money_type']==1){ $_total_dollar= $_total_dollar+(empty($tran['amount_owe'])? 0 : $tran['amount_owe']);	
+					$amount_dollar=(empty($tran['money_inaccount'])? 0 : $tran['money_inaccount']);
+				}
+				elseif($tran['money_type']==2){$_total_bath= $_total_bath+(empty($tran['money_inaccount'])? 0 : $tran['money_inaccount']);
+					$amount_bath=(empty($tran['money_inaccount'])? 0 : $tran['money_inaccount']);
+				}
+				else{$_total_riel= $_total_riel+(empty($tran['money_inaccount'])? 0 : $tran['money_inaccount']);
+					$amount_reil =(empty($tran['money_inaccount'])? 0 : $tran['money_inaccount']);
+				}
+				$curr = $money_type[$tran['money_type']];
+				if($tran['money_type']==1){
+					$all_money[0]=$tran["before_amount"]-$tran["w_amount"];
+// // 					$all_money[1]=$all_money[1]+$tran["commission"];
+// // 					$all_money[2]=$all_money[2]+$tran["recieve_amount"];
+					
+// 					$all_money[9]=$all_money[9]+$tran["money_inaccount_org"];
+// 					$all_money[10]=$all_money[10]+$tran["commission"];
+// 					$all_money[11]=$all_money[11]+$tran["recieve_amount"];
+				}elseif($tran['money_type']==2){
+					$all_money[1]=$tran["before_amount"]-$tran["w_amount"];
+// 					$all_money[4]=$all_money[4]+$tran["commission"];
+// 					$all_money[5]=$all_money[5]+$tran["recieve_amount"];
+					
+// 					$all_money[12]=$all_money[12]+$tran["money_inaccount_org"];
+// 					$all_money[13]=$all_money[13]+$tran["commission"];
+// 					$all_money[14]=$all_money[14]+$tran["recieve_amount"];
+				}else{
+					$all_money[2]=$tran["before_amount"]-$tran["w_amount"];
+// 					$all_money[7]=$all_money[7]+$tran["commission"];
+// 					$all_money[8]=$all_money[8]+$tran["recieve_amount"];
+					
+// 					$all_money[15]=$all_money[15]+$tran["money_inaccount_org"];
+// 					$all_money[16]=$all_money[16]+$tran["commission"];
+// 					$all_money[17]=$all_money[17]+$tran["recieve_amount"];
+				}
+				
+		?>
+			<tr style="font-size: 12px;">
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; border:1px solid #000;"><?php echo $num;$num++;?></td>
+						<td class="td_line" style="padding-left: <?php echo $pa;?>; border:1px solid #000"><?php echo $tran["invoice"];?>&nbsp;</td>
+						<td align="right" style="padding-left: <?php echo $pa;?>; border:1px solid #000">&nbsp;<strong><?php echo number_format($tran["before_amount"],2)." ".$curr;?>&nbsp;</strong></td>
+						<td align="right" style="padding-left: <?php echo $pa;?>; border:1px solid #000">&nbsp;<strong><?php echo number_format($tran["w_amount"],2)." ".$curr;?>&nbsp;</strong></td>
+						<td align="right" style="padding-left: <?php echo $pa;?>; border:1px solid #000">&nbsp;<strong><?php echo number_format($tran["before_amount"]-$tran["w_amount"],2)." ".$curr;?>&nbsp;</strong></td>
+						<td align="center" class="td_line" style="border:1px solid #000;">&nbsp;<?php echo $tran["create_date"];?></td>
+			 </tr>
+			 
+		<?php }//end forearch ?>
+		</table><br />
+		<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+					<tr class="bgtop style-bold" style="font-size: 12px; background:#bbb;"​>
+						  	<td align="center" style="border:1px solid #000;">&nbsp;ប្រភេទប្រាក់&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;">&nbsp;ទឹកប្រាក់សល់ក្រោយដក &nbsp;</td>
+					 </tr> 
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;ដុល្លា ($)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[0],2); ?></b></td>
+					 </tr>
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;បាត (B)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[1],2); ?></b></td>
+					 </tr>
+					  <tr>
+					  		<td align="center" style="border:1px solid #000; font-size: 12px;">&nbsp;រៀល (R)&nbsp;</td>
+						  	<td align="center" style="border:1px solid #000;"><b><?php echo number_format($all_money[2],2); ?></b></td>
+					 </tr>
+		</table><br/><br/><div style="clear:both;"></div>
+	</div>
+	</form>
+</div>
+<iframe marginwidth="45" marginheight="45" name=print_frame width=0 height=0 frameborder=0 src=about:blank>
+ឹឆដសាដថស
+</iframe>
+<?php endif;?>

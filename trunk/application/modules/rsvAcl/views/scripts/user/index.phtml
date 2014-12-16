@@ -1,0 +1,43 @@
+<title>3PC System | User List</title>
+<?php 
+	$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+	$url_new = $this->url(array(
+		'module'=>'rsvAcl',
+		'controller'=>'user',
+		'action'=>'add-user',
+	));
+	
+	$form=$this->form;
+	$formfilter=$this->formfilter;
+?>
+<table class="table" align="right">
+	<tr>
+		<td>
+			<div class="select">
+			<form method="post" action="<?php echo $formfilter->getAction(); ?>" enctype="application/x-www-form-urlencoded">	
+				<table >
+					<tr>
+						<td class="select"><?php echo $tr->translate("SELECT-USERTYPE​​");?></td>
+					</tr>
+					<tr>
+						<td class="select"><?php echo $formfilter->getElement('user_type_filter');?></td>
+					</tr>			
+				</table>
+			</form>	
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="btn" align="right">
+				<a href="<?php echo $url_new;?>"><img alt="" src="<?php echo BASE_URL?>/images/icon/add.png"><?php echo $tr->translate("ADD");?></a>
+			</div>
+		</td>
+	</tr>
+</table>
+<div style="position: relative; clear: both;">
+<fieldset>
+	<legend><?php echo $tr->translate('LIST_OF')." ".$tr->translate('_USER')." ".$tr->translate('IN_SYSTEM');?></legend>
+	<?php echo  $this->form;?>
+</fieldset>
+</div>
