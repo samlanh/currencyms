@@ -10,11 +10,13 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$mainbranch=new Zend_Dojo_Form_Element_FilteringSelect('main_branch');
     	$mainbranch->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'));
+    	$opt=array(1=>'មេ',2=>'កូន',);
+    	$mainbranch->setMultiOptions($opt);
     	
     	
-    	$branchname=new Zend_Dojo_Form_Element_FilteringSelect('branch_name');	
+    	$branchname=new Zend_Dojo_Form_Element_TextBox('branch_name');	
     	$branchname->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
+    			'dojoType'=>'dijit.form.TextBox'));
     	
     	$cade_number=new Zend_Dojo_Form_Element_TextBox('cade_number');
     	$cade_number->setAttribs(array(
@@ -84,6 +86,8 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$status->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'
     	));
+    	$opt=array(1=>'status1',2=>'status2',);
+    	$status->setMultiOptions($opt);
     	
     	
     	$note=new Zend_Dojo_Form_Element_SimpleTextarea('note');

@@ -1,7 +1,9 @@
 <?php
 	$this->headTitle('Currency Smart | Agent add page'); 
 	echo $this->headTitle();
+        
 	$form = $this->frm;
+	
 ?>
 <script type="text/javascript">	
 	dojo.require("dijit.form.ValidationTextBox");
@@ -13,7 +15,7 @@
 	dojo.require('dijit.form.Button');
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'agent','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
@@ -25,12 +27,12 @@
 		<tr>
 			<td>
 				<fieldset>
-					<legend style="font-size: 18px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
-						<table width="100%" style="font-size: 18px; font-family:'Khmer OS Battambang';">
+					<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
+						<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
 							<tr>
 								<td>ដៃគូមេ</td>
 								<td><?php echo $form->getElement('main_branch');?></td>
-								<td>ឈ្មោះដៃគួសហការណ៏</td>
+								<td>ឈ្មោះដៃគូរសហការណ៏</td>
 								<td><?php echo $form->getElement('branch_name');?></td>
 								<td></td>
 								<td></td>
@@ -46,7 +48,7 @@
 							<tr>
 								<td>រូបថត</td>
 								<td><?php echo $form->getElement('photo');?></td>
-								<td>អាស័យដ្ថាន</td>
+								<td>អាស័យដ្ឋាន</td>
 								<td><?php echo $form->getElement('address');?></td>
 								<td>លេខផ្ទះ</td>
 								<td><?php echo $form->getElement('home_number');?></td>
@@ -60,7 +62,7 @@
 								<td><?php echo $form->getElement('commun_number');?></td>
 							</tr>
 							<tr>
-								<td>ស្រុក/ខ័ណ្ន</td>
+								<td>ស្រុក/ខ័ណ្ឌ</td>
 								<td><?php echo $form->getElement('district_number');?></td>
 								<td>ខេត្ត/ក្រុង</td>
 								<td><?php echo $form->getElement('province_number');?></td>
@@ -69,7 +71,7 @@
 								
 							</tr>
 							<tr>
-								<td>លេខទូរស័ព្ទ  fax</td>
+								<td>លេខទូរស័ព្ទ  </td>
 								<td><?php echo $form->getElement('fax_number');?></td>
 								<td>លេខទូរស័ព្ទដៃ</td>
 								<td><?php echo $form->getElement('sele_phone');?></td>
@@ -77,7 +79,7 @@
 								<td><?php echo $form->getElement('status');?></td>
 							</tr>
 							<tr>
-								<td>Not</td>
+								<td>សំគាល់</td>
 								<td colspan="5"><?php echo $form->getElement('note');?><br /></td>
 								
 							</tr>
@@ -86,8 +88,8 @@
 								
 				</fieldset>
 				<fieldset>
-					<legend style="font-size: 18px; font-family:'Khmer OS Muol'; color: black;">ពត៏មាន​សាច់ប្រាក់ក្នុងគណនី</legend>
-					<table width="100%" style="font-size: 18px; font-family:'Khmer OS Battambang';">
+					<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;">ពត៏មាន​សាច់ប្រាក់ក្នុងគណនី</legend>
+					<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
 						<tr>
 							<td colspan="6"></td>
 							
