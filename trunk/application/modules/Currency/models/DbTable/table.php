@@ -1,3 +1,4 @@
+
 <?php 
 Class Currency_Model_DbTable_table extends zend_db_Table_Abstract
 	{

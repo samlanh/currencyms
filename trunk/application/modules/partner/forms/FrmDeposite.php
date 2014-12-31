@@ -39,25 +39,25 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	$box4->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox'));
     	
-    	$usa=new Zend_Dojo_Form_Element_FilteringSelect('usa');
+    	$usa=new Zend_Dojo_Form_Element_NumberTextBox('usa');
     	$usa->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$name=array(1=>'ដុល្លា');
-    	$usa->setMultiOptions($name);
+    			'dojoType'=>'dijit.form.NumberTextBox'));
+//     	$name=array(1=>'ដុល្លា');
+//     	$usa->setMultiOptions($name);
     	
-    	$bath=new Zend_Dojo_Form_Element_FilteringSelect('bath');
+    	$bath=new Zend_Dojo_Form_Element_NumberTextBox('bath');
     	$bath->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$name=array(1=>'ដុល្លា');
-    	$bath->setMultiOptions($name);
+    			'dojoType'=>'dijit.form.NumberTextBox'));
+//      	$name=array(1=>'ដុល្លា');
+//     	$bath->setMultiOptions($name);
     	
     	
     	
-    	$rail=new Zend_Dojo_Form_Element_FilteringSelect('rail');
+    	$rail=new Zend_Dojo_Form_Element_NumberTextBox('rail');
     	$rail->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$arr=array(1=>'រៀល');
-    	$rail->setMultiOptions($arr);
+    			'dojoType'=>'dijit.form.NumberTextBox'));
+//     	$arr=array(1=>'រៀល');
+//     	$rail->setMultiOptions($arr);
     	
     	
     	$creat_date=new Zend_Dojo_Form_Element_DateTextBox('creat_date');

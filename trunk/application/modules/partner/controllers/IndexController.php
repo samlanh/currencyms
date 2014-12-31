@@ -2,7 +2,7 @@
 
 class Partner_IndexController extends Zend_Controller_Action
 {
-	const REDIRECT_URL = '/agent';
+ 	const REDIRECT_URL = '/agent';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
 	
     public function init()
@@ -104,21 +104,25 @@ class Partner_IndexController extends Zend_Controller_Action
     {
        
 		
-//     	if($this->getRequest()->isPost()){
-// 			$agentdata=$this->getRequest()->getPost();	
-// 			$db_agent = new Application_Model_DbTable_DbAgents();				
-// 			try {
-// 				$db = $db_agent->insertAgent($agentdata);				
-// 				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);		
-// 			} catch (Exception $e) {
-// 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
-// 			}
-// 		}
+    	if($this->getRequest()->isPost()){
+			$data=$this->getRequest()->getPost();	
+		    
+			$db_partner = new Partner_Model_DbTable_DbPartner();				
+ 			try {
+			$db = $db_partner->insertPartner($data);				
+//  				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+			$this->view->msgs = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+			} catch (Exception $e) {
+				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+			}
+	}
     	$pructis=new Partner_Form_FrmPartner();
     	$frm = $pructis->addPartner();
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
+    
     }
+ 
 
     public function viewAction()
     {
