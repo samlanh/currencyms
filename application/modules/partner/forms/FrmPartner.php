@@ -14,9 +14,11 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$mainbranch->setMultiOptions($opt);
     	
     	
-    	$branchname=new Zend_Dojo_Form_Element_TextBox('branch_name');	
+    	$branchname=new Zend_Dojo_Form_Element_ValidationTextBox('branch_name');	
     	$branchname->setAttribs(array(
-    			'dojoType'=>'dijit.form.TextBox'));
+    			'dojoType'=>'dijit.form.ValidationTextBox',
+    			'required'=>true
+    			));
     	
     	$cade_number=new Zend_Dojo_Form_Element_TextBox('cade_number');
     	$cade_number->setAttribs(array(
@@ -24,13 +26,17 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	
     	$partnername=new Zend_Dojo_Form_Element_TextBox('partner_name');
     	$partnername->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox'));
+    			'dojoType'=>'dijit.form.ValidationTextBox',
+    			'Required'=>true
+    			));
     	$photo=new Zend_Form_Element_File('photo');
     	$photo->setAttribs(array(
     			));
     	$accournnumber=new Zend_Dojo_Form_Element_TextBox('accournt_number');
     	$accournnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox'));
+    			'dojoType'=>'dijit.form.ValidationTextBox',
+    			'Required'=>true
+    			));
 
     	$Address=new Zend_Dojo_Form_Element_TextBox('address');
     	$Address->setAttribs(array(
@@ -86,7 +92,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$status->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'
     	));
-    	$opt=array(1=>'status1',2=>'status2',);
+    	$opt=array(1=>'ប្រើប្រាស់',0=>'មិនបានប្រើប្រាស់',);
     	$status->setMultiOptions($opt);
     	
     	
@@ -96,18 +102,22 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	
     	$money_usa=new Zend_Dojo_Form_Element_NumberTextBox('money_usa');
     	$money_usa->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
-    	
-    	
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'required'=>true
+    			));
+    	$money_usa->setValue(0);
     	
     	$money_bath=new Zend_Dojo_Form_Element_NumberTextBox('money_bath');
     	$money_bath->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
-    	
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'Required'=>true
+    			));
+    	$money_bath->setValue(0);
     	$money_real=new Zend_Dojo_Form_Element_NumberTextBox('money_riel');
     	$money_real->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
-    	
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'Required'=>true));
+    	$money_real->setValue(0);
     	
     	$status_getmoney=new Zend_Dojo_Form_Element_FilteringSelect('status_getmoney');
     	$status_getmoney->setAttribs(array(
@@ -116,14 +126,19 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$status_getmoney->setMultiOptions($opt_status);
     	
     	
+    	
+    	
     	$status_tran=new Zend_Dojo_Form_Element_FilteringSelect('tran_type');
     	$status_tran->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'));
     	$status_option=array(1=>'ប្រើប្រាស់សាច់ប្រាក់',2=>'ទូទាត់ខាងក្រៅ');
     	$status_tran->setMultiOptions($status_option);
+    	$date =new Zend_Dojo_Form_Element_DateTextBox('date');
+    	$date->setAttribs(array(
+    			'dojoType'=>'dijit.form.DateTextBox'
+    			));
     	
-    	
-		$this->addElements(array($branchname,$partnername,$photo,
+		$this->addElements(array($date,$branchname,$partnername,$photo,
 				$Address,$accournnumber,$homenumber,$groupnumber,
 				$streetnumber,$communnumber,$districtnumber,$provicenumber,
 				$phonenumber,$faxnumber,$salephone,$note,$status,$cade_number,

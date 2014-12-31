@@ -22,7 +22,6 @@
 			}
 			return false;
 	</script>
-		
 	<table cellspacing="1" width="100%">
 		<tr>
 			<td>
@@ -66,15 +65,16 @@
 								<td><?php echo $form->getElement('district_number');?></td>
 								<td>ខេត្ត/ក្រុង</td>
 								<td><?php echo $form->getElement('province_number');?></td>
-								<td>លេខទូរស័ព្ទ</td>
-								<td><?php echo $form->getElement('phone_number');?></td>
+				                <td>លេខទូរស័ព្ទ  </td>
+								<td><?php echo $form->getElement('fax_number');?></td>
 								
 							</tr>
 							<tr>
-								<td>លេខទូរស័ព្ទ  </td>
-								<td><?php echo $form->getElement('fax_number');?></td>
+								
 								<td>លេខទូរស័ព្ទដៃ</td>
 								<td><?php echo $form->getElement('sele_phone');?></td>
+								<td>កាលបរិច្ឆេត</td>
+								<td><?php echo $form->getElement('date');?></td>
 								<td>ស្ថានភាព</td>
 								<td><?php echo $form->getElement('status');?></td>
 							</tr>
@@ -103,8 +103,8 @@
 							<td><?php echo $form->getElement('money_riel');?></td>
 						</tr>
 						<tr>
-							<td>ទូទាត់សាច់ប្រាក់ជាមួយ</td>
-							<td><?php echo $form->getElement('status_getmoney');?></td>
+							<td><!-- ទូទាត់សាច់ប្រាក់ជាមួយ --></td>
+							<td><?php //echo $form->getElement('status_getmoney');?></td>
 							<td>ប្រតិបត្តការណ័</td>
 							<td><?php echo $form->getElement('tran_type');?></td>
 							<td></td>
