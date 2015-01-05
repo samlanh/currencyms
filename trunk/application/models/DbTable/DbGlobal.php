@@ -219,5 +219,25 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     	file_put_contents('.'.$newfile, $contents);
     	return $newfile;
     }
+    function getAllPartner($id=null,$option=null){
+    	$db=$this->getAdapter();
+    	$sql = " select id,partner_brand,partner_name from cms_partner where status=1 ";
+    	if($id!=null){
+    		$sql.=" AND id = $id";
+    	}
+    	$rows = $db->fetchAll($sql);
+    	if($option!=null){
+    		$opt = '';
+    		foreach ($rows as $rs){
+    			$opt[$rs['id']]=$rs['partner_brand'];
+    		}
+    		return $opt;
+    		
+    	}else{
+    		return $rows;
+    	}
+    	
+    	
+    }
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-class Salary_SalaryController extends Zend_Controller_Action
+class Keeping_IndexController extends Zend_Controller_Action
 {
 	const REDIRECT_URL = '/agent';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
@@ -17,17 +17,61 @@ class Salary_SalaryController extends Zend_Controller_Action
     public function indexAction()
     {
         
-        
     }
 
-    public function basicAction()
+    public function addAction()
     {
        
-    	$pructis=new Salary_Form_FrmSalary();
-    	$frm = $pructis->addSalary();
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     }
+    public function putAction()
+    {
+    	 
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    public function newmAction()
+    {
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    public function dakAction()
+    {
+    
+    
+    	//     	if($this->getRequest()->isPost()){
+    	// 			$agentdata=$this->getRequest()->getPost();
+    	// 			$db_agent = new Application_Model_DbTable_DbAgents();
+    	// 			try {
+    	// 				$db = $db_agent->insertAgent($agentdata);
+    	// 				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+    	// 			} catch (Exception $e) {
+    	// 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    	// 			}
+    	// 		}
+    	$pructis=new Money_Form_OutMoney();
+    	$frm = $pructis->dakMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    
+    public function putmoneyAction()
+    {
+    
+    	$pructis=new Money_Form_PutMoney();
+    	$frm = $pructis->dakMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    
+    
 
     public function viewAction()
     {

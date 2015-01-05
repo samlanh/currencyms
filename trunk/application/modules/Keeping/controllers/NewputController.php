@@ -1,6 +1,6 @@
 <?php
 
-class Salary_SalaryController extends Zend_Controller_Action
+class Keeping_NewputController extends Zend_Controller_Action
 {
 	const REDIRECT_URL = '/agent';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
@@ -16,18 +16,60 @@ class Salary_SalaryController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        
-        
+       
     }
 
-    public function basicAction()
+    public function addAction()
     {
        
-    	$pructis=new Salary_Form_FrmSalary();
-    	$frm = $pructis->addSalary();
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     }
+    public function putAction()
+    {
+    	 
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    public function newmAction()
+    {
+    	$pructis=new Money_Form_FrmMoney();
+    	$frm = $pructis->addMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    public function dakAction()
+    {
+    	$pructis=new Money_Form_OutMoney();
+    	$frm = $pructis->dakMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    
+    public function putmoneyAction()
+    {
+    
+    	$pructis=new Money_Form_PutMoney();
+    	$frm = $pructis->dakMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    
+    public function put1Action()
+    {
+    
+    	$pructis=new Money_Form_NewPut();
+    	$frm = $pructis->dakMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    }
+    
+    
+    
 
     public function viewAction()
     {

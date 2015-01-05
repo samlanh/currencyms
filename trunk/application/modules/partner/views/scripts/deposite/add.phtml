@@ -204,8 +204,8 @@ function deleteRecord(index){
 			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 			temp+='<td><input type="text" required="true" value="<?php echo date('Y-m-d');?>" name="date1_'+r+'" id="date1_'+r+'" dojoType="dijit.form.DateTextBox"/></td>';
 			temp+='<td><select style=" width:70%;" id="currency_type1_'+r+'" name="currency_type1_'+r+'" dojoType="dijit.form.FilteringSelect"  >'+curr_dollar_amountoption+'</select></td>';
-			temp+='<td><input type="text" style=" width:70%;" required="true" name="amount1_'+r+'" id="amount1_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
-			temp+='<td><input type="text" style=" width:70%;" required="true" name="recieve1_'+r+'" id="recieve1_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" onkeyup="calCulateExchange('+r+',0);" name="amount1_'+r+'" id="amount1_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" onkeyup="calCulateExchange('+r+',0);" name="recieve1_'+r+'" id="recieve1_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" style=" width:70%;" required="true" name="return1_'+r+'" id="return1_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" name="note1_'+r+'" id="note1_'+r+'" dojoType="dijit.form.TextBox" s/></td>';
 			tmp='<tr style="border:1px solid #ccc;" id="row_capital'+r+'">'
@@ -213,7 +213,6 @@ function deleteRecord(index){
 				dojo.query("#t_amountmoneytype").append(tmp);
 				dojo.html.set(dojo.byId("row_capital"+r),temp, {
 			    parseContent: true,
-			     
 			});
 			if(dijit.byId("record_row").value!="") {
 				var ids = dijit.byId("record_row").value;
