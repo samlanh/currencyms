@@ -2,9 +2,10 @@
 
 class Partner_Form_FrmPartner extends Zend_Dojo_Form
 {
-
-    public function addPartner()
+	
+    public function addPartner($data=NULL)
     {
+    	$id=new Zend_Form_Element_Hidden('id');
         /* Form Elements & Other Definitions Here ... */
     	
     	$mainbranch=new Zend_Dojo_Form_Element_FilteringSelect('main_branch');
@@ -56,13 +57,18 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$streetnumber->setAttribs(array(
     			'dojoType'=>'dijit.form.ValidationTextBox'));
     	
-    	$communnumber=new Zend_Dojo_Form_Element_TextBox('commun_number');
+    	$communnumber=new Zend_Dojo_Form_Element_FilteringSelect('commun_number');
     	$communnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox'));
+    			'dojoType'=>'dijit.form.FilteringSelect'));
+    	$opt=array(1=>'Boengkâk 1',2=>'Boengkâk 2',3=>'Wat Phnom',4=>'Phsar Chas',
+    			5=>'Monorom',6=>'Ttoul Ssvay Prey 1',7=>'Ttuk Tthlar',);
+    	$communnumber->setMultiOptions($opt);
     	
-    	$districtnumber=new Zend_Dojo_Form_Element_TextBox('district_number');
+    	$districtnumber=new Zend_Dojo_Form_Element_FilteringSelect('district_number');
     	$districtnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox'));
+    			'dojoType'=>'dijit.form.FilteringSelect'));
+    	$opt=array(1=>'Khan Toulkok',2=>'Khan Daun Penh',3=>'Khan 7 Makara',4=>'Khan Chamkarmorn',);
+    	$districtnumber->setMultiOptions($opt);
     	
     	$provicenumber=new Zend_Dojo_Form_Element_FilteringSelect('province_number');
     	$provicenumber->setAttribs(array(
@@ -137,8 +143,35 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$date->setAttribs(array(
     			'dojoType'=>'dijit.form.DateTextBox'
     			));
+     //	$date->setValue('Y-m-d');
+    	if($data!=null){
+    		$mainbranch->setValue($data['parent']);
+    		$branchname->setValue($data['partner_brand']);
+    		$partnername->setValue($data['partner_name']);
+    		
+    		$accournnumber->setValue($data['account_no']);
+    		$cade_number->setValue($data['nation_id']);
+    		$homenumber->setValue($data['house_no']);
+    		$groupnumber->setValue($data['group_no']);
+    		$streetnumber->setValue($data['street']);
+    		$communnumber->setValue($data['commune']);
+    		$districtnumber->setValue($data['district']);
+    		$provicenumber->setValue($data['province']);
+    		$faxnumber->setValue($data['tel']);
+    		$salephone->setValue($data['mobile']);
+    		$note->setValue($data['note']);
+    		$money_usa->setValue($data['cash_dollar']);
+    		$money_bath->setValue($data['cash_bath']);
+    		$money_real->setValue($data['cash_riel']);
+    		$status_tran->setValue($data['is_cashoperation']);
+    		$Address->setValue($data['address']);
+    		$date->setValue($data['date']);
+    		$id->setValue($data['id']);
+    	    $status->setValue($data['status']);
     	
-		$this->addElements(array($date,$branchname,$partnername,$photo,
+    	}
+    	
+		$this->addElements(array($id,$date,$branchname,$partnername,$photo,
 				$Address,$accournnumber,$homenumber,$groupnumber,
 				$streetnumber,$communnumber,$districtnumber,$provicenumber,
 				$phonenumber,$faxnumber,$salephone,$note,$status,$cade_number,

@@ -32,14 +32,14 @@ class Partner_IndexController extends Zend_Controller_Action
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("parent","partner_brand","partner_name","account_no",
-    				"nation_id","house_no","group_no","street","commune","district","province","tel","mobile","note","is_cashoperation","cash_riel",
-    				"cash_dollar","cash_bath","DATE","STATUS"
+    		$collumns = array("PARENT","PARTNERBRAND","PARTNERNAME","NATION ID",
+    				"ACCOUNTNo","ADDRESS","HOUSENo","GROUPNo","STREET","COMMUNE","DISTRICT","PROVINCE","PHONE","MOBILE","NOTE","ISCASHOPERATION","CASH RIEL",
+    				"CASHDOLLAR","CASHBATH","DATE","STATUS",
     			);
     		$link=array(
-    				'module'=>'partner','controller'=>'index','action'=>'edited',
+    				'module'=>'partner','controller'=>'index','action'=>'edite',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array(''=>$link,''=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('partner_name'=>$link,''=>$link));
          	}catch (Exception $e){
 //     		Application_Form_FrmMessage::message("Application Error");
 //     		echo $e->getMessage();
@@ -83,20 +83,28 @@ class Partner_IndexController extends Zend_Controller_Action
 
     public function editeAction()
     {
+    	//update
     	if($this->getRequest()->isPost()){
     		$data=$this->getRequest()->getPost();
-    	
-    		$db_partner = new Partner_Model_DbTable_DbPartner();
-    		try {
-    			$db = $db_partner->insertPartner($data);
-    			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
-    			$this->view->msgs = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
-    		} catch (Exception $e) {
+  		try {
+   			//$db = $db_partner->updatePartner($data);
+    		$db_patner = new  Partner_Model_DbTable_DbPartner();
+    		$db=$db_patner->getupdatePartner($data);	
+   			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+     			$this->view->msgs = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+     		} catch (Exception $e) {
     			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
-    		}
+   		}
+   		$this->_redirect("partner/index/index");
     	}
+    	
+    	//query data from table into in form
+    	$db_partner = new Partner_Model_DbTable_DbPartner();
+    	$id=$this->getRequest()->getParam('id');
+    	$row=$db_partner->getEditetePartner($id);
     	$pructis=new Partner_Form_FrmPartner();
-    	$frm = $pructis->addPartner();
+    	$frm = $pructis->addPartner($row);
+       
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     }

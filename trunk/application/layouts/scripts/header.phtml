@@ -15,6 +15,7 @@
       $acl=$this->url(array('module'=>'rsvAcl','controller'=>'index','action'=>'index'), null, true);
       $logout=$this->url(array('module'=>'default','controller'=>'index','action'=>'logout'), null, true);
       $logout=$this->url(array('module'=>'inserttable','controller'=>'index','action'=>'index'), null, true);
+      $keeping=$this->url(array('module'=>'Keeping','controller'=>'index','action'=>'index'), null, true);
 	  $module=Zend_Controller_Front::getInstance()->getRequest()->getModuleName();
 	  $item_arr=array(
 		'index'=>'<li class="link">
@@ -22,7 +23,7 @@
 								<span>'.$tr->translate("ទំព័រដើម").'</span>
 							</a>
 						</li>',
-	  	'other'=>'<li class="link">
+	  	'partner'=>'<li class="link">
 			  		<a title="ដៃគូសហការ" href="'.$partner.'">
 			  		<span>'.$tr->translate("ដៃគូសហការ").'</span>
 			  		</a>
@@ -44,8 +45,13 @@
 	  		</li>',
 	  	'payroll'=>'<li class="link">
 		  		<a title="ព័ត៏មានប្រាក់ខែ" href="'.$payroll_view.'">
-		  		<span>'.$tr->translate("ប្រាក់ខែបុគ្គលិក").'</span>
+		  			<span>'.$tr->translate("ប្រាក់ខែបុគ្គលិក").'</span>
 		  		</a>
+	  		</li>',
+	  	'keeping'=>'<li class="link">
+	  		<a title="keeping" href="'.$keeping.'">
+	  			<span>'.$tr->translate("KEEPING").'</span>
+	  		</a>
 	  		</li>',
 	  	'report'=>'<li class="របាយការណ័">
 			  		<a title="Report" href="'.$reports.'">
