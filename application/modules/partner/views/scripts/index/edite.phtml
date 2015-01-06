@@ -15,7 +15,7 @@
 	dojo.require('dijit.form.Button');
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'edite')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
@@ -28,8 +28,9 @@
 				<fieldset>
 					<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
 						<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
+						   
 							<tr>
-								<td>ដៃគូមេ</td>
+								<td>ដៃគូមេ</td><?php echo $form->getElement('id');?>
 								<td><?php echo $form->getElement('main_branch');?></td>
 								<td>ឈ្មោះដៃគូរសហការណ៏</td>
 								<td><?php echo $form->getElement('branch_name');?></td>
