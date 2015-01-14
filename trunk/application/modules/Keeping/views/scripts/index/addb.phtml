@@ -1,0 +1,86 @@
+<?php 
+  
+  $form=$this->frm;
+?>
+<script type="text/javascript">	
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+</script>
+<html>
+<head>
+
+</head>
+<body style="margin-top: 0px;padding: 0px;">
+<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'index','action'=>'add')); ?>"  dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+  <script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+  <table  cellspacing="1" width="80%" style="font-family:'Kh Battambang'">
+      <tr>
+          <td>
+               <fieldset style="margin-top: 0px;">
+                         <legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ព៌ត័មានផ្ញើរប្រាក់</strong></legend>
+                         <table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
+                           <tr>
+								<td>ឈ្មោះ​អ្នក​ផ្ញើរ</td>
+								<td><?php echo $form->getElement('send_name');?></td>
+								<td>ប្រភេទ​លុយ</td>
+								<td><?php echo $form->getElement('type_money');?></td>
+								
+							</tr>
+                            <tr>
+								<td>រយះពេលគិតជា</td>
+								<td><?php echo $form->getElement('pay_term');?></td>
+								<td>ចំនួនប្រាក់ផ្ញើរ</td>
+								<td><?php echo $form->getElement('money_inacc');?></td>
+							</tr>
+							 <tr>
+								<td>កាល​បរិច្ឆេទ ផ្ញើរ</td>
+								<td><?php echo $form->getElement('date');?></td>
+								<td>ថ្លៃសេវា</td>
+								<td><?php echo $form->getElement('commission');?></td>
+							</tr>
+							 <tr>
+								<td>រយះពេលផ្ញើរ(សប្តាហ៏)</td>
+								<td><?php echo $form->getElement('amount_month');?></td>
+								<td>ប្រាក់ត្រូវបង់សរុប</td>
+								<td><?php echo $form->getElement('total_amount');?></td>
+							</tr>
+							<tr>
+								<td>ផុតកំណត់​ត្រឹម​ថ្ងៃ</td>
+								<td><?php echo $form->getElement('epx_date');?></td>
+								<td>ប្រាក់ទទួលបាន</td>
+								<td><?php echo $form->getElement('recieve_amount');?></td>
+							</tr>
+							<tr>
+								<td>វិក័យប័ត្រ</td>
+								<td><?php echo $form->getElement('report');?></td>
+								<td>ប្រាក់អាប់</td>
+								<td><?php echo $form->getElement('lbltotal_return');?></td>
+							</tr>
+                       
+                         </table>
+               </fieldset>
+                		
+				          </td>
+				      </tr>
+				      <tr>
+							    <td  align="center">
+									<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton1" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 
+									<input type="submit" value="រក្សាទុក&បោះពុម្ព" label="រក្សាទុក&បោះពុម្ព" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>							
+								</td>
+								
+					​​​​ </tr>
+          
+ </table>
+
+</form>
+</body>
+</html>

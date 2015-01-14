@@ -37,7 +37,7 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         $date->setAttribs(array(
         		'dojoType'=>'dijit.form.DateTextBox'
         ));
-        
+        $date->setValue(date('Y-m-d'));
         $commission=new Zend_Dojo_Form_Element_ValidationTextBox('commission');
         $commission->setAttribs(array(
         		'dojoType'=>'dijit.form.ValidationTextBox',
@@ -60,6 +60,7 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         $epx_date->setAttribs(array(
         		'dojoType'=>'dijit.form.DateTextBox'
         ));
+       $epx_date->setValue(date('Y-m-d'));
         
         $recieve_amount=new Zend_Dojo_Form_Element_ValidationTextBox('recieve_amount');
         $recieve_amount->setAttribs(array(
