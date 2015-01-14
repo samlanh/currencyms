@@ -2,7 +2,7 @@
 
 class Keeping_IndexController extends Zend_Controller_Action
 {
-	const REDIRECT_URL = 'Keeping/index/add';
+	const REDIRECT_URL = '/Keeping/index/add';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
 	
     public function init()
@@ -17,16 +17,38 @@ class Keeping_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-                
+    	$keeping=new Keeping_Model_DbTable_DbKeeping();
+    	$db=$keeping->getAllKeeping();
+    	
     }
-
-    public function addAction(){
-	    $sendmoney=new Keeping_Form_FrmSendMoney();
-	    $frm = $sendmoney->addSendMoney();
-	    Application_Model_Decorator::removeAllDecorator($frm);
-        $this->view->frm=$frm;
-  
+    function addAction(){
+    //insert table cms_keeping
+    	if($this->getRequest()->isPost()){
+    					$data=$this->getRequest()->getPost();
+//     					print_r($data);exit();
+    					$db_keeping = new Keeping_Model_DbTable_DbKeeping();
+    					try {
+    						$db = $db_keeping->insertKeeping($data);
+    						Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+    					} catch (Exception $e) {
+    						echo $e->getMessage();exit();
+    						$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    					}
+    					
+    				}	
+    				
+   //form
+    	$sendmoney=new Keeping_Form_FrmSendMoney();
+    	$db= new Keeping_Model_DbTable_DbKeeping();
+    	$frm = $sendmoney->addSendMoney();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    	$this->view->currency_type = $db->CurruncyTypeOption();
     }
+    function addbAction(){
+    	
+    }
+    
     public function putAction()
     {
     	 
