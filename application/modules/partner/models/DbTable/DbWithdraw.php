@@ -21,7 +21,6 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract
 			$sql="SELECT id,(SELECT partner_brand FROM cms_partner WHERE id=partner_id) AS partner_id,date,note,dollar_before,bath_before,riel_before,withdraw_dollar,
 			withdraw_bat,withdraw_riel FROM cms_withdraw ORDER By id";
 			return $db->fetchAll($sql);
-			
 		}
 		function updatepartner($data){
 			$_partner_data=array(
@@ -35,8 +34,6 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract
 					'withdraw_bat'=>$data['withdraw_bath'],
 					'withdraw_riel'=>$data['withdraw_riel'],
 			);
-			//$where=$this->getAdapter()->quoteInto('id=?', $data['id']);
-		
 			return  $this->update($_partner_data);
 		}
 		public function getpartnerById($id){

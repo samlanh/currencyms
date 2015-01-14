@@ -19,7 +19,13 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$note->setAttribs(array(
     			'dojoType'=>'dijit.form.TextBox',
     			'class'=>'fullside'));
-    	
+    	$namesend=new Zend_Dojo_Form_Element_FilteringSelect('namesend');
+    	$namesend->setAttribs(array(
+    			'dojoType'=>'dijit.form.FilteringSelect',
+    			'class'=>'fullside'));
+    	$db = new Application_Model_DbTable_DbGlobal();
+    	$opt = $db->getAllPartner(null,1);
+    	$namesend->setMultiOptions($opt);
     	$namesend=new Zend_Dojo_Form_Element_FilteringSelect('namesend');
     	$namesend->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',
@@ -138,8 +144,6 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     		$d3->setValue($data['withdraw_bat']);
     		$id->setValue($data['id']);
     	}
-    	 
-    	
     	
     	$this->addElements(array($nuber_account,$namesend,$daydokmoney,
     			$dola,$dola1,$bath,$bath1,$real,$real1,$phong,$note,$d1,
