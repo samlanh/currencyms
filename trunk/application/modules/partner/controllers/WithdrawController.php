@@ -21,7 +21,7 @@ class Partner_WithdrawController extends Zend_Controller_Action
 				echo $e->getMessage();
 				//Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			}
-			}
+		}
 	 public function addAction()
 	    {
 	    	    	if($this->getRequest()->isPost()){
@@ -57,7 +57,6 @@ function editAction(){
    	$id = $this->getRequest()->getParam("id");
    	$row = $db_wihtdraw->getpartnerById($id);
    	if(empty($row)){
-//    		$this->_redirect('partner/withdraw');
    	}
      	$this->view->id = $row['id'];
 	   	$withdraw=new Partner_Form_FrmWithdraw();
@@ -65,7 +64,5 @@ function editAction(){
 	    Application_Model_Decorator::removeAllDecorator($frm);
 	    $this->view->frm=$frm;
 	    
-// 	    $this->view->salary_detail = $db_wihtdraw->getReceiptDetailById($id);
-// 	    $this->view->salary_option = $db_wihtdraw->getTypeOption();
    }
 }

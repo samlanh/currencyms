@@ -4,7 +4,6 @@
 	$session_user=new Zend_Session_Namespace('auth');
 	$form = $this->frm;
 ?>
-
 <?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
 <script src="<?php echo $baseurl;?>/js/help.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
@@ -12,10 +11,8 @@
 	dojo.require("dojo.NodeList-manipulate");
 	dojo.require("dojo.html");
 	dojo.ready(function(){
-		addAmountTypeMoney();		
-		
+		initList();		
 	});  
-	    
 </script>
 <style>
 <!--
@@ -49,12 +46,10 @@
 		width: 99%;	
 		border: none;
 	}
-	
 	#dollar.dijitInputInner, #bath.dijitInputInner, #rail.dijitInputInner{
 		text-align: center;		
 		background-color: #FFFFFF !important;
 	}
-	
 	.bg-white{
 		background-color: #FFFFFF !important;		
 	}
@@ -69,18 +64,19 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 			}
 			return false;
 	</script>
-		
 	<table  cellspacing="10" width="100%">
 		<tr>
 			<td>
 				<fieldset>
 					<legend ><strong>ព៌ត័មាន ដៃគូរ</strong></legend>
-						<table cellspacing="5" cellpadding="0" width="100%">
+						<table cellspacing="5" cellpadding="0" width="100%" >
 							<tr>
 								<td>លេខគណនី</td>
-								<td><?php echo $form->getElement('accourn_number');echo $form->getElement('id');?></td>
-								<td colspan="4" style="border: 1px solid #ccc;"></td>
-								
+								<td width="20%"><?php echo $form->getElement('accourn_number');?></td>
+								<td>លេខវិកាប័ត្ត</td>
+								<td><?php echo $form->getElement('num_invoice');?></td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td>ឈ្មោះដៃគូរ</td>
@@ -94,19 +90,16 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 					</table>
 					<fieldset>
 						<legend>ប្រាក់ក្នុងគណនីបច្ចុប្បន្ន</legend>
-						<table cellspacing="5" cellpadding="0" width="100%">
+						<table  width="100%" >
 							<tr>
-								<td>ដុល្លា</td>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								&nbsp;&nbsp;
-								<?php echo $form->getElement('usa');?></td>
-								<td>បាត</td>
-								<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<?php echo $form->getElement('bath');?></td>
-								<td>រៀល</td>
-								<td><?php echo $form->getElement('rail');?></td>
+								<td>ប្រាក់ជាដុល្លា</td>
+								<td><?php echo $form->getElement('usa');?></td>
+								<td>ប្រាក់ជាបាត</td>
+								<td><?php echo $form->getElement('bathe');?></td>
+								<td>ប្រាក់ជារៀល</td>
+								<td><?php echo $form->getElement('reil');?></td>
 							</tr>
-					</table>
+						</table>
 					</fieldset>
 				</fieldset>
 				<fieldset>
@@ -142,13 +135,11 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 					dijit.byId('doloar').focus();
 					return false;
 				}*/
-
 				return true;
 			} else {
 				return false;
 			}
 	</script>	 
-	
 	<table class="tbtable" style="margin:10px auto; width:100%; border-collapse: collapse; border:1px solid #ccc;" >
 		<tr>
 			<td width="50%" valign="top">
@@ -167,7 +158,6 @@ function deleteRecord(index){
 	if(ids.length=='' || ids.length==null){
 		dijit.byId('record_row').attr('value','');
 		dojo.query("#row_capital"+ids).remove();
-		
 	}else{
 		var arrays = ids.split(',');
 		for(var i=0;i<arrays.length;i++) {
@@ -177,10 +167,8 @@ function deleteRecord(index){
 		dijit.byId('record_row').attr('value',strings);
 		dojo.query("#row_capital"+index).remove();
 	}
-	
 }
 	curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
-	
 	temp='';
 	r = 0;
 	fund_title=0;
@@ -215,8 +203,47 @@ function deleteRecord(index){
 				dijit.byId("record_row").attr('value',ids+','+r);
 			} else { dijit.byId("record_row").attr('value',r);}
 	}	
-//sub money
 	sub_title=0;
 	s=0;
+	function initList() {
+		<?php if(!empty($this->rs_rows)) {
+			foreach($this->rs_rows AS $i=>$rs){?>
+			r++;
 
+			r++;
+			if(fund_title!=1){
+				thead='<th>លុប</th>';
+				thead+='<th>​ថ្ងៃដាក់ប្រាក់</th>';
+				thead+='<th>​ប្រភេទប្រាក់</th>';
+				thead+='<th>ប្រាក់ក្នុងគណនី</th>';
+				thead+='<th>ប្រាក់បានទទួល</th>';
+				thead+='<th>ប្រាក់អាប់</th>';
+				thead+='<th>ចំណាំ </th>';
+				fund_title=1;
+				dojo.query("#head_title").append(thead);
+	        }
+			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp+='<td><input type="text" required="true" value="<?php echo date('Y-m-d');?>" name="date_'+r+'" id="date_'+r+'" dojoType="dijit.form.DateTextBox"/></td>';
+			temp+='<td><select style=" width:70%;" id="currency_type_'+r+'" name="currency_type_'+r+'" dojoType="dijit.form.FilteringSelect">'+curr_dollar_amountoption+'</select></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" name="amount_'+r+'" id="amount_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" name="recieve_'+r+'" id="recieve_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" name="return_'+r+'" id="return_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" s/></td>';
+			tmp='<tr style="border:1px solid #ccc;" id="row_capital'+r+'">'
+			tmp+="</tr>";
+				dojo.query("#t_amountmoneytype").append(tmp);
+				dojo.html.set(dojo.byId("row_capital"+r),temp, {
+			    parseContent: true,
+			});
+			if(dijit.byId("record_row").value!="") {
+				var ids = dijit.byId("record_row").value;
+				dijit.byId("record_row").attr('value',ids+','+r);
+			} else { dijit.byId("record_row").attr('value',r);}
+			dijit.byId('currency_type_'+r).attr('value',<?php echo $rs['currency_type']?>);
+			dijit.byId('amount_'+r).attr('value',<?php echo $rs['deposite_amount']?>);
+			dijit.byId('recieve_'+r).attr('value','<?php echo $rs['receive_amount']?>');
+			dijit.byId('return_'+r).attr('value','<?php echo $rs['return_amount']?>');
+			dijit.byId('note_'+r).attr('value','<?php echo $rs['note']?>');
+			<?php } }?>
+	}
 </script>

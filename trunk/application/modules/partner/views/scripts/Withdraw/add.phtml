@@ -3,7 +3,7 @@
 	echo $this->headTitle();
 	$form = $this->frm;
 ?>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <script type="text/javascript">	
 	dojo.require("dijit.form.ValidationTextBox");
 
@@ -15,6 +15,7 @@
 	dojo.require("dijit.form.DateTextBox");
 	
 </script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
