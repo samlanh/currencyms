@@ -17,8 +17,24 @@ class Keeping_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-    	$keeping=new Keeping_Model_DbTable_DbKeeping();
-    	$db=$keeping->getAllKeeping();
+    try{
+			$db = new Keeping_Model_DbTable_DbKeeping();
+			$rs_rows= $db->getAllKeeping();//call frome model
+// 			$glClass = new Application_Model_GlobalClass();
+// 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+			$list = new Application_Form_Frmtable();
+			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ(សប្តាហ៏)","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ");
+			$link=array(
+					'module'=>'Keeping','controller'=>'index','action'=>'edit',
+			);
+			$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('client_name'=>$link,'date_keeping'=>$link,'invoice_numer'=>$link));
+		}catch (Exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			echo $e->getMessage();
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			 
+		}
+    	
     	
     }
     function addAction(){
@@ -47,6 +63,9 @@ class Keeping_IndexController extends Zend_Controller_Action
     }
     function addbAction(){
     	
+    }
+    function editAction(){
+    	 
     }
     
     public function putAction()
