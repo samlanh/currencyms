@@ -3,9 +3,9 @@
 	{
 	protected $_name="cms_keeping";
 		function insertKeeping($data){
-		$db = $this->getAdapter();//ស្ពានភ្ជាប់ទៅកាន់Data Base
-		$db->beginTransaction();//ទប់ស្កាត់មើលការErrore , មានErrore វាមិនអោយចូល
-			try{
+// 		$db = $this->getAdapter();//ស្ពានភ្ជាប់ទៅកាន់Data Base
+// 		$db->beginTransaction();//ទប់ស្កាត់មើលការErrore , មានErrore វាមិនអោយចូល
+// 			try{
 			$arr=array(
 						'client_name'=>$data['send_name'],
 						'payment_term'=>$data['pay_term'],
@@ -18,7 +18,7 @@
 	// 					'date'=>$data['withdraw_bath'],
 	// 					'user_id'=>$data['withdraw_riel'],
 				);
-			
+// 			print_r($arr);exit();
 			$id=$this->insert($arr);
 			
 				$this->_name='cms_keepingdetail';
@@ -40,11 +40,11 @@
 					
 					$this->insert($arr);
 				}
-				$db->commit();//if not errore it do....
-			}catch (Exception $e){
-				$db->rollBack();//អោយវាវិលត្រលប់ទៅដើមវីញពេលណាវាជួបErrore
+// 				$db->commit();//if not errore it do....
+// 			}catch (Exception $e){
+// 				$db->rollBack();//អោយវាវិលត្រលប់ទៅដើមវីញពេលណាវាជួបErrore
 				
-			}
+// 			}
 		
 		}
 		public function CurruncyTypeOption(){
