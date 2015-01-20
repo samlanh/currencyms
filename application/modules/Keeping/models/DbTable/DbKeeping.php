@@ -7,12 +7,12 @@
 // 		$db->beginTransaction();//ទប់ស្កាត់មើលការErrore , មានErrore វាមិនអោយចូល
 // 			try{
 			$arr=array(
-						'client_name'=>$data['send_name'],
+						'client_id'=>$data['send_name'],
 						'payment_term'=>$data['pay_term'],
 						'date_keeping'=>$data['date'],
 						'amount_keeping'=>$data['amount_month'],
-						'epx_date'=>$data['epx_date'],
-						'invoice_numer'=>$data['report'],
+						'exp_date'=>$data['epx_date'],
+						'invoice_number'=>$data['report'],
 						
 	// 					'status'=>$data['withdraw_dollar'],
 	// 					'date'=>$data['withdraw_bath'],
@@ -58,9 +58,74 @@
 		}
 		function getAllKeeping(){
 			$db=$this->getAdapter();
-			$sql = "SELECT * FROM cms_keeping ORDER BY client_name ";
+			$sql = "SELECT id ,
+						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name
+						,payment_term,date_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
 			
 			return $db->fetchAll($sql);
+		}
+		function updateKeeping($data){
+				$arr=array(
+						'client_id'=>$data['send_name'],
+						'payment_term'=>$data['pay_term'],
+						'date_keeping'=>$data['date'],
+						'amount_keeping'=>$data['amount_month'],
+						'exp_date'=>$data['epx_date'],
+						'invoice_number'=>$data['report'],
+	
+				);
+// 			print_r($arr);exit();
+		
+			$where=" id = ".$data['id'];
+// 			print_r($where);exit();
+		$this->update($arr, $where);
+// 		print_r($db);exit();
+			
+			$this->_name='cms_keepingdetail';
+			$ids = explode(',',$data['record_row']);
+			foreach ($ids as $i){
+				$arr = array(
+						'keeping_id'=>$ids,
+						'currency_type'=>$data['type_money'.$i],
+						'money_inacc'=>$data['money_inacc'.$i],
+						'cut_money'=>empty($data['is_spacial'.$i])?0:1,
+						'commission'=>$data['commission'.$i],
+						'total_amount'=>$data['total_amount'.$i],
+						'recieve_amount'=>$data['recieve_amount'.$i],
+						'lbltotal_return'=>$data['lbltotal_return'.$i],
+						//'recieve_amount'=>$data['amount_exchanged'.$i],
+						'note'=>$data['note'.$i],
+			
+				);
+					
+				$this->insert($arr);
+			}
+		}
+		function getKeepingbyid($id){
+			$db = $this->getAdapter();
+			$sql=" SELECT id,client_id,payment_term,date_keeping,amount_keeping,
+			exp_date,invoice_number FROM $this->_name where id=$id ";
+			return $db->fetchRow($sql);
+		}
+		function getNameKeeping($id=null,$option=null){
+			$db=$this->getAdapter();
+			$sql = " select id,client_name from cms_client where status=1 ";
+			if($id!=null){
+				$sql.=" AND id = $id";
+			}
+			$rows = $db->fetchAll($sql);
+			if($option!=null){
+				$opt = '';
+				foreach ($rows as $rs){
+					$opt[$rs['id']]=$rs['client_name'];
+				}
+				return $opt;
+		
+			}else{
+				return $rows;
+			}
+			 
+			 
 		}
 	}
 ?>
