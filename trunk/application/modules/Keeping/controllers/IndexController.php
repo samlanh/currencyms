@@ -50,7 +50,7 @@ class Keeping_IndexController extends Zend_Controller_Action
     						echo $e->getMessage();exit();
     						$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
     					}
-    					
+    					$this->_redirect("Keeping/index/index");
     				}	
     				
    //form
@@ -65,7 +65,30 @@ class Keeping_IndexController extends Zend_Controller_Action
     	
     }
     function editAction(){
-    	 
+    	$id = $this->getRequest()->getParam("id");
+    	$db = new Keeping_Model_DbTable_DbKeeping();
+    	$row  = $db->getKeepingbyid($id);
+    	
+    	$fm = new Keeping_Form_FrmSendMoney();
+    	$frm = $fm->addSendMoney($row);
+    
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm_putmoney= $frm;
+    	$this->view->currency_type = $db->CurruncyTypeOption();
+    	
+    	if($this->getRequest()->isPost()){
+    		$data=$this->getRequest()->getPost();
+    	
+    		$db_keeping = new Keeping_Model_DbTable_DbKeeping();
+    		try {
+    			$db = $db_keeping->updateKeeping($data);
+    			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+    		} catch (Exception $e) {
+    			echo $e->getMessage();exit();
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    		$this->_redirect("Keeping/index/index");
+    	}
     }
     
     public function putAction()
