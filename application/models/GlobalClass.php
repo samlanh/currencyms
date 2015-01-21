@@ -21,6 +21,31 @@ class Application_Model_GlobalClass  extends Zend_Db_Table_Abstract
 		}
 		return $options;
 	}
+	public function getImgActive($rows,$base_url, $case='',$degree=null,$display=null){
+		if($rows){
+			$imgnone='<img src="'.$base_url.'/images/icon/cross.png"/>';
+			$imgtick='<img src="'.$base_url.'/images/icon/apply2.png"/>';
+	
+			foreach ($rows as $i =>$row){
+				if($degree!=null){
+					$dg = new Application_Model_DbTable_DbGlobal();
+	
+					$rows[$i]['degree']  = $dg->getAllDegree($row['degree']);
+				}
+				if($display!=null){
+					$rows[$i]['displayby']= ($row['displayby']==1)?'Khmer':'English';
+				}
+				if($row['status'] == 1){
+					$rows[$i]['status']= $imgtick;
+				}
+				else{
+					$rows[$i]['status'] = $imgnone;
+				}
+					
+			}
+		}
+		return $rows;
+	}
 	
 	/**
 	 * replace value of statu by image

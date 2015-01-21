@@ -4,6 +4,7 @@
 	  $home=$this->url(array('module'=>'home','controller'=>'index','action'=>'index'), null, true);
 	  $transfer=$this->url(array('module'=>'transfer','controller'=>'index','action'=>'index'), null, true);
 	  $partner=$this->url(array('module'=>'partner','controller'=>'index','action'=>'index'), null, true);
+	  $teller=$this->url(array('module'=>'tellerandexchange','controller'=>'index','action'=>'index'), null, true);
 	  $exchange=$this->url(array('module'=>'exchange','controller'=>'index','action'=>'index'), null, true);
 	  $reports=$this->url(array('module'=>'report','controller'=>'index','action'=>'index'), null, true);
 	  $accounting=$this->url(array('module'=>'accounting','controller'=>'index','action'=>'index'), null, true);
@@ -33,6 +34,11 @@
 							<span>'.$tr->translate("សេវាផ្ងើប្រាក់").'</span>
 						</a>
 					</li>',
+	  	'tellerandexchange'=>'<li class="link">
+	  		<a title="" href="'.$teller.'">
+	  		<span>'.$tr->translate("TELLER Module").'</span>
+	  		</a>
+	  		</li>',
 	    'loan'=>'<li class="link">
 						<a title="សេវាប្តូរប្រាក់" href="'.$exchange.'">
 							<span>'.$tr->translate("សេវាប្តូរប្រាក់").'</span>

@@ -44,26 +44,22 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     			'dojoType'=>'dijit.form.NumberTextBox'));
     	$creat_date=new Zend_Dojo_Form_Element_DateTextBox('creat_date');
     	$creat_date->setAttribs(array(
-    	'dojoType'=>'dijit.form.DateTextBox'));
+    	'dojoType'=>'dijit.form.DateTextBox'
+    			));
     	$creat_date->setValue(date('Y-m-d'));
     	$num_invoice=new Zend_Dojo_Form_Element_TextBox('num_invoice');
     	$num_invoice->setAttribs(array(
-    			'dojoType'=>'dijit.form.TextBox'));
+    			'dojoType'=>'dijit.form.TextBox',
+    			'readOnly'=>true,'style'=>'color:red'));
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
     		$name_partner->setValue($data['partner_id']);
     		$creat_date->setValue($data['date']);
     		$moneyinaccount->setValue($data['note']);
-    		$num_invoice->setValue($data['invice']);
+    		$num_invoice->setValue($data['invoice']);
     		$id->setValue($data['id']);
+    		
     	}
-//     	$id = new Zend_Form_Element_Hidden('id');
-//     	if($data!=null){
-//     		$name_partner->setValue($data['partner_id']);
-//     		$creat_date->setValue($data['date']);
-//     		$moneyinaccount->setValue($data['note']);
-//     		$id->setValue($data['id']);
-//     	}
 		$this->addElements(array($accourn_number,$name_partner,$moneyinaccount,$account,$box1,$box2,$box3,$box4,
 				$bathe,$usa,$creat_date,$reil,$id,$num_invoice));
 		return $this;

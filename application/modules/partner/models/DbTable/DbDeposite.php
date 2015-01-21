@@ -12,7 +12,6 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 				'note'=>$data['moneyinaccount'],
 				'invoice'=>$data['num_invoice'],
 				'user_id'=>$this->getUserId(),
-				
 				);
 		$id=$this->insert($arr);
 		$this->_name='cms_partnerdeposit_detail';
@@ -44,31 +43,31 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			'partner_id'=>$data['name_partner'],
 			'date'=>$data['creat_date'],
 			'note'=>$data['moneyinaccount'],
-			'invoice'=>$data['num_invoice'],
+			'invoice'=>$data['num_invoice']
 	);
 	return  $this->update($_partner_data);
 	}
-	public function getpartnerById($id){
-		$db = $this->getAdapter();
-		$sql = "SELECT * FROM cms_partner_deposit WHERE id = ".$db->quote($id);
-		$sql.=" LIMIT 1 ";
-		$row=$db->fetchRow($sql);
-		return $row;
-	}
+// 	public function getpartnerById($id){
+// 		$db = $this->getAdapter();
+// 		$sql = "SELECT * FROM cms_partner_deposit WHERE id = ".$db->quote($id);
+// 		$sql.=" LIMIT 1 ";
+// 		$row=$db->fetchRow($sql);
+// 		return $row;
+// 	}
 	public function getdepositedetail($id){
 		$db = $this->getAdapter();
 		$sql = "SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id);
 		$row=$db->fetchAll($sql);
 		return $row;
 	}
-	public function getGroupDepositeDetail($id){ 
-		$db = $this->getAdapter();
-		$sql = "SELECT currency_type, sum(deposite_amount) AS amount
-			 FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id);
-		$sql.=" GROUP BY currency_type ORDER BY date LIMIT 3";
-		$row=$db->fetchAll($sql);
-		return $row;
-	}
+// 	public function getGroupDepositeDetail($id){ 
+// 		$db = $this->getAdapter();
+// 		$sql = "SELECT currency_type, sum(deposite_amount) AS amount
+// 			 FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id);
+// 		$sql.=" GROUP BY currency_type ORDER BY date LIMIT 3";
+// 		$row=$db->fetchAll($sql);
+// 		return $row;
+// 	}
 }
 
 ?>

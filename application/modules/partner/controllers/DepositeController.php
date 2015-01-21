@@ -68,8 +68,8 @@ class Partner_DepositeController extends Zend_Controller_Action
 		}
 		$id = $this->getRequest()->getParam("id");
 		$row = $db_deposite->getpartnerById($id);
-		$withdraw=new Partner_Form_FrmDeposite();
-		$frm = $withdraw->partnerinformation($row);
+		$deposite=new Partner_Form_FrmDeposite();
+		$frm = $deposite->partnerinformation($row);
 		Application_Model_Decorator::removeAllDecorator($frm);
 		$this->view->frm=$frm;
 		$db = new Application_Model_DbTable_DbGlobal();
