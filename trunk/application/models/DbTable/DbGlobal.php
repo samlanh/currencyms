@@ -11,6 +11,34 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 	 * @param string $sql
 	 * @return array $row;
 	 */
+	public function getAllCOName(){
+		$this->_name='ln_co';
+		$sql = " SELECT co_id,co_khname FROM $this->_name WHERE status=1 AND co_khname!='' ";
+		$db = $this->getAdapter();
+		return $db->fetchAll($sql);
+	}
+	public function getAllDegree($id=null){
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		$opt_degree = array(
+				1=>$this->tr->translate("Diploma"),
+				2=>$this->tr->translate("Associate"),
+				3=>$this->tr->translate("Bechelor"),
+				4=>$this->tr->translate("Master"),
+				5=>$this->tr->translate("PhD")
+		);
+		if($id==null)return $opt_degree;
+		else return $opt_degree[$id];
+	}
+	public function getAllBranchName($branch_id=null){
+		$db = $this->getAdapter();
+		$sql= "SELECT br_id,branch_namekh,
+		branch_nameen,branch_address,branch_code,branch_tel,displayby
+		FROM `ln_branch` WHERE (branch_namekh !='' OR branch_nameen!='') ";
+		if($branch_id!=null){
+			$sql.=" AND br_id=$branch_id LIMIT 1";
+		}
+		return $db->fetchAll($sql);
+	}
 	public function getGlobalDb($sql)
   	{
   	   // print $sql;exit;
@@ -19,7 +47,19 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
   		if(!$row) return NULL;
   		return $row;
   	}
-  	
+  	public function getNewInvoiceExchange(){
+  		$this->_name='ln_exchange';
+  		$db = $this->getAdapter();
+  		$sql=" SELECT id FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+  		$acc_no = $db->fetchOne($sql);
+  		$new_acc_no= (int)$acc_no+1;
+  		$acc_no= strlen((int)$acc_no+1);
+  		$pre = "";
+  		for($i = $acc_no;$i<6;$i++){
+  			$pre.='0';
+  		}
+  		return $pre.$new_acc_no;
+  	}
   	public function getGlobalDbRow($sql)
   	{
   		//print $sql;exit;
@@ -238,6 +278,22 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     	}
     	
     	
+    }
+    public function getClientByType($type=null){
+    	$this->_name='ln_client';
+    	$where='';
+    	if($type!=null){
+    		$where=' AND is_group = 1';
+    	}
+    	$sql = " SELECT client_id,name_en,client_number,
+    	(SELECT village_name FROM `ln_village` WHERE vill_id = village_id  LIMIT 1) AS village_name,
+    	(SELECT commune_name FROM `ln_commune` WHERE com_id = com_id  LIMIT 1) AS commune_name,
+    	(SELECT district_name FROM `ln_district` AS ds WHERE dis_id = ds.dis_id  LIMIT 1) AS district_name,
+    	(SELECT province_en_name FROM `ln_province` WHERE province_id= pro_id  LIMIT 1) AS province_en_name
+    
+    	FROM $this->_name WHERE status=1 AND name_en!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql.$where);
     }
 }
 ?>

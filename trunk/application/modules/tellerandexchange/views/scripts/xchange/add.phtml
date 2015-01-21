@@ -1,0 +1,357 @@
+﻿<?php
+	$this->headTitle('Currency Smart | Add Money Stock'); 
+	echo $this->headTitle();
+	$session_user=new Zend_Session_Namespace('auth');
+	$form = $this->frm;
+?>	
+<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
+<script src="<?php echo $baseurl;?>/js/help.js"></script>
+<script type="text/javascript">
+	dojo.require("dijit.form.DateTextBox");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require('dijit.form.NumberTextBox');
+	dojo.require("dojo.NodeList-manipulate");
+	dojo.require("dojo.html");
+	dojo.require('dijit.form.Select');	
+	dojo.ready(function(){
+		addAmountTypeMoney();		
+		
+	});  
+	    
+</script>
+<style>
+	.tbtable{		
+		font-weight: bolder;
+		line-height: 40px;
+		text-align: center;
+	}
+	.tbtable .tbheader{
+		background-color: #012a15;
+		text-align: left;
+		color: #fff;
+	}
+	.tbtable .first{
+		background-color: #016315;
+		color: #fff;
+	}
+	.tbtable .first td{
+		width: 33.33%
+	}
+	.tbtable .second{
+		background-color: #fff; 
+		color: black;
+	}
+	.nevg-value{
+		color: RED;
+	}
+	.tbtable .second .input-inner {
+		margin: 0px;
+		padding: 0px;
+		width: 99%;	
+		border: none;
+	}
+	
+	#dollar.dijitInputInner, #bath.dijitInputInner, #rail.dijitInputInner{
+		text-align: center;		
+		background-color: #FFFFFF !important;
+	}
+	
+	.bg-white{
+		background-color: #FFFFFF !important;		
+	}
+table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1); padding:2px;}
+}
+.smallsize{ width:20% !important;}
+</style>
+<form action="<?php echo $this->url(array('module'=>'tellerandexchange','controller'=>'xchange','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+				return true;
+			}
+			return false;
+	</script>
+<table  cellspacing="10" width="100%">
+		<tr>
+			<td><fieldset>
+					<legend ><strong>អាត្រាប្តូបាក់</strong></legend>
+						<table cellspacing="5" cellpadding="0" width="100%">
+							<tr>
+								<td>លេខកូដ</td>
+								<td><?php echo $form->getElement('number_code');?></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>ប្រភេទត្រូវប្តូប្រាក់</td>
+								<td><?php echo $form->getElement('onetomany');?></td>
+								<td>Date</td>
+								<td><?php echo $form->getElement('date');?></td>
+								<td>Customer</td>
+								<td><?php echo $form->getElement('cusomer');?></td>
+							</tr>
+								<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" />
+					</table>
+					
+				<fieldset>
+					<legend ><strong></strong></legend>
+						<table cellspacing="5" cellpadding="0" width="100%" >
+							<tr>
+								<td valign="top">
+									 <table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
+											<tr id="head_title" class="head-title" align="center"></tr>
+									</table>
+								</td>
+							</tr>
+							<tr style="border:1px solid #ccc !important;">
+								<td align="left" valign="top">
+									<input id="add-append"  label="បន្ថែម" dojoType="dijit.form.Button" iconClass="dijitIconApplication" Onclick="addAmountTypeMoney();" />
+								</td>
+							</tr>
+					</table>
+				</fieldset>
+				<fieldset>
+					<legend><strong>បង់ប្រាក់</strong></legend>
+					<table>
+						<tr>
+							<td>ប្រាក់បង់សរុប</td>
+							<td>ដុល្លា</td>
+							<td><?php echo $form->getElement('payusa');?></td>
+							<td>រៀល</td>
+							<td><?php echo $form->getElement('payr');?></td>
+							<td>បាត់</td>
+							<td><?php echo $form->getElement('payb');?></td>
+						</tr>
+						<tr>
+							<td>ប្រាក់ទទួលបាន</td>
+							<td>ដុល្លា</td>
+							<td><?php echo $form->getElement('getusa');?></td>
+							<td>រៀល</td>
+							<td><?php echo $form->getElement('getr');?></td>
+							<td>បាត់</td>
+							<td><?php echo $form->getElement('getb');?></td>
+						</tr>
+						<tr>
+							<td>ប្រាក់អាប់</td>
+							<td>ដុល្លា</td>
+							<td><?php echo $form->getElement('returnusa');?></td>
+							<td>រៀល</td>
+							<td><?php echo $form->getElement('returnr');?></td>
+							<td>បាត់</td>
+							<td><?php echo $form->getElement('returnb');?></td>
+						</tr>
+					</table>
+				</fieldset>
+			</td>			
+		</tr>
+		<tr>
+			<td align="center">
+				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+			</td>
+		</tr>
+	</table>		
+</form>
+<form id='frm_add_capital' action="<?php echo $this->url(array('module'=>'capital','controller'=>'stock','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">			
+			if(this.validate()) {
+				/*if(dijit.byId('doloar').get('value') == 0 && dijit.byId('bath').get('value') == 0 && dijit.byId('rail').get('value') == 0){
+					dijit.byId('doloar').focus();
+					return false;
+				}*/
+
+				return true;
+			} else {
+				return false;
+			}
+	</script>	 
+	
+	<table class="tbtable" style="margin:10px auto; width:100%; border-collapse: collapse; border:1px solid #ccc;" >
+		<tr>
+			<td width="50%" valign="top">
+			 	<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
+					<tr id="head_title" class="head-title" align="center"></tr>
+				</table>
+			</td>
+		</tr>
+		<tr style="border:1px solid #ccc !important;">
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+from=0;to=0;
+function deleteRecord(index){
+	var ids =dijit.byId('record_row').value;
+	if(ids.length=='' || ids.length==null){
+		dijit.byId('record_row').attr('value','');
+		dojo.query("#row_capital"+ids).remove();
+		
+	}else{
+		var arrays = ids.split(',');
+		for(var i=0;i<arrays.length;i++) {
+			if(arrays[i] == index) arrays.splice(i,1);
+		}
+		var strings = arrays.join(',');
+		dijit.byId('record_row').attr('value',strings);
+		dojo.query("#row_capital"+index).remove();
+	}
+	netTotal();
+	
+}
+function checkSelectOption(type,record){
+	from =dijit.byId('from_type'+record).get('value'); //dijit.byId('from_type'+record).attr("disabled", true);
+	to =dijit.byId('to_type'+record).get('value');
+	//calCulateExchange(record);
+	checkRateDollar(from,to,record);
+	
+}
+function checkRateDollar(from,to,record){//for tab dollar
+	url = "<?php echo BASE_URL;?>/tellerandexchange/xchange/check-rate";
+	dojo.xhrPost({
+	      url: url,
+	      load: function(data){
+			 // alert(data);
+	    	  tmp = dojo.fromJson(data);		    	  
+	    	  for(var i=0; i< tmp.length; i++){
+	    		  dijit.byId('exchange_rate'+record).attr('value','');
+	    		  if(from==2 && to==3 || from==3 && to==2){//dollar to bath
+					  dijit.byId('exchange_rate'+record).attr('value',tmp[0].rate_in);
+				  }else if(from==2 && to==1 || from==1 && to==2){//dolar to riel
+					  dijit.byId('exchange_rate'+record).attr('value',tmp[1].rate_in); 
+				  }else if(from==3 && to==1 || from==1 && to==3){
+					  dijit.byId('exchange_rate'+record).attr('value',tmp[2].rate_in); 
+				  }
+	    	  }
+	    	  
+	      },
+	      error: function(error){
+		      alert(error);	        
+	       // alert("Error, please reload page, Try it again.");
+	      }
+    });
+}
+function enableExchangeRate(record){
+	if(dijit.byId('is_spacial'+record).checked){
+		dijit.byId('exchange_rate'+record).set('readOnly',false);
+	}else{
+		checkSelectOption(record,1);
+		dijit.byId('exchange_rate'+record).set('readOnly',true);
+	}
+}
+curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
+	temp='';
+	r = 0;
+	fund_title=0;
+function addAmountTypeMoney(){
+			r++;
+			if(fund_title!=1){
+				thead='<th>លុប</th>';
+				thead+='<th>ប្តូពី</th>';
+				thead+='<th>មកជា</th>';
+				thead+='<th>អតិថិជនពិសេស</th>';
+				thead+='<th>អាត្រាប្តូប្រាក់</th>';
+				thead+='<th>ចំនួនប្តូរ</th>';
+				thead+='<th>ចំនួនទទួលបាន</th>';
+				thead+='<th>សម្គាល់ </th>';
+				fund_title=1;
+				dojo.query("#head_title").append(thead);
+	        }
+			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp+='<td><select style=" width:70%;" id="from_type'+r+'" name="from_type'+r+'" dojoType="dijit.form.FilteringSelect" onchange="checkSelectOption(1,'+r+')"  >'+curr_dollar_amountoption+'</select></td>';
+			temp+='<td><select style=" width:70%;" id="to_type'+r+'" name="to_type'+r+'" dojoType="dijit.form.FilteringSelect" onchange="checkSelectOption(2,'+r+')">'+curr_dollar_amountoption+'</select></td>';
+			temp+='<td><input type="CheckBox" style=" width:15%;" required="true" onclick="enableExchangeRate('+r+')" name="is_spacial'+r+'" id="is_spacial'+r+'" dojoType="dijit.form.CheckBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" readonly="true" required="true" name="exchange_rate'+r+'" id="exchange_rate'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" onkeyup="calCulateExchange('+r+',0);" name="exchange_amount'+r+'" id="exchange_amount'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;" required="true" onkeyup="calCulateExchange('+r+',1);"  name="amount_exchanged'+r+'" id="amount_exchanged'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" s/></td>';
+			tmp='<tr style="border:1px solid #ccc;" id="row_capital'+r+'">'
+			tmp+="</tr>";
+				dojo.query("#t_amountmoneytype").append(tmp);
+				dojo.html.set(dojo.byId("row_capital"+r),temp, {
+			    parseContent: true,
+			     
+			});
+			if(dijit.byId("record_row").get('value')!="") {
+				var ids = dijit.byId("record_row").value;
+				dijit.byId("record_row").attr('value',ids+','+r);
+			} else { dijit.byId("record_row").attr('value',r);}
+
+		
+	}	
+	sub_title=0;
+	s=0;
+
+	function calCulateExchange(record,reverse){
+		from =dijit.byId('from_type'+record).get('value'); //dijit.byId('from_type'+record).attr("disabled", true);
+		to =dijit.byId('to_type'+record).get('value');
+		//alert(typeof(from));
+		//alert(to);
+		xchange_rate = dijit.byId('exchange_rate'+record).get('value');
+		//change_amount = dijit.byId('exchange_amount'+record).get('value');
+		if(reverse==1){
+			change_amount=dijit.byId('amount_exchanged'+record).get('value');
+		}else{
+			change_amount=dijit.byId('exchange_amount'+record).get('value');
+		}
+		 if(from==1 || (from ==3 && to ==2)){//dollar to bath
+			if(reverse==1){
+				amount = change_amount*xchange_rate;
+			}else{
+				amount = change_amount/xchange_rate;
+			}
+		  }else if(from==2 || (from==3 && to==1 )){//riel to bath and dollar
+			  if(reverse==1){
+					amount = change_amount/xchange_rate;
+				}else{
+					amount = change_amount*xchange_rate;
+				}
+		  }
+		if(reverse==1){
+			dijit.byId('exchange_amount'+record).attr('value',amount);
+		}else{
+			dijit.byId('amount_exchanged'+record).attr('value',amount);
+		}
+		netTotal();
+		
+	}
+	function netTotal() {
+		 var netTotal=0;
+		 out_riel = 0;
+		 out_dollar = 0;
+		 out_bath = 0;
+		 in_riel = 0;
+		 in_dollar = 0;
+		 in_bath = 0;
+		 var rowId = dijit.byId('record_row').get('value');
+		 var rowIDArray = rowId.split(',');
+		 for(var n = 0; n < rowIDArray.length; n++) {
+			from_type =  dijit.byId('from_type'+rowIDArray[n]).get('value');
+			to_type =  dijit.byId('from_type'+rowIDArray[n]).get('value');
+			amount = dijit.byId('exchange_amount'+rowIDArray[n]).get('value');
+			out_amount = dijit.byId('amount_exchanged'+rowIDArray[n]).get('value');
+			if(from_type==1){
+				in_riel=in_riel+amount;
+			}else if(from_type==2){
+				in_dollar=in_dollar+amount;
+			}else if(from_type==3){
+				in_bath=in_bath+amount;
+		   }
+		///for to type
+			if(to_type==1){
+				out_riel=out_riel+out_amount;
+			}else if(to_type==2){
+				out_dollar=out_dollar+out_amount;
+			}else if(to_type==3){
+				 out_bath =out_bath+ out_amount;
+		   }
+		 }
+		dijit.byId('payusa').attr('value',in_dollar);
+		dijit.byId('payr').attr('value',in_riel);
+		dijit.byId('payb').attr('value',in_bath);
+		dijit.byId('payusa').attr('value',in_dollar);
+		dijit.byId('payr').attr('value',in_riel);
+		dijit.byId('payb').attr('value',in_bath);
+	}
+</script>
