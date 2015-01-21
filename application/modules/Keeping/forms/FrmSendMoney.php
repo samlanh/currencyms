@@ -28,8 +28,12 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         		'dojoType'=>'dijit.form.FilteringSelect',
         		'onchange'=>"calExpiredDate();"
         ));
-        $opt=array(1=>"ថ្ងៃ",2=>"សប្ថាហ៍",3=>"ខែ",);
+        $db = new Keeping_Model_DbTable_DbKeeping();
+        $opt = $db->getNameView(null,1);
         $pay_term->setMultiOptions($opt);
+        
+//         $opt=array(1=>"ថ្ងៃ",2=>"សប្ថាហ៍",3=>"ខែ",);
+//         $pay_term->setMultiOptions($opt);
          
         $money_inacc=new Zend_Dojo_Form_Element_ValidationTextBox('money_inacc');
         $money_inacc->setAttribs(array(

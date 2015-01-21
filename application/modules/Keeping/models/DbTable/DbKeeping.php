@@ -127,5 +127,25 @@
 			 
 			 
 		}
+		function getNameView($id=null,$option=null){
+			$db=$this->getAdapter();
+			$sql = " select id,name_en from cms_view where status=1 ";
+			if($id!=null){
+				$sql.=" AND id = $id";
+			}
+			$rows = $db->fetchAll($sql);
+			if($option!=null){
+				$opt = '';
+				foreach ($rows as $rs){
+					$opt[$rs['id']]=$rs['name_en'];
+				}
+				return $opt;
+		
+			}else{
+				return $rows;
+			}
+		
+		
+		}
 	}
 ?>
