@@ -28,21 +28,22 @@ class Partner_IndexController extends Zend_Controller_Action
 //     					'status' => -1);
 //     		}
     		$rs_rows= $db->getAllPartner($search=null);
+    		//print_r($rs_rows);exit();
     	    
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
     		$list = new Application_Form_Frmtable();
     		$collumns = array("PARENT","PARTNERBRAND","PARTNERNAME","NATION ID",
-    				"ACCOUNTNo","ADDRESS","HOUSENo","GROUPNo","STREET","COMMUNE","DISTRICT","PROVINCE","PHONE","MOBILE","NOTE","ISCASHOPERATION","CASH RIEL",
+    				"ACCOUNTNo","PROVINCE","PHONE","MOBILE","CASH RIEL",
     				"CASHDOLLAR","CASHBATH","DATE","STATUS",
     			);
     		$link=array(
     				'module'=>'partner','controller'=>'index','action'=>'edite',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('partner_name'=>$link,''=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('partner_name'=>$link,'partner_brand'=>$link,'name'=>$link,'address'=>$link));
          	}catch (Exception $e){
 //     		Application_Form_FrmMessage::message("Application Error");
-//     		echo $e->getMessage();
+    		echo $e->getMessage();
 //     		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
     	}
     	
@@ -55,12 +56,14 @@ class Partner_IndexController extends Zend_Controller_Action
     	if($this->getRequest()->isPost()){
 			$data=$this->getRequest()->getPost();	
 		    
-			$db_partner = new Partner_Model_DbTable_DbPartner();				
+			$db_partner = new Partner_Model_DbTable_DbPartner();
+			//print_r($data);exit();				
  			try {
 			$db = $db_partner->insertPartner($data);				
-  				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+//   				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
 			$this->view->msgs = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
 			} catch (Exception $e) {
+				//echo $e->getMessage();exit();
 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
 			}
 	}

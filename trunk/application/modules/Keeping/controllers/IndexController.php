@@ -23,7 +23,7 @@ class Keeping_IndexController extends Zend_Controller_Action
 // 			$glClass = new Application_Model_GlobalClass();
 // 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ(សប្តាហ៏)","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ");
+			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ(សប្តាហ៏)","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ","Status");
 			$link=array(
 					'module'=>'Keeping','controller'=>'index','action'=>'edit',
 			);

@@ -60,7 +60,7 @@
 			$db=$this->getAdapter();
 			$sql = "SELECT id ,
 						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name
-						,payment_term,date_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
+						,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,date_keeping,amount_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
 			
 			return $db->fetchAll($sql);
 		}
@@ -105,6 +105,7 @@
 			$db = $this->getAdapter();
 			$sql=" SELECT id,client_id,payment_term,date_keeping,amount_keeping,
 			exp_date,invoice_number FROM $this->_name where id=$id ";
+			
 			return $db->fetchRow($sql);
 		}
 		function getNameKeeping($id=null,$option=null){
