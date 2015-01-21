@@ -11,8 +11,11 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$mainbranch=new Zend_Dojo_Form_Element_FilteringSelect('main_branch');
     	$mainbranch->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$opt=array(1=>'មេ',2=>'កូន',);
+    	$db = new Partner_Model_DbTable_DbPartner();
+    	$opt = $db->getNamePartnerparent(null,1);
     	$mainbranch->setMultiOptions($opt);
+//     	$opt=array(1=>'មេ',2=>'កូន',);
+//     	$mainbranch->setMultiOptions($opt);
     	
     	
     	$branchname=new Zend_Dojo_Form_Element_ValidationTextBox('branch_name');	
@@ -74,12 +77,15 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$provicenumber->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'
     			));
-    	$opt=array(1=>'កំពង់ស្ពឺ',2=>'តាកែវ',3=>'កំពត',4=>'កែប',
-    			5=>'កណ្តាល',6=>'ស្វាយរៀង',7=>'កំពង់ធំ',8=>'ព្រៃវែង',
-    			9=>'ពោធិសាត',10=>'ក្រចេះ',11=>'កំពង់ឆ្នាំង',12=>'រតនគិរី',
-    			13=>'ប់ោយប៉ែត',14=>'បន្ទាយមានជ័យ',15=>'សៀមរាប',16=>'ព្រះវិហារ',
-    			17=>'មណ្ឌលគិរី',18=>'កំពង់សោម',19=>'ភ្នំពេញ',);
+    	$db = new Partner_Model_DbTable_DbPartner();
+    	$opt = $db->getNamePartner(null,1);
     	$provicenumber->setMultiOptions($opt);
+//     	$opt=array(1=>'កំពង់ស្ពឺ',2=>'តាកែវ',3=>'កំពត',4=>'កែប',
+//     			5=>'កណ្តាល',6=>'ស្វាយរៀង',7=>'កំពង់ធំ',8=>'ព្រៃវែង',
+//     			9=>'ពោធិសាត',10=>'ក្រចេះ',11=>'កំពង់ឆ្នាំង',12=>'រតនគិរី',
+//     			13=>'ប់ោយប៉ែត',14=>'បន្ទាយមានជ័យ',15=>'សៀមរាប',16=>'ព្រះវិហារ',
+//     			17=>'មណ្ឌលគិរី',18=>'កំពង់សោម',19=>'ភ្នំពេញ',);
+//     	$provicenumber->setMultiOptions($opt);
     	
     	$phonenumber=new Zend_Dojo_Form_Element_TextBox('phone_number');
     	$phonenumber->setAttribs(array(

@@ -2,7 +2,10 @@
 Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 	{
 		protected $_name="cms_partner";
-		Function insertPartner($data){
+	function insertPartner($data){
+			$db = $this->getAdapter();
+			$db->beginTransaction();
+		try{
 			$arr=array(
 					'parent'=>$data['main_branch'],
 					'partner_brand'=>$data['branch_name'],
@@ -28,10 +31,12 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'status'=>$data['status']
 				
 			);
-			
 			$this->insert($arr);
-				
-			
+			$db->commit();
+			}catch (Exception $e){	
+				echo $e->getMessage();	
+				$db->rollBack();
+			}		
 		}
 		Function getupdatePartner($data){
 			$arr=array(
@@ -67,10 +72,50 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 		}
         function getAllPartner($search=null){
         	$db=$this->getAdapter();
-        	$sql="SELECT id,parent,partner_name,partner_brand,account_no,
-        	nation_id,address,house_no,group_no,street,commune,district,province,tel,mobile,note,is_cashoperation,cash_riel,
+        	$sql="SELECT id,(SELECT parent FROM cms_partner) AS parent,partner_name,partner_brand,account_no,
+        	nation_id,(SELECT name FROM cs_provinces WHERE id = province) AS name,tel,mobile,cash_riel,
         	cash_dollar,cash_bath,DATE,STATUS  FROM cms_partner ";
         	return $db->fetchAll($sql);
+        }
+        function getNamePartner($id=null,$option=null){
+        	$db=$this->getAdapter();
+        	$sql = " select id,name from cs_provinces ";
+        	if($id!=null){
+        		$sql.=" AND id = $id";
+        	}
+        	$rows = $db->fetchAll($sql);
+        	if($option!=null){
+        		$opt = '';
+        		foreach ($rows as $rs){
+        			$opt[$rs['id']]=$rs['name'];
+        		}
+        		return $opt;
+        
+        	}else{
+        		return $rows;
+        	}
+        
+        
+        }
+        function getNamePartnerparent($id=null,$option=null){
+        	$db=$this->getAdapter();
+        	$sql = " select id,parent from cms_partner ";
+        	if($id!=null){
+        		$sql.=" AND id = $id";
+        	}
+        	$rows = $db->fetchAll($sql);
+        	if($option!=null){
+        		$opt = '';
+        		foreach ($rows as $rs){
+        			$opt[$rs['id']]=$rs['parent'];
+        		}
+        		return $opt;
+        
+        	}else{
+        		return $rows;
+        	}
+        
+        
         }
         function getEditetePartner($id){
         	$db=$this->getAdapter();
