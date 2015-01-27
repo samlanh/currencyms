@@ -74,18 +74,23 @@
 						'invoice_number'=>$data['report'],
 	
 				);
-// 			print_r($arr);exit();
-		
-			$where=" id = ".$data['id'];
+		//	print_r($arr);exit();
+		 
+			$where=" id =".$data['id'];
 // 			print_r($where);exit();
 		$this->update($arr, $where);
 // 		print_r($db);exit();
-			
+
+		
+		$where = " keeping_id = ".$data['id'];
+// 			print_r($where);exit();
+			$_arr = array('status'=>0);
 			$this->_name='cms_keepingdetail';
-			$ids = explode(',',$data['record_row']);
+		$this->update($_arr,$where);
+		$ids = explode(',',$data['record_row']);
 			foreach ($ids as $i){
 				$arr = array(
-						'keeping_id'=>$ids,
+						'keeping_id'=>$data['id'],
 						'currency_type'=>$data['type_money'.$i],
 						'money_inacc'=>$data['money_inacc'.$i],
 						'cut_money'=>empty($data['is_spacial'.$i])?0:1,
@@ -108,6 +113,13 @@
 			
 			return $db->fetchRow($sql);
 		}
+		public function getKeepingdetail($id){
+			$db = $this->getAdapter();
+			$sql = "SELECT * FROM cms_keepingdetail WHERE keeping_id = ".$db->quote($id)." AND status=1";
+			//echo $sql;exit();
+			$row=$db->fetchAll($sql);
+			return $row;
+		}
 		function getNameKeeping($id=null,$option=null){
 			$db=$this->getAdapter();
 			$sql = " select id,client_name from cms_client where status=1 ";
@@ -128,6 +140,7 @@
 			 
 			 
 		}
+		
 		function getNameView($id=null,$option=null){
 			$db=$this->getAdapter();
 			$sql = " select id,name_en from cms_view where status=1 ";

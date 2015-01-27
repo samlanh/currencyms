@@ -54,15 +54,12 @@ class Keeping_IndexController extends Zend_Controller_Action
     				}	
     				
    //form
-    	$sendmoney=new Keeping_Form_FrmSendMoney();
+    	$sendmoney=new Capital_Form_FrmCapitale();
     	$db= new Keeping_Model_DbTable_DbKeeping();
     	$frm = $sendmoney->addSendMoney();
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     	$this->view->currency_type = $db->CurruncyTypeOption();
-    }
-    function addbAction(){
-    	
     }
     function editAction(){
     	$id = $this->getRequest()->getParam("id");
@@ -71,14 +68,17 @@ class Keeping_IndexController extends Zend_Controller_Action
     	
     	$fm = new Keeping_Form_FrmSendMoney();
     	$frm = $fm->addSendMoney($row);
-    
+       
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm_putmoney= $frm;
     	$this->view->currency_type = $db->CurruncyTypeOption();
     	
+    	$db_keeping = new Keeping_Model_DbTable_DbKeeping();
+    	$this->view->rs_rows = $db_keeping->getKeepingdetail($id);
+    	
     	if($this->getRequest()->isPost()){
     		$data=$this->getRequest()->getPost();
-    	
+    	 //   print_r($data);exit();
     		$db_keeping = new Keeping_Model_DbTable_DbKeeping();
     		try {
     			$db = $db_keeping->updateKeeping($data);
@@ -90,87 +90,6 @@ class Keeping_IndexController extends Zend_Controller_Action
     		$this->_redirect("Keeping/index/index");
     	}
     }
-    
-    public function putAction()
-    {
-    	 
-    	$pructis=new Money_Form_FrmMoney();
-    	$frm = $pructis->addMoney();
-    	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
-    }
-    public function newmAction()
-    {
-    	$pructis=new Money_Form_FrmMoney();
-    	$frm = $pructis->addMoney();
-    	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
-    }
-    public function dakAction()
-    {
-    
-    
-    	//     	if($this->getRequest()->isPost()){
-    	// 			$agentdata=$this->getRequest()->getPost();
-    	// 			$db_agent = new Application_Model_DbTable_DbAgents();
-    	// 			try {
-    	// 				$db = $db_agent->insertAgent($agentdata);
-    	// 				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
-    	// 			} catch (Exception $e) {
-    	// 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
-    	// 			}
-    	// 		}
-    	$pructis=new Money_Form_OutMoney();
-    	$frm = $pructis->dakMoney();
-    	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
-    }
-    
-    public function putmoneyAction()
-    {
-    
-    	$pructis=new Money_Form_PutMoney();
-    	$frm = $pructis->dakMoney();
-    	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
-    }
-    
-    
-
-    public function viewAction()
-    {
-        // action body
-        $ag_id = $this->getRequest()->getParam('ag_id');
-		
-		$db_agent = new Application_Model_DbTable_DbAgents();
-		$this->view->agent_view = $db_agent->getAgentViewById($ag_id);
-    }
-
-    public function editedAction()
-    {
-        // action body
-        $ag_id = $this->getRequest()->getParam('ag_id');
-    	$ag_id = (empty($ag_id))? 0 : $ag_id; 
-    	
-    	$pro = new Application_Model_DbTable_DbProvinces();
-		$this->view->provinces = $pro->getProvinceListAll();
-		
-		$db_agent = new Application_Model_DbTable_DbAgents();
-		$this->view->agent_edit = $db_agent->getAgentEditedById($ag_id);
-		
-    	if($this->getRequest()->isPost()){
-			$agentdata=$this->getRequest()->getPost();	
-							
-			try {
-				$db = $db_agent->updateAgent($agentdata);				
-				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);		
-			} catch (Exception $e) {
-				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
-			}
-		}
-    }
-
-
 }
 
 

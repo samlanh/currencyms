@@ -33,9 +33,9 @@ class Partner_IndexController extends Zend_Controller_Action
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("PARENT","PARTNERBRAND","PARTNERNAME","NATION ID",
-    				"ACCOUNTNo","PROVINCE","PHONE","MOBILE","CASH RIEL",
-    				"CASHDOLLAR","CASHBATH","DATE","STATUS",
+    		$collumns = array("ដៃគូមេ","ឈ្មោះអ្នកគ្រប់គ្រង","ឈ្មោះដៃគូរសហការណ៏","លេខគណនេយ្យ",
+    				"លេខអត្តសញ្ញាណប័ណ្ណ","ខេត្ត/ក្រុង","លេខទូរស័ព្ទ ","លេខទូរស័ព្ទដៃ","​ប្រាក់រៀល",
+    				"ប្រាក់ដុល្លា","ប្រាក់បាត","DATE","STATUS",
     			);
     		$link=array(
     				'module'=>'partner','controller'=>'index','action'=>'edite',
@@ -68,10 +68,11 @@ class Partner_IndexController extends Zend_Controller_Action
 			}
 	}
     	$pructis=new Partner_Form_FrmPartner();
+   
     	$frm = $pructis->addPartner();
     	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
-    
+        $form=	$this->view->frm=$frm;
+//        print_r($form);exit();
     }
  
 
@@ -89,6 +90,7 @@ class Partner_IndexController extends Zend_Controller_Action
     	//update
     	if($this->getRequest()->isPost()){
     		$data=$this->getRequest()->getPost();
+    		//rint_r($data);exit();
   		try {
    			//$db = $db_partner->updatePartner($data);
     		$db_patner = new  Partner_Model_DbTable_DbPartner();
@@ -105,6 +107,7 @@ class Partner_IndexController extends Zend_Controller_Action
     	$db_partner = new Partner_Model_DbTable_DbPartner();
     	$id=$this->getRequest()->getParam('id');
     	$row=$db_partner->getEditetePartner($id);
+    //	print_r($row);exit();
     	$pructis=new Partner_Form_FrmPartner();
     	$frm = $pructis->addPartner($row);
        

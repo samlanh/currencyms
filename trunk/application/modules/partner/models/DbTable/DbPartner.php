@@ -72,9 +72,11 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 		}
         function getAllPartner($search=null){
         	$db=$this->getAdapter();
-        	$sql="SELECT id,(SELECT parent FROM cms_partner) AS parent,partner_name,partner_brand,account_no,
-        	nation_id,(SELECT name FROM cs_provinces WHERE id = province) AS name,tel,mobile,cash_riel,
-        	cash_dollar,cash_bath,DATE,STATUS  FROM cms_partner ";
+        	$sql="SELECT p.id,
+        		(SELECT s.partner_name FROM cms_partner AS s WHERE s.id=p.parent ) AS parent_name
+        	,p.partner_name,p.partner_brand,p.account_no,
+        	p.nation_id,(SELECT name FROM cs_provinces WHERE id = p.province) AS name,p.tel,p.mobile,p.cash_riel,
+        	p.cash_dollar,p.cash_bath,p.date,p.status  FROM cms_partner AS p ";
         	return $db->fetchAll($sql);
         }
         function getNamePartner($id=null,$option=null){
@@ -99,7 +101,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         }
         function getNamePartnerparent($id=null,$option=null){
         	$db=$this->getAdapter();
-        	$sql = " select id,parent from cms_partner ";
+        	$sql = " select id,partner_name from cms_partner ";
         	if($id!=null){
         		$sql.=" AND id = $id";
         	}
@@ -107,7 +109,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	if($option!=null){
         		$opt = '';
         		foreach ($rows as $rs){
-        			$opt[$rs['id']]=$rs['parent'];
+        			$opt[$rs['id']]=$rs['partner_name'];
         		}
         		return $opt;
         

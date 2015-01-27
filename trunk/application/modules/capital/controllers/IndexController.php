@@ -12,13 +12,13 @@ class Capital_IndexController extends Zend_Controller_Action
 	
     public function init()
     {
-        /* Initialize action controller here */
-    	header('content-type: text/html; charset=utf8');
-    	
-    	//clear all other sessions
-    	Application_Form_FrmSessionManager::clearSessionSearch();
-    	
-    	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+       /* Initialize action controller here */
+			header('content-type: text/html; charset=utf8');
+			 
+			//clear all other sessions
+			Application_Form_FrmSessionManager::clearSessionSearch();
+			 
+			defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
     }
 
     public function indexAction()
@@ -118,37 +118,34 @@ class Capital_IndexController extends Zend_Controller_Action
     }
     public function addAction()
     {
-    	$session_user=new Zend_Session_Namespace('auth');
-    	$b = new Application_Model_DbTable_DbCapital();
-    	$user_id = $session_user->user_id;
-    	if($this->getRequest()->isPost()){
-    		$formdata=$this->getRequest()->getPost();
-    		$user_id = $formdata['user_id'];
-    		if($formdata['actions'] == "add_capital"){
-    			if($formdata['dollar']!=0 OR $formdata['bath']!=0 OR $formdata['rail']!=0 ){
-    				$b->addBalanceByUser($user_id, $formdata);
-    			}
-    			if(!empty($formdata['record_row'])){
-    				$b->AddCSPCurrency($user_id, $formdata);
-    			}
-    			Application_Form_FrmMessage::message('ការ​កែប្រែជោគ​ជ័យ');
-    		}
-    	}
-    	$usr_mod = new Application_Model_DbTable_DbUsers();
-    	$this->view->users = $usr_mod->getUserListSelect();
-    	$this->view->balance = $b->getCurrentBallancesByCurrentUser($user_id);
-    	$this->view->user_id = $user_id;
+//     	$session_user=new Zend_Session_Namespace('auth');
+//     	$b = new Application_Model_DbTable_DbCapital();
+//     	$user_id = $session_user->user_id;
+//     	if($this->getRequest()->isPost()){
+//     		$formdata=$this->getRequest()->getPost();
+//     		$user_id = $formdata['user_id'];
+//     		if($formdata['actions'] == "add_capital"){
+//     			if($formdata['dollar']!=0 OR $formdata['bath']!=0 OR $formdata['rail']!=0 ){
+//     				$b->addBalanceByUser($user_id, $formdata);
+//     			}
+//     			if(!empty($formdata['record_row'])){
+//     				$b->AddCSPCurrency($user_id, $formdata);
+//     			}
+//     			Application_Form_FrmMessage::message('ការ​កែប្រែជោគ​ជ័យ');
+//     		}
+//     	}
+//     	$usr_mod = new Application_Model_DbTable_DbUsers();
+//     	$this->view->users = $usr_mod->getUserListSelect();
+//     	$this->view->balance = $b->getCurrentBallancesByCurrentUser($user_id);
+//     	$this->view->user_id = $user_id;
+
+    	$from=new Capital_Form_FrmCapitale();
+        $frm = $from->frmCapital();
+        
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
     	
-    	
-//     	$form->setFormDetail('','',$user_id);
-//     	$this->view->form=$form;
-    	
-    	$db = new Application_Model_DbTable_DbGlobal();
-    	$this->view->curr_type = $db->CurruncyTypeOption();
-    	
-	    $this->view->curr_dollaramountoption = $db->CurrencyAmountOption(1);
-	    $this->view->curr_bathamountoption = $db->CurrencyAmountOption(2);
-	    $this->view->curr_rielmountoption = $db->CurrencyAmountOption(3);
+   
     }
 
     public function editedAction()
