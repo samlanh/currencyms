@@ -26,7 +26,7 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         $pay_term=new Zend_Dojo_Form_Element_FilteringSelect('pay_term');
         $pay_term->setAttribs(array(
         		'dojoType'=>'dijit.form.FilteringSelect',
-        		'onchange'=>"calExpiredDate();"
+        		'onchange'=>"calCulateFirstPayment();"
         ));
         $db = new Keeping_Model_DbTable_DbKeeping();
         $opt = $db->getNameView(null,1);
@@ -44,7 +44,7 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         $date =new Zend_Dojo_Form_Element_DateTextBox('date');
         $date->setAttribs(array(
         		'dojoType'=>'dijit.form.DateTextBox',
-        		'onchange'=>'calExpiredDate();'
+        		'onchange'=>'calCulateFirstPayment();'
         		
         ));
         $date->setValue(date('Y-m-d'));

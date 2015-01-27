@@ -60,18 +60,22 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$streetnumber->setAttribs(array(
     			'dojoType'=>'dijit.form.ValidationTextBox'));
     	
-    	$communnumber=new Zend_Dojo_Form_Element_FilteringSelect('commun_number');
+    	$communnumber=new Zend_Dojo_Form_Element_ValidationTextBox('commun_number');
     	$communnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$opt=array(1=>'Boengkâk 1',2=>'Boengkâk 2',3=>'Wat Phnom',4=>'Phsar Chas',
-    			5=>'Monorom',6=>'Ttoul Ssvay Prey 1',7=>'Ttuk Tthlar',);
-    	$communnumber->setMultiOptions($opt);
+    			'dojoType'=>'dijit.form.ValidationTextBox',
+    			'required'=>true
+    			));
+//     	$opt=array(1=>'Boengkâk 1',2=>'Boengkâk 2',3=>'Wat Phnom',4=>'Phsar Chas',
+//     			5=>'Monorom',6=>'Ttoul Ssvay Prey 1',7=>'Ttuk Tthlar',);
+//     	$communnumber->setMultiOptions($opt);
     	
-    	$districtnumber=new Zend_Dojo_Form_Element_FilteringSelect('district_number');
+    	$districtnumber=new Zend_Dojo_Form_Element_ValidationTextBox('district_number');
     	$districtnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
-    	$opt=array(1=>'Khan Toulkok',2=>'Khan Daun Penh',3=>'Khan 7 Makara',4=>'Khan Chamkarmorn',);
-    	$districtnumber->setMultiOptions($opt);
+    			'dojoType'=>'dijit.form.ValidationTextBox',
+    			'required'=>true
+    			));
+//     	$opt=array(1=>'Khan Toulkok',2=>'Khan Daun Penh',3=>'Khan 7 Makara',4=>'Khan Chamkarmorn',);
+//     	$districtnumber->setMultiOptions($opt);
     	
     	$provicenumber=new Zend_Dojo_Form_Element_FilteringSelect('province_number');
     	$provicenumber->setAttribs(array(
@@ -149,7 +153,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$date->setAttribs(array(
     			'dojoType'=>'dijit.form.DateTextBox'
     			));
-     //	$date->setValue('Y-m-d');
+    	 $date->setValue(date('Y-m-d'));
     	if($data!=null){
     		$mainbranch->setValue($data['parent']);
     		$branchname->setValue($data['partner_brand']);

@@ -1,294 +1,71 @@
 <?php
-	$this->headTitle('Currency Smart | Current Balance page'); 
-	echo $this->headTitle();
-// 	$base_url = Application_Form_FrmMessage::getUrl("/");
+$tr = Application_Form_FrmLanguages::getCurrentlanguage();
+$frm = $this->frm;
 
-	$session_user=new Zend_Session_Namespace('auth');
-?>	
-<?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
-<script src="<?php echo $baseurl;?>/js/help.js"></script>
-<script type="text/javascript">
-	dojo.require("dijit.form.DateTextBox");
-	dojo.require('dijit.form.Form');
-	dojo.require('dijit.form.FilteringSelect');	
-	dojo.require('dijit.form.Button');
-	dojo.require('dijit.form.NumberTextBox');
-	dojo.require("dojo.NodeList-manipulate");
-	dojo.require("dojo.html");
-
-	dojo.require('dijit.form.Select');	
-	
-	
-	
-	dojo.ready(function(){		
-		
-		addAmountTypeMoney();
-		var txtcommission = dojo.byId("currency_type1");
-		dojo.connect(txtcommission, "onkeyup", function(evt){			
-			
-	    });	
-
-		
-		
-	});  
-	    
-</script>
-<style>
-<!--
-	.tbtable{		
-		font-weight: bolder;
-		line-height: 40px;
-		text-align: center;
-	}
-	.tbtable .tbheader{
-		background-color: #012a15;
-		text-align: left;
-		color: #fff;
-	}
-	.tbtable .first{
-		background-color: #016315;
-		color: #fff;
-	}
-	.tbtable .first td{
-		width: 33.33%
-	}
-	.tbtable .second{
-		background-color: #fff; 
-		color: black;
-	}
-	.nevg-value{
-		color: RED;
-	}
-	.tbtable .second .input-inner {
-		margin: 0px;
-		padding: 0px;
-		width: 99%;	
-		border: none;
-	}
-	
-	#dollar.dijitInputInner, #bath.dijitInputInner, #rail.dijitInputInner{
-		text-align: center;		
-		background-color: #FFFFFF !important;
-	}
-	
-	.bg-white{
-		background-color: #FFFFFF !important;		
-	}
-table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1); padding:2px;}
+?>
+<style>	
+.fullside {
+	width: 100%;
+	height: 30px;
 }
--->
 </style>
-
-
-<?php if($session_user->level == 1): //Admin View Only?>
-<form id='frm_search_capital' action="<?php echo $this->url(array('module'=>'capital','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
-	<select style="text-align: left;" onchange="dijit.byId('frm_search_capital').submit();" name="user_id" id="select_user_id" dojoType="dijit.form.FilteringSelect" required="true"> 
-		<?php foreach ($this->users as $key => $u) : ?>
-			<option value="<?php echo $u['id'];?>" <?php echo ($u['id'] == $this->user_id)?"selected":"";?>><?php echo  $u['name'];?></option>
-		<?php endforeach;?> 
-	</select> 
-	<input type="hidden" name="actions" value="search">
-</form>
-<?php endif;?>
-
-<form id='frm_add_capital' action="<?php echo $this->url(array('module'=>'capital','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
-	<script type="dojo/method" event="onSubmit">			
+<form id='frm_add' action="<?php echo $this->url(array('module'=>'capital','controller'=>'capital','action'=>'add')); ?>" 
+				dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
-				if(dijit.byId('doloar').get('value') == 0 && dijit.byId('bath').get('value') == 0 && dijit.byId('rail').get('value') == 0){
-					dijit.byId('doloar').focus();
-					return false;
-				}
-
 				return true;
-			} else {
+			}else {
 				return false;
 			}
-	</script>	 
-	
-	<table class="tbtable" style="margin:10px auto; width:100%;">
-		<tr class="tbheader">
-			<td>&nbsp;ដើមទុនសរុបសំរាប់ថ្ងៃនេះ</td>
-		</tr>
-		<tr>
-			<td>	
-				<table cellspacing='0' border="1" style="width: 100%;">									
-					<tr class="first">
-						<td>ដុល្លា $</td>
-						<td>បាត B</td>
-						<td>រៀល R</td>
-					</tr>
-					<tr class="second">
-						<td <?php echo ($this->balance['dollar'] <0)?"class='nevg-value'":"";?>>
-							<?php echo number_format($this->balance['dollar'], (strpos($this->balance['dollar'], "."))?2:0);?>
-						</td>
-						<td <?php echo ($this->balance['bath'] <0)?"class='nevg-value'":"";?>>
-							<?php echo number_format($this->balance['bath'], (strpos($this->balance['bath'], "."))?2:0);?>
-						</td>
-						<td <?php echo ($this->balance['rail'] <0)?"class='nevg-value'":"";?>>
-							<?php echo number_format($this->balance['rail'], (strpos($this->balance['rail'], "."))?2:0);?>
-						</td>
-					</tr>									
-				</table>	
-			</td>
-		</tr>
-		<tr class="tbheader">
-			<td>&nbsp;បន្ថែមដើមទុនសរុបសំរាប់ថ្ងៃនេះ</td>
-		</tr>
-		<?php if($session_user->level == 1): //Admin Upadte Only?>
-		<tr>
-			<td>	
-				<table cellspacing='0' border="1" style="width: 100%;">									
-					<tr class="first">
-						<td>ដុល្លា $</td>
-						<td>បាត B</td>
-						<td>រៀល R</td>
-					</tr>
-					<tr class="second bg-white">
-						<td>
-							<input type="text" name="dollar" id="dollar" data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,																		
-									name:'dollar',
-									id:'dollar',	
-									class:'input-inner',								
-									value:0,
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
-						</td>
-						<td>
-							<input type="text" name="bath" id="bath"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,																		
-									name:'bath',
-									id:'bath',									
-									value:0,
-									class:'input-inner',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
-						</td>
-						<td>
-							<input type="text" name="rail" id="rail"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,																		
-									name:'rail',
-									id:'rail',									
-									value:0,
-									class:'input-inner',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
-						  <input type="hidden" name="record_row" id="record_row" dojoType="dijit.form.TextBox" />
-						</td>
-					</tr>
-					<tr>
-						<td>សំរាប់ថ្ងៃ</td>
-						<td><input type="text" name="date" id="date" data-dojo-type="dijit.form.DateTextBox"
-									data-dojo-props="required:true,																		
-									name:'date',
-									id:'date',	
-									value:'<?php echo date('Y-m-d');?>',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'"></td>
-						<td></td>
-					</tr>									
-				</table>	
-			</td>
-		</tr>
-		
-		<tr>
-			<td>
-			 	<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
-					<tr id="head_title" class="head-title" align="center"></tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td align="left">
-				<input id="add-append" value="បញ្ជូលសន្លឹក" label="បញ្ជូលសន្លឹក" dojoType="dijit.form.Button" iconClass="dijitIconApplication" Onclick="addAmountTypeMoney();" />
-			</td>
-		</tr>
-		<tr>
-			<td align="right">  
-				<input type="reset" value="សំអាត" label="សំអាត" id="busyButton" dojoType="dijit.form.Button"/>
-				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" />				 
-			</td>
-		</tr>
-		<?php endif;?>
-	</table>
-	<input type="hidden" name="user_id" value="<?php echo $this->user_id;?>">
-	<input type="hidden" name="actions" value="add_capital">
+</script>
+<table cellspacing="10" class='fullside'>
+	<tr>
+		<td>
+				<fieldset>
+					<legend><strong>Form Add Capital</strong></legend>
+					<table cellspacing="10"  width="100%">
+						<tr>
+							<td>Note</td>
+							<td><?php echo $frm->getElement('note')?></td>
+							<td></td>
+							<td></td>
+							<td></td>	
+							<td></td>
+						</tr>
+						<tr>
+							<td>ážŸáž¶áž�áž¶</td>
+							<td><?php echo $frm->getElement('brance')?></td>
+							<td>Date</td>	
+							<td><?php echo $frm->getElement('date')?></td>
+							<td><?php echo $tr->translate("Stutas")?></td>
+							<td><?php echo $frm->getElement('status')?></td>
+						</tr>
+						<tr>
+							<td>áž”áŸ’ážšáž¶áž€áŸ‹ážŠáž»áž›áŸ’áž›áž¶</td>
+							<td><?php echo $frm->getElement('usa')?></td>
+							<td>áž”áŸ’ážšáž¶áž€áŸ‹áž”áž¶áž�</td>	
+							<td><?php echo $frm->getElement('bath')?></td>
+							<td>áž”áŸ’ážšáž¶áž€áŸ‹ážšáŸ€áž›</td>
+							<td><?php echo $frm->getElement('reil')?></td>
+							
+						</tr>
+					</table>
+				</fieldset>
+				
+		</td>
+	</tr>		
+	<tr>
+		<td align="center">
+			<input type="submit" value="ážšáž€áŸ’ážŸáž¶áž‘áž»áž€" label="ážšáž€áŸ’ážŸáž¶áž‘áž»áž€" id="submitButton" dojoType="dijit.form.Button"
+				 iconClass="dijitEditorIcon dijitEditorIconSave"/>
+		</td>
+	</tr>	
+</table>
 </form>
 <script type="text/javascript">
-function getSupCurrency(chapter,index){
-	/*$('#account_'+index +' option').each(function(i, option){ $(option).remove(); });
-	var temp='<option value="">---Account---</option>';
-	$('#account_'+index).append(temp);
-	var val=$('#chapter_'+index).val();		
-	for(var i=0;i<chapter.obj.length;i++){			
-		if(chapter.obj[i].account != ''){
-			if(chapter.obj[i].account.substr(0,val.length) == val)	
-				$('#account_'+index).append('<option value="'+chapter.obj[i].account+'">'+chapter.obj[i].account+'</option>');
-		}
-	}*/
-}
-function deleteRecord(index){
-	var ids =dijit.byId('record_row').value;
-	if(ids.length=='' || ids.length==null){
-		dijit.byId('record_row').attr('value','');
-		dojo.query("#row_capital"+ids).remove();
-		
-	}else{
-		var arrays = ids.split(',');
-		for(var i=0;i<arrays.length;i++) {
-			if(arrays[i] == index) arrays.splice(i,1);
-		}
-		var strings = arrays.join(',');
-		dijit.byId('record_row').attr('value',strings);
-		dojo.query("#row_capital"+index).remove();
-	}
-	
-}
-
-	curr_option = '<?php echo $this->curr_type;?>';
-	curr_dollar_amountoption = '<?php echo $this->curr_dollaramountoption;?>';
-	curr_bath_amountoption = '<?php echo $this->curr_bathamountoption;?>';
-	curr_riel_amountoption = '<?php echo $this->curr_rielmountoption;?>';
-	temp='';
-	r = 0;
-	fund_title=0;
-	function addAmountTypeMoney(){
-		r++;
-		if(fund_title!=1){
-			thead='<th>លុប</th>';
-			thead+='<th width="100px">​ប្រភេទប្រាក់($)</th>';
-			thead+='<th width="100px">ចំនួនសន្លឹក($)</th>';
-			thead+='<th width="100px">ប្រភេទប្រាក់(B)</th>';
-			thead+='<th width="100px">ចំនួនសន្លឹក(B)</th>';
-			thead+='<th width="100px">ប្រភេទប្រាក់(៛)</th>';
-			thead+='<th width="100px">ចំនួនសន្លឹក(៛)</th>';
-			thead+='<th width="100px">ផ្សេងៗ </th>';
-			fund_title=1;
-			dojo.query("#head_title").append(thead);
-          }
-		
-		temp='<td style="width:100px"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="/cs01/public/images/actions/Delete_16.png"></td>';
-		temp+='<td><select style="width:100px" id="curr_1_'+r+'" name="curr_1_'+r+'" dojoType="dijit.form.FilteringSelect"  >'+curr_dollar_amountoption+'</select></td>';
-		temp+='<td><input type="text" required="true" name="pcs_1_'+r+'" id="pcs_1_'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
-		temp+='<td><select style="width:100px" id="curr_2_'+r+'" name="curr_2_'+r+'" dojoType="dijit.form.FilteringSelect"  >'+curr_bath_amountoption+'</select></td>';
-		temp+='<td><input type="text" required="true" name="pcs_2_'+r+'" id="pcs_2_'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
-		temp+='<td><select style="width:100px" id="curr_3_'+r+'" name="curr_3_'+r+'" dojoType="dijit.form.FilteringSelect"  >'+curr_riel_amountoption+'</select></td>';
-		temp+='<td><input type="text" name="pcs_3_'+r+'" id="pcs_3_'+r+'" value="0" dojoType="dijit.form.NumberTextBox" s/></td>';
-		temp+='<td><input type="text" name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.NumberTextBox" s/></td>';
-		tmp='<tr style="border:1px solid #ccc;" id="row_capital'+r+'">'
-		tmp+="</tr>";
-			dojo.query("#t_amountmoneytype").append(tmp);
-			dojo.html.set(dojo.byId("row_capital"+r),temp, {
-		    parseContent: true,
-		     
-		});
-		if(dijit.byId("record_row").value!="") {
-			var ids = dijit.byId("record_row").value;
-			dijit.byId("record_row").attr('value',ids+','+r);
-		} else { dijit.byId("record_row").attr('value',r);}
-	}	
+dojo.require("dijit.form.Textarea");
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.TextBox");
+dojo.require("dijit.form.FilteringSelect");
+dojo.require("dijit.form.DateTextBox");
 </script>

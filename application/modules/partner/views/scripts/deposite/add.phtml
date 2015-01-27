@@ -3,6 +3,7 @@
 	echo $this->headTitle();
 	$session_user=new Zend_Session_Namespace('auth');
 	$form = $this->frm;
+	print_r($form);exit();
 ?>
 <?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
 <script src="<?php echo $baseurl;?>/js/help.js"></script>
