@@ -54,9 +54,10 @@ class Keeping_IndexController extends Zend_Controller_Action
     				}	
     				
    //form
-    	$sendmoney=new Capital_Form_FrmCapitale();
+    	$sendmoney=new Keeping_Form_FrmSendMoney();
     	$db= new Keeping_Model_DbTable_DbKeeping();
     	$frm = $sendmoney->addSendMoney();
+    	//echo $frm;exit();
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     	$this->view->currency_type = $db->CurruncyTypeOption();
