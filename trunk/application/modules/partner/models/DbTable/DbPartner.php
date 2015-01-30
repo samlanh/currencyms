@@ -73,11 +73,31 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         function getAllPartner($search=null){
         	$db=$this->getAdapter();
         	$sql="SELECT p.id,
-        		(SELECT s.partner_name FROM cms_partner AS s WHERE s.id=p.parent ) AS parent_name
+        	(SELECT s.partner_name FROM cms_partner AS s WHERE s.id=p.parent ) AS parent_name
         	,p.partner_name,p.partner_brand,p.account_no,
         	p.nation_id,(SELECT name FROM cs_provinces WHERE id = p.province) AS name,p.tel,p.mobile,p.cash_riel,
-        	p.cash_dollar,p.cash_bath,p.date,p.status  FROM cms_partner AS p ";
-        	return $db->fetchAll($sql);
+        	p.cash_dollar,p.cash_bath,p.date,p.status  FROM cms_partner AS p WHERE 1 ";
+        	
+        	$where = '';
+        	
+        	if(!empty($search['adv_search'])){
+        		$s_where = array();
+        		$s_search = $search['adv_search'];
+        		$s_where[] = "partner_name LIKE '%{$s_search}%'";
+        		$s_where[]="partner_brand LIKE '%{$s_search}%'";
+        		$s_where[]="tel LIKE '%{$s_search}%'";
+        		$s_where[]="nation_id LIKE '%{$s_search}%'";
+        		
+        		$where .=' AND ('.implode(' OR ',$s_where).')';
+        	}
+        	if($search['status_search']>-1){
+        		$where.= " AND status = ".$search['status_search'];
+        	}
+        	if(!empty($search['main_branch'])){
+        		$where.=" AND parent= ".$search['main_branch'];
+        	}
+        	
+        	return $db->fetchAll($sql.$where);
         }
         function getNamePartner($id=null,$option=null){
         	$db=$this->getAdapter();
@@ -107,7 +127,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	}
         	$rows = $db->fetchAll($sql);
         	if($option!=null){
-        		$opt = '';
+        		$opt = array(''=>"-----ជ្រើសរើស----");
         		foreach ($rows as $rs){
         			$opt[$rs['id']]=$rs['partner_name'];
         		}

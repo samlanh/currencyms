@@ -19,19 +19,19 @@ class Partner_IndexController extends Zend_Controller_Action
     {
     	try{
     		$db = new Partner_Model_DbTable_DbPartner();
-//     		if($this->getRequest()->isPost()){
-//     			$search=$this->getRequest()->getPost();
-//     		}
-//     		else{
-//     			$search = array(
-//     					'adv_search' => '',
-//     					'status' => -1);
-//     		}
-    		$rs_rows= $db->getAllPartner($search=null);
+    		if($this->getRequest()->isPost()){
+    			$search=$this->getRequest()->getPost();
+    		}
+    		else{
+    			$search = array(
+    					'adv_search' => '',
+    					'status_search' => -1);
+    		}
+    		$rs_rows= $db->getAllPartner($search);
     		//print_r($rs_rows);exit();
     	    
-//     		$glClass = new Application_Model_GlobalClass();
-//     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
+    		$glClass = new Application_Model_GlobalClass();
+    		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,null);
     		$list = new Application_Form_Frmtable();
     		$collumns = array("ដៃគូមេ","ឈ្មោះអ្នកគ្រប់គ្រង","ឈ្មោះដៃគូរសហការណ៏","លេខគណនេយ្យ",
     				"លេខអត្តសញ្ញាណប័ណ្ណ","ខេត្ត/ក្រុង","លេខទូរស័ព្ទ ","លេខទូរស័ព្ទដៃ","​ប្រាក់រៀល",
@@ -46,6 +46,11 @@ class Partner_IndexController extends Zend_Controller_Action
     		echo $e->getMessage();
 //     		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
     	}
+    	$pructis=new Partner_Form_FrmPartner();
+    	 
+    	$frm = $pructis->addPartner();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$form=	$this->view->frm_partner=$frm;
     	
     }
 
