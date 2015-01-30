@@ -2,11 +2,48 @@
 
 class Partner_Form_FrmPartner extends Zend_Dojo_Form
 {
-	
+	protected $tr=null;
+	protected $tvalidate=null ;//text validate
+	protected $filter=null;
+	protected $text=null;
+	protected $tarea=null;
+	public function init()
+	{
+		$this->tr = Application_Form_FrmLanguages::getCurrentlanguage();
+		$this->tvalidate = 'dijit.form.ValidationTextBox';
+		$this->filter = 'dijit.form.FilteringSelect';
+		$this->text = 'dijit.form.TextBox';
+		$this->tarea = 'dijit.form.SimpleTextarea';
+	}
     public function addPartner($data=NULL)
     {
     	$id=new Zend_Form_Element_Hidden('id');
         /* Form Elements & Other Definitions Here ... */
+    	$request=Zend_Controller_Front::getInstance()->getRequest();
+    	$_title = new Zend_Dojo_Form_Element_TextBox('adv_search');
+    	$_title->setAttribs(array(
+    			'dojoType'=>$this->tvalidate,
+    			'onkeyup'=>'this.submit()',
+    			'placeholder'=>$this->tr->translate("SEARCH PARTNER INFO")
+    	));
+    	$_title->setValue($request->getParam("adv_search"));
+    	
+    	$_status_search=  new Zend_Dojo_Form_Element_FilteringSelect('status_search');
+    	$_status_search->setAttribs(array('dojoType'=>$this->filter));
+    	$_status_opt = array(
+    			-1=>$this->tr->translate("ALL"),
+    			1=>$this->tr->translate("ACTIVE"),
+    			0=>$this->tr->translate("DACTIVE"));
+    	$_status_search->setMultiOptions($_status_opt);
+    	$_status_search->setValue($request->getParam("status_search"));
+    	
+    	$_btn_search = new Zend_Dojo_Form_Element_SubmitButton('btn_search');
+    	$_btn_search->setAttribs(array(
+    			'dojoType'=>'dijit.form.Button',
+    			'iconclass'=>'dijitIconSearch'
+    	));
+    	
+    	//////-------------------------------
     	
     	$mainbranch=new Zend_Dojo_Form_Element_FilteringSelect('main_branch');
     	$mainbranch->setAttribs(array(
@@ -16,6 +53,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$mainbranch->setMultiOptions($opt);
 //     	$opt=array(1=>'មេ',2=>'កូន',);
 //     	$mainbranch->setMultiOptions($opt);
+    	$mainbranch->setValue($request->getParam('main_branch'));
     	
     	
     	$branchname=new Zend_Dojo_Form_Element_ValidationTextBox('branch_name');	
@@ -181,7 +219,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	
     	}
     	
-		$this->addElements(array($id,$date,$branchname,$partnername,$photo,
+		$this->addElements(array($id,$_title,$_status_search,$_btn_search,$date,$branchname,$partnername,$photo,
 				$Address,$accournnumber,$homenumber,$groupnumber,
 				$streetnumber,$communnumber,$districtnumber,$provicenumber,
 				$phonenumber,$faxnumber,$salephone,$note,$status,$cade_number,
