@@ -7,8 +7,8 @@ Class Accounting_Form_Frmincome extends Zend_Dojo_Form {
 	}
 	public function FrmIncome($data=null){
 		
-		$account_id = new Zend_Dojo_Form_Element_TextBox('account_id');
-		$account_id->setAttribs(array(
+		$account_name = new Zend_Dojo_Form_Element_TextBox('account_name');
+		$account_name->setAttribs(array(
 				'dojoType'=>'dijit.form.TextBox',
 				'class'=>'fullside'
 				));
@@ -22,6 +22,7 @@ Class Accounting_Form_Frmincome extends Zend_Dojo_Form {
 			$opt_month[$i]=$i;
 		}
 		$for_date->setMultiOptions($opt_month);
+		$for_date->setValue(date('m'));
 		
 		$_Date = new Zend_Dojo_Form_Element_DateTextBox('Date');
 		$_Date->setAttribs(array(
@@ -31,15 +32,7 @@ Class Accounting_Form_Frmincome extends Zend_Dojo_Form {
 		));
 		$_Date->setValue(date('Y-m-d'));
 		
-		$_branch_id = new Zend_Dojo_Form_Element_FilteringSelect('branch_id');
-		$_branch_id->setAttribs(array(
-				'dojoType'=>'dijit.form.FilteringSelect',
-				'class'=>'fullside',
-				'required' =>'true'
-			  
-		));
-		$options= array(1=>"សាខា កណ្តាល",2=>"សាខា ទី១");
-		$_branch_id->setMultiOptions($options);
+	
 		
 		$_stutas = new Zend_Dojo_Form_Element_FilteringSelect('Stutas');
 		$_stutas ->setAttribs(array(
@@ -68,8 +61,8 @@ Class Accounting_Form_Frmincome extends Zend_Dojo_Form {
 		
 			if($data!=null){
 					
-				$_branch_id->setValue($data['branch_id']);
-				$account_id->setValue($data['account_id']);
+			
+				$account_name->setValue($data['account_name']);
 				$total_amount->setValue($data['total_amount']);
 				$for_date->setValue($data['fordate']);
 				$_Description->setValue($data['disc']);
@@ -77,8 +70,8 @@ Class Accounting_Form_Frmincome extends Zend_Dojo_Form {
 				$_stutas->setValue($data['status']);
 				$id->setValue($data['id']);
 		   }	
-		$this->addElements(array($account_id,$_Date ,$_stutas,$total_amount,
-				$_Description,	$_branch_id,$for_date,$id));
+		$this->addElements(array($account_name,$_Date ,$_stutas,$total_amount,
+				$_Description,$for_date,$id));
 		return $this;
 	}
 }

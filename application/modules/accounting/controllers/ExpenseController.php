@@ -19,11 +19,11 @@ class Accounting_ExpenseController extends Zend_Controller_Action
     		$glClass = new Application_Model_GlobalClass();
     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("BranchId ","Account No","Total Amount","For Date","Note","Date","Status");
+    		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
     		$link=array(
-    				'module'=>'accounting','controller'=>'expense','action'=>'index',
+    				'module'=>'accounting','controller'=>'expense','action'=>'edit',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('account_id'=>$link,'total_amount'=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('account_name'=>$link,'total_amount'=>$link));
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
     		echo $e->getMessage();
@@ -76,6 +76,7 @@ class Accounting_ExpenseController extends Zend_Controller_Action
 			}
 		}
 		$id = $this->getRequest()->getParam('id');
+		//print_r($id);exit();
 // 		if(empty($id)){
 // 			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
 // 		}
