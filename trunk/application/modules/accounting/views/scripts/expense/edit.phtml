@@ -24,30 +24,31 @@ $frm = $this->frm_expense;
 					<legend><strong>ចំណាយ</strong></legend>
 					<table cellspacing="10"  width="100%">
 						<tr>
-						     <?php echo $frm->getElement('id');?>
-						    <td><?php echo $tr->translate("សាខា")?></td>
-							<td><?php echo $frm->getElement('branch_id');?></td>
+						    
+							    <?php echo $frm->getElement('id');?>
 							<td><?php echo $tr->translate("Expense Name")?></td>
-							<td><?php echo $frm->getElement('account_id');?></td>
-							<td><?php echo $tr->translate("Total amount")?></td>
-							<td><?php echo $frm->getElement('total_amount');?></td>
-							
-							
-						</tr>
-						<tr>
-							
-							<td><?php echo $tr->translate("Fordate")?></td>
-							<td><?php echo $frm->getElement('for_date');?></td>
-						    <td><?php echo $tr->translate("Description")?></td>
-							<td><?php echo $frm->getElement('Description');?></td>
-							<td><?php echo $tr->translate("Date")?></td>
+							<td><?php echo $frm->getElement('account_name');?></td>
+							 <td><?php echo $tr->translate("Date")?></td>
 							<td><?php echo $frm->getElement('Date');?></td>
+							
+							
 						</tr>
 						<tr>
-							<td><?php echo $tr->translate("Stutas")?></td>
-							<td><?php echo $frm->getElement('Stutas');?></td>
+							 
+				              <td><?php echo $tr->translate("Total amount")?></td>
+							​​​​​​  <td><?php echo $frm->getElement('total_amount');?></td>
+				              <td><?php echo $tr->translate("Fordate")?></td>
+							  <td><?php echo $frm->getElement('for_date');?></td>
+			                  
 							
-							
+						</tr>
+						<tr>
+						    <td><?php echo $tr->translate("Description")?></td>
+						    <td><?php echo $frm->getElement('Description');?></td>
+						    <td><?php echo $tr->translate("Stutas")?></td>
+				            <td><?php echo $frm->getElement('Stutas');?></td>
+						   
+						  
 						</tr>
 					</table>
 				</fieldset>
@@ -55,8 +56,17 @@ $frm = $this->frm_expense;
 	</tr>		
 	<tr>
 		<td align="center">
+		     <input type="submit" value="សំអាត" label="សំអាត" id="" dojoType="dijit.form.Button"
+				 iconClass=""/>
+			 <input type="submit" value="រក្សាទុកសាជាថ្មី" label="រក្សាទុកសាជាថ្មី" id="" dojoType="dijit.form.Button"
+				 iconClass=""/>
+				 
 			<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"
 				 iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				 
+		   <input type="submit" value="បោះចោល" label="បោះចោល" id="" dojoType="dijit.form.Button"
+				 iconClass=""/>
+		​​​​​​   
 		</td>
 	</tr>	
 </table>

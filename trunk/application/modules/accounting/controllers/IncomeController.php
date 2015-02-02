@@ -25,11 +25,11 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     		$glClass = new Application_Model_GlobalClass();
     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("BranchId ","Account No","Total Amount","For Date","Note","Date","Status");
+    		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
     		$link=array(
-    				'module'=>'accounting','controller'=>'expense','action'=>'edit',
+    				'module'=>'accounting','controller'=>'income','action'=>'edit',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('account_id'=>$link,'total_amount'=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('account_name'=>$link,'total_amount'=>$link));
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
     		echo $e->getMessage();
@@ -62,6 +62,8 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     	// action body
     	if($this->getRequest()->isPost()){
     		$agentdata=$this->getRequest()->getPost();
+    		//print_r($agentdata);exit();
+    		
     		$db_agent = new Accounting_Model_DbTable_DbIncome();
     		try {
     			$db = $db_agent->updatasset($agentdata);

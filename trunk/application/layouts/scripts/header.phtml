@@ -6,7 +6,7 @@
 	  $partner=$this->url(array('module'=>'partner','controller'=>'index','action'=>'index'), null, true);
 	  $teller=$this->url(array('module'=>'tellerandexchange','controller'=>'index','action'=>'index'), null, true);
 	  $exchange=$this->url(array('module'=>'exchange','controller'=>'index','action'=>'index'), null, true);
-	  $reports=$this->url(array('module'=>'report','controller'=>'index','action'=>'index'), null, true);
+	  $reports=$this->url(array('module'=>'reports','controller'=>'index','action'=>'index'), null, true);
 	  $accounting=$this->url(array('module'=>'accounting','controller'=>'index','action'=>'index'), null, true);
 	  $capital=$this->url(array('module'=>'capital','controller'=>'index','action'=>'index'), null, true);
 	  $expend_view=$this->url(array('module'=>'expend','controller'=>'index','action'=>'index'), null, true);
@@ -17,6 +17,7 @@
       $logout=$this->url(array('module'=>'default','controller'=>'index','action'=>'logout'), null, true);
       $logout=$this->url(array('module'=>'inserttable','controller'=>'index','action'=>'index'), null, true);
       $keeping=$this->url(array('module'=>'Keeping','controller'=>'index','action'=>'index'), null, true);
+      $loan=$this->url(array('module'=>'loan','controller'=>'index','action'=>'index'), null, true);
 	  $module=Zend_Controller_Front::getInstance()->getRequest()->getModuleName();
 	  $item_arr=array(
 		'index'=>'<li class="link">
@@ -39,7 +40,7 @@
 	  		<span>'.$tr->translate("TELLER Module").'</span>
 	  		</a>
 	  		</li>',
-	    'loan'=>'<li class="link">
+	    'exchange'=>'<li class="link">
 						<a title="សេវាប្តូរប្រាក់" href="'.$exchange.'">
 							<span>'.$tr->translate("សេវាប្តូរប្រាក់").'</span>
 						</a>
@@ -54,11 +55,16 @@
 		  			<span>'.$tr->translate("ប្រាក់ខែបុគ្គលិក").'</span>
 		  		</a>
 	  		</li>',
-	  	'keeping'=>'<li class="link">
+	  'keeping'=>'<li class="link">
 	  		<a title="keeping" href="'.$keeping.'">
 	  			<span>'.$tr->translate("KEEPING").'</span>
 	  		</a>
 	  		</li>',
+	  	'loan'=>'<li class="link">
+	  		<a title="keeping" href="'.$loan.'">
+	  		<span>'.$tr->translate("Loan").'</span>
+	  		</a>
+	  	</li>',
 	  	'report'=>'<li class="របាយការណ័">
 			  		<a title="Report" href="'.$reports.'">
 			  			<span>'.$tr->translate("របាយការណ័").'</span>

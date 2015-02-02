@@ -1431,6 +1431,10 @@ class Reports_IndexController extends Zend_Controller_Action {
 		
 		} catch ( Exception $e ) {
 		}
+		
+	}
+	public function testreportAction() {
+		
 	}
 
 }
