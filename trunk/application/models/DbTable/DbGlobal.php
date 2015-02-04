@@ -29,6 +29,15 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
 		if($id==null)return $opt_degree;
 		else return $opt_degree[$id];
 	}
+	  
+	public function getAllMonths($id=null){
+		$tr= Application_Form_FrmLanguages::getCurrentlanguage();
+		$opt_month = array(1=>'មករា',2=>'កុម្ភះ',3=>'មីនា',4=>'មេសា',5=>'ឧសភា',
+				6=>'មិថុនា',7=>'កក្តដា',8=>'សីហា',9=>'កញ្ញា',10=>'តុលា',11=>'វិចិ្ឆកា',12=>'ធ្នូ');
+		if($id==null)return $opt_month;
+		else return $opt_month[$id];
+	}
+	
 	public function getAllBranchName($branch_id=null){
 		$db = $this->getAdapter();
 		$sql= "SELECT br_id,branch_namekh,

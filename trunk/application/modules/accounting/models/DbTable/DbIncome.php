@@ -36,13 +36,29 @@ function updatasset($data){
 }
 function getassetbyid($id){
 	$db = $this->getAdapter();
-	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name where id=$id ";
+	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name WHERE id=$id ";
 	return $db->fetchRow($sql);
 }
 function getAllasset($search=null){
 	$db = $this->getAdapter();
-	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name ";
-	return $db->fetchAll($sql);
+	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name WHERE tran_type = 2 ";
+	$where='';
+	
+	if($search['status_search']>-1){
+		$where.= " AND status = ".$search['status_search'];
+	}
+// 	if(!empty($search['employee'])){
+// 		$where.= " AND staff_id = ".$search['employee'];
+// 	}
+	
+	if(!empty($search['adv_search'])){
+		$s_where = array();
+		$s_search = $search['adv_search'];
+		$s_where[] = " account_name LIKE '%{$s_search}%'";
+		$s_where[]=" total_amount LIKE '%{$s_search}%'";
+		$where .=' AND ('.implode(' OR ',$s_where).')';
+	}
+	return $db->fetchAll($sql.$where);
 }
 
 

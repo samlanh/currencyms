@@ -17,7 +17,7 @@ class Accounting_ExpenseController extends Zend_Controller_Action
     		$db = new Accounting_Model_DbTable_DbExpense();
 			$rs_rows= $db->getAllExpense($search=null);//call frome model
     		$glClass = new Application_Model_GlobalClass();
-    		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+    		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,1);
     		$list = new Application_Form_Frmtable();
     		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
     		$link=array(
@@ -36,11 +36,22 @@ class Accounting_ExpenseController extends Zend_Controller_Action
     public function addAction()
     {
     	if($this->getRequest()->isPost()){
-			$agentdata=$this->getRequest()->getPost();	
+			$agentdata=$this->getRequest()->getPost();
+			//print_r($agentdata);exit();
 			$db_agent = new Accounting_Model_DbTable_DbExpense();				
 			try {
-				$db = $db_agent->addexpense($agentdata);				
-				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);		
+				if($this->getRequest()->getPost("save_close")){					
+					$db = $db_agent->addexpense($agentdata);
+					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+				}
+				if($this->getRequest()->getPost("save")){
+					$db = $db_agent->addexpense($agentdata);
+					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ');
+				}
+				if($this->getRequest()->getPost("cancel")){
+					Application_Form_FrmMessage::Sucessfull('', self::REDIRECT_URL);
+				}
+						
 			} catch (Exception $e) {
 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
 			}

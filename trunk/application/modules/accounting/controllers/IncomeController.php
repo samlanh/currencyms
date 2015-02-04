@@ -13,17 +13,17 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     {
     	try{
     		$db = new Accounting_Model_DbTable_DbIncome();
-    		//     		if($this->getRequest()->isPost()){
-    		//     			$search=$this->getRequest()->getPost();
-    		//     		}
-    		//     		else{
-    		//     			$search = array(
-    		//     					'adv_search' => '',
-    		//     					'status' => -1);
-    		//     		}
-    		$rs_rows= $db->getAllasset($search=null);//call frome model
+    		    		if($this->getRequest()->isPost()){
+    		    			$search=$this->getRequest()->getPost();
+    		    		}
+    		    		else{
+    		    			$search = array(
+    		    					'adv_search' => '',
+    		    					'status_search' => -1);
+    		    		}
+    		$rs_rows= $db->getAllasset($search);//call frome model
     		$glClass = new Application_Model_GlobalClass();
-    		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+    		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,1);
     		$list = new Application_Form_Frmtable();
     		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
     		$link=array(
@@ -35,6 +35,10 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     		echo $e->getMessage();
     		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
     	}
+    	$fm = new Accounting_Form_Frmincome();
+    	$frm = $fm->FrmIncome();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm_income=$frm;
     	
     	
     }

@@ -42,7 +42,7 @@ function getexpensebyid($id){
 
 function getAllExpense($search=null){
 	$db = $this->getAdapter();
-	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name ";
+	$sql=" SELECT id,account_name,total_amount,fordate,disc,date,status FROM $this->_name where tran_type = 1";
 	return $db->fetchAll($sql);
 }
 
