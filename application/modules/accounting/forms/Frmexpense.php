@@ -21,6 +21,7 @@ Class Accounting_Form_Frmexpense extends Zend_Dojo_Form {
 		$opt_month="";
 		for($i=1;$i<=12;$i++){
 			$opt_month[$i]=$i;
+			$opt_month=array(1=>'មករា',2=>'កុម្ភះ',3=>'មីនា',4=>'មេសា',5=>'ឧសភា',6=>'មិថុនា',7=>'កក្តដា',8=>'សីហា',9=>'កញ្ញា',10=>'តុលា',11=>'វិចិ្ឆកា',12=>'ធ្នូ');
 		}
 		$for_date->setMultiOptions($opt_month);
 		$for_date->setValue(date('m'));
