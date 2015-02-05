@@ -1,5 +1,5 @@
 <?php
-
+ 
 class Accounting_ExpenseController extends Zend_Controller_Action
 {
 	const REDIRECT_URL = '/accounting/expense';
@@ -15,11 +15,19 @@ class Accounting_ExpenseController extends Zend_Controller_Action
     {
     	try{
     		$db = new Accounting_Model_DbTable_DbExpense();
-			$rs_rows= $db->getAllExpense($search=null);//call frome model
+    		if($this->getRequest()->isPost()){
+    			$search=$this->getRequest()->getPost();
+    		}
+    		else{
+    			$search = array(
+    					'adv_search' => '',
+    					'status_search' => -1);
+    		}
+			$rs_rows= $db->getAllExpense($search);//call frome model
     		$glClass = new Application_Model_GlobalClass();
     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,1);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
+    		$collumns = array("Account Name","Total Amount","Currency type","For Date","Note","Date","Status");
     		$link=array(
     				'module'=>'accounting','controller'=>'expense','action'=>'edit',
     		);
@@ -29,6 +37,10 @@ class Accounting_ExpenseController extends Zend_Controller_Action
     		echo $e->getMessage();
     		Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
     	}
+    	$pructis=new Accounting_Form_Frmexpense();
+    	$frm = $pructis->FrmAddExpense();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm_expense=$frm;
     }
 
  //djalv odigja oslfc kfsdalfij doflkdslkffkmaslcds fkds fklfasdj fldsa fadij fodslflsd jflsdf lsdj foal
@@ -40,12 +52,12 @@ class Accounting_ExpenseController extends Zend_Controller_Action
 			//print_r($agentdata);exit();
 			$db_agent = new Accounting_Model_DbTable_DbExpense();				
 			try {
+				
+				$db = $db_agent->addexpense($agentdata);
 				if($this->getRequest()->getPost("save_close")){					
-					$db = $db_agent->addexpense($agentdata);
 					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
 				}
 				if($this->getRequest()->getPost("save")){
-					$db = $db_agent->addexpense($agentdata);
 					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ');
 				}
 				if($this->getRequest()->getPost("cancel")){

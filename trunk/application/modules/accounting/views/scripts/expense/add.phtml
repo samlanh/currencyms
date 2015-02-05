@@ -37,16 +37,20 @@ $frm = $this->frm_expense;
 						<tr>
 						    <td><?php echo $tr->translate("Total amount")?></td>
 							<td><?php echo $frm->getElement('total_amount');?></td>
-						    <td><?php echo $tr->translate("Fordate")?></td>
-							<td><?php echo $frm->getElement('for_date');?></td>
-			                  
+							<td><?php echo $tr->translate("Currency type")?></td>
+				            <td><?php echo $frm->getElement('currency_type');?></td>
+						   
 							
 						</tr>
 						<tr>
 						    <td><?php echo $tr->translate("Description")?></td>
 						    <td><?php echo $frm->getElement('Description');?></td>
-						    <td><?php echo $tr->translate("Stutas")?></td>
-				            <td><?php echo $frm->getElement('Stutas');?></td>
+						    <td><?php echo $tr->translate("Fordate")?></td>
+							<td><?php echo $frm->getElement('for_date');?></td>
+						</tr>
+						<tr>
+						   <td><?php echo $tr->translate("Stutas")?></td>
+				           <td><?php echo $frm->getElement('Stutas');?></td>
 						</tr>
 					</table>
 				</fieldset>
