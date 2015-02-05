@@ -25,7 +25,7 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     		$glClass = new Application_Model_GlobalClass();
     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true,1);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("Account Name","Total Amount","For Date","Note","Date","Status");
+    		$collumns = array("Account Name","Total Amount","Currency type","For Date","Note","Date","Status");
     		$link=array(
     				'module'=>'accounting','controller'=>'income','action'=>'edit',
     		);
