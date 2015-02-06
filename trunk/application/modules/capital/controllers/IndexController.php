@@ -2,8 +2,7 @@
 
 class Capital_IndexController extends Zend_Controller_Action
 {
-
-	const REDIRECT_URL = '/capital';
+	const REDIRECT_URL = '/capital/index/add';
 	private $curr_type = array(
 			'1'=>'ដុល្លា',
 			'2'=>'បាត',
@@ -23,156 +22,45 @@ class Capital_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body	
-        try {
-        	
-    		$db_tran=new Application_Model_DbTable_DbCurrentCapital();
-    		
-    		//create sesesion
-    		$session_capital=new Zend_Session_Namespace('search_capital');
-    		if(empty($session_capital->limit)){
-    			$session_capital->limit =  Application_Form_FrmNavigation::getLimit();
-    			$session_capital->type_money = -1;
-    			$session_capital->staff_name= -1;
-    			$session_capital->from_date =  date('Y-m-d');
-    			$session_capital->to_date =  date('Y-m-d');
-    			$session_capital->lock();
-    		}
-    		//start page nevigation
-    		
-    		$limit = $session_capital->limit;
-    		$start = $this->getRequest()->getParam('limit_satrt',0);
-    		
-    		$this->view->from_date=$session_capital->from_date;
-    		$this->view->to_date=$session_capital->to_date;
-    		$this->view->staff=$session_capital->staff;
-    		$cur = new Application_Model_DbTable_DbCurrencies();
-    		$this->view->currencylist = $cur->getCurrencyList();
-    		$this->view->type_money = $session_capital->type_money;
-    		
-    		if($this->getRequest()->isPost()){
-    			$formdata=$this->getRequest()->getPost();
-    			$session_capital->unlock();
-    			$session_capital->limit =  $formdata['rows_per_page'];
-    			$session_capital->type_money = $formdata['type_money'];
-    			$session_capital->staff_name = $formdata['staff_name'];
-    			$session_capital->from_date =  $formdata['from_date'];
-    			$session_capital->to_date = $formdata['to_date'];
-    			$session_capital->lock();
-    		
-    			$this->view->type_money = $formdata['type_money'];
-    			$this->view->staff_name=$formdata['staff_name'];
-    		
-    			$this->view->from_date=$session_capital->from_date;
-    			$this->view->to_date=$session_capital->to_date;
-    		
-    			$limit = $session_capital->limit;
-
-    		}
-    		else{
-    			$formdata = array(
-    					'from_date'=>$session_capital->from_date,
-    					'to_date'=>$session_capital->to_date,
-    					'type_money'=>$session_capital->type_money,
-    					'staff_name'=>$session_capital->staff_name
-    			);
-    			
-    		}
-    		$trans= $db_tran->getTranCapitalListBy($formdata, $start, $limit);
-    		$record_count = $db_tran->getTranCapitalListTotal($formdata);
-    		$result = array();
-    		$row_num = $start;
-    		
-    		if (!empty($trans)){
-    			foreach ($trans as $i => $tran) {
-    				$expired = '';$is_expired = 0;
-    				$result[$i] = array(
-    						'num' => (++$row_num),
-    						'id' => $tran['id'],
-    						'agent_name' => $tran['agent_name'],
-    						'curr_type'=>$this->curr_type[$tran['curr_type']],
-    						'amount' => (($tran['sign']==1)?'':'-').''.$tran['amount'].' '.$this->curr_type[$tran['curr_type']],
-    						'date'=> date_format(date_create($tran['date']), "d/m/Y"),
-    				);
-    			}
-    		}
-    		else{
-    			$result = array('err'=>1, 'msg'=>'មិន​ទាន់​មាន​ទន្និន័យ​នូវ​ឡើយ​ទេ!');
-    		}
-    		$this->view->tranlist = Zend_Json::encode($result);
-    		$page = new Application_Form_FrmNavigation(self::REDIRECT_URL, $start, $limit, $record_count);
-    		$page->init(self::REDIRECT_URL, $start, $limit, $record_count);
-    		$this->view->nevigation = $page->navigationPage();
-    		$this->view->rows_per_page = $page->getRowsPerPage($limit, 'frmlist_mt');
-    		$this->view->result_row = $page->getResultRows();
-    			
-    		
-    		$usr_mod = new Application_Model_DbTable_DbUsers();
-    		$user_list = $usr_mod->getUserListSelect();
-    		array_unshift($user_list, array ('id' => '-1',"name"=>"ជ្រើសរើសឈ្មោះបុគ្គលិក") );
-    		$this->view->users = $user_list;
-    			
-    		$cur = new Application_Model_DbTable_DbCurrencies();
-        } catch (Exception $e) {
-        }	
+     try{
+			$db = new Capital_Model_DbTable_DbCapital();
+			$rs_rows= $db->getAllCapital();
+		//	print_r($rs_rows);exit();
+			$glClass = new Application_Model_GlobalClass();
+			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+			$list = new Application_Form_Frmtable();
+			$collumns = array("ឈ្មោះបុគ្គលិក","លេខសំគាល់ខ្លួន ","កាល​បរិច្ឆេទ","ប្រភេទប្រាក់","ចំនួនប្រាក់","សំគាល់","Status");
+			$link=array(
+					'module'=>'capital','controller'=>'index','action'=>'edit',
+			);
+			$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('first_name'=>$link,'date'=>$link,'amount_dolla'=>$link));
+		}catch (Exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			echo $e->getMessage();
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			 
+		}
+    	
+       
     }
     public function addAction()
     {
-//     	$session_user=new Zend_Session_Namespace('auth');
-//     	$b = new Application_Model_DbTable_DbCapital();
-//     	$user_id = $session_user->user_id;
-//     	if($this->getRequest()->isPost()){
-//     		$formdata=$this->getRequest()->getPost();
-//     		$user_id = $formdata['user_id'];
-//     		if($formdata['actions'] == "add_capital"){
-//     			if($formdata['dollar']!=0 OR $formdata['bath']!=0 OR $formdata['rail']!=0 ){
-//     				$b->addBalanceByUser($user_id, $formdata);
-//     			}
-//     			if(!empty($formdata['record_row'])){
-//     				$b->AddCSPCurrency($user_id, $formdata);
-//     			}
-//     			Application_Form_FrmMessage::message('ការ​កែប្រែជោគ​ជ័យ');
-//     		}
-//     	}
-//     	$usr_mod = new Application_Model_DbTable_DbUsers();
-//     	$this->view->users = $usr_mod->getUserListSelect();
-//     	$this->view->balance = $b->getCurrentBallancesByCurrentUser($user_id);
-//     	$this->view->user_id = $user_id;
-
-    	$from=new Capital_Form_FrmCapitale();
+	  if($this->getRequest()->isPost()){
+    		$dataform=$this->getRequest()->getPost();
+    		$db_capital = new Capital_Model_DbTable_DbCapital();
+    		try {
+    			$db = $db_capital->insertCapital($dataform);
+    			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+    		} catch (Exception $e) {
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    	}
+        $from=new Capital_Form_FrmCapitale();
         $frm = $from->frmCapital();
-        
-    	Application_Model_Decorator::removeAllDecorator($frm);
+        Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
-    	
-   
     }
 
-    public function editedAction()
-    {
-        $id = $this->getRequest()->getParam('tran_id',0);
-        $session_user=new Zend_Session_Namespace('auth');
-        $b = new Application_Model_DbTable_DbCurrentCapital();
-        $user_id = $session_user->user_id;
-        if($this->getRequest()->isPost()){
-        	$formdata=$this->getRequest()->getPost();
-        	$user_id = $formdata['user_id'];
-        	if($formdata['actions'] == "add_capital"){
-        		if($formdata['dollar']!=0 OR $formdata['bath']!=0 OR $formdata['rail']!=0 ){
-//         			print_R($formdata);exit();
-        			$b->updateCapitalDetailById($formdata);
-        			Application_Form_FrmMessage::Sucessfull('ការ​កែប្រែជោគ​ជ័យ', self::REDIRECT_URL . '/index/index');
-        		}
-        	}
-        }
-       	$db = new Application_Model_DbTable_DbCurrentCapital();
-       	$rs = $db->getCapitalDetailById($id,1);
-       	$this->view->rs = $rs;
-        $usr_mod = new Application_Model_DbTable_DbUsers();
-        $this->view->users = $usr_mod->getUserListSelect();
-    }
-
-   
     public function checkRateAction(){
     	$db_rate=new Application_Model_DbTable_DbRate();
     	echo $db_rate->getCurrentRateJson();
@@ -200,6 +88,27 @@ class Capital_IndexController extends Zend_Controller_Action
     		$tmp[$i]["rail"] = $rail;
     	}
     	return $tmp;
+    }
+    function editAction(){
+    	
+    	if($this->getRequest()->isPost()){
+    		$dataform=$this->getRequest()->getPost();
+    		$db_capital = new Capital_Model_DbTable_DbCapital();
+    		try {
+    			$db = $db_capital->getUpdateCapital($dataform);
+    			Application_Form_FrmMessage::Sucessfull('ការ​កែប្រែបាន​​ជោគ​ជ័យ','/capital/index/index');
+    		} catch (Exception $e) {
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    	}
+    	$id = $this->getRequest()->getParam("id");
+    	$db = new Capital_Model_DbTable_DbCapital();
+    	$row  = $db->getCapitalbyid($id);
+    	$fm = new Capital_Form_FrmCapitale();
+    	$frm = $fm->frmCapital($row);
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
+    	 
     }
     
     public function rateAction(){

@@ -1,6 +1,6 @@
 <?php
 
-class Capital_CashController extends Zend_Controller_Action
+class Capital_TransferController extends Zend_Controller_Action
 {
 	const REDIRECT_URL = '/capital';
 	private $curr_type = array(
@@ -133,32 +133,14 @@ class Capital_CashController extends Zend_Controller_Action
 		} catch (Exception $e) {
 		}
 	}
-    public function addAction()
+     function addAction()
 	    {
-// 	    	$session_user=new Zend_Session_Namespace('auth');
-// 	    	$b = new Application_Model_DbTable_DbCapital();
-// 	    	$user_id = $session_user->user_id;
-// 	    	if($this->getRequest()->isPost()){
-// 	    		$formdata=$this->getRequest()->getPost();
-// 	    		$user_id = $formdata['user_id'];
-// 	    		if($formdata['actions'] == "add_capital"){
-// 	    			if(!empty($formdata['record_row'])){
-// 	    				$b->AddCSPCurrency($user_id, $formdata);
-// 	    				Application_Form_FrmMessage::message('ការបញ្ចូលដោយជោគជ័យ');
-// 	    			}
-// 	    		}
-// 	    	}
-// 	    	$usr_mod = new Application_Model_DbTable_DbUsers();
-// 	    	$this->view->users = $usr_mod->getUserListSelect();
-// 	    	$this->view->balance = $b->getCurrentBallancesByCurrentUser($user_id);
-// 	    	$this->view->user_id = $user_id;
+	    	$from=new Capital_Form_FrmTransfer();
+	    	$frm = $from->frmTransfer();
+	    	Application_Model_Decorator::removeAllDecorator($frm);
+	    	$this->view->frm=$frm;
 	    	
-// 	    	$db = new Application_Model_DbTable_DbGlobal();
-// 	    	$this->view->curr_type = $db->CurruncyTypeOption();
-// // 	    	echo  $db->CurrencyAmountOption(1);exit();
-// 	    	$this->view->curr_dollaramountoption = $db->CurrencyAmountOption(1);
-// 	    	$this->view->curr_bathamountoption = $db->CurrencyAmountOption(2);
-// 	    	$this->view->curr_rielmountoption = $db->CurrencyAmountOption(3);
+	    	
 	    }
 	    public function deleteAction(){
 	    	if($this->getRequest()->isPost()){
