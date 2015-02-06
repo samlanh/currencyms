@@ -9,7 +9,7 @@ $frm = $this->frm;
 	height: 30px;
 }
 </style>
-<form id='frm_add' action="<?php echo $this->url(array('module'=>'capital','controller'=>'index','action'=>'add')); ?>" 
+<form id='frm_add' action="<?php echo $this->url(array('module'=>'capital','controller'=>'index','action'=>'edit')); ?>" 
 				dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 <script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
@@ -60,7 +60,7 @@ $frm = $this->frm;
 	</tr>		
 	<tr>
 		<td align="center">
-			<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton1" dojoType="dijit.form.Button" 
+			<input type="submit" value="រក្សាទុក" label="Update" id="submitButton1" dojoType="dijit.form.Button" 
 			 iconClass="dijitEditorIcon dijitEditorIconSave"/> 
 		</td>
 	</tr>	
