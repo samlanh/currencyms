@@ -5,15 +5,39 @@
 ?>
 
 <script type="text/javascript">	
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
 	dojo.require("dijit.form.ValidationTextBox");
-
 	dojo.require("dijit.form.NumberTextBox");
 	dojo.require("dijit.form.SimpleTextarea");
 	dojo.require('dijit.form.Form');
 	dojo.require('dijit.form.FilteringSelect');	
 	dojo.require('dijit.form.Button');
 	dojo.require("dijit.form.DateTextBox");
-	
+	var url_fillter = "<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'getfillter'));?>";
+	function getfillterById(){
+		//id = dijit.byId('namesend').get('value');
+		
+		dojo.xhrPost({
+		     url: url_fillter, 
+		     content : { 
+		      'namesend':dijit.byId('namesend').get('value'),
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+		   dijit.byId('account_number').attr('value',data.account_no);
+		   dijit.byId('phone').attr('value',data.mobile);
+		   dijit.byId('curr_dollar').attr('value',data.cash_dollar);
+		   dijit.byId('curr_bath').attr('value',data.cash_bath);
+		   dijit.byId('curr_riel').attr('value',data.cash_riel);
+		  },
+		  error: function(err) {
+		   alert(err);
+		  alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -32,20 +56,20 @@
 					<legend style="font-size: 17px"><strong>ពត៏មានដកប្រាក់</strong></legend>
 						<table cellspacing="10"  width="100%" style="font-size: 15px">
 						    <tr>
-						        <td>លេខគណនី</td>
-						        <td><?php echo $form->getElement('nuber_account');?></td>
+						       <td>ឈ្មោះអតិជន</td>
+						        <td><?php echo $form->getElement('namesend');?></td>
 						        <td></td>
 						        <td></td>
 						    </tr>
-						     <tr>
-						        <td>ឈ្មោះអតិជន</td>
-						        <td><?php echo $form->getElement('namesend');?></td>
+						     <tr>						        
+						         <td>លេខគណនី</td>
+						        <td><?php echo $form->getElement('account_number');?></td>
 						        <td>ថ្ងៃដកប្រាក់</td>
 						        <td><?php echo $form->getElement('daydokmoney');?></td>
 						    </tr>
 						     <tr>
 						        <td>លេខទូរស័ព្ទ</td>
-						        <td><?php echo $form->getElement('phong');?></td>
+						        <td><?php echo $form->getElement('phone');?></td>
 						        <td>សម្គាល់</td>
 						        <td><?php echo $form->getElement('note');?></td>
 						    </tr>
@@ -99,11 +123,14 @@
 		</tr>
 		
 		
-		<tr>
-			<td colspan="2" align="center">
-				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
-			</td>
-		</tr>
+		<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក" name="btn_save" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<?php $url_close = $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'')); ?>
+				<a href="<?php echo $url_close ?>">
+				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
+				</a>
+		</td>
 	</table>		
 </form>
 <script type="text/javascript">

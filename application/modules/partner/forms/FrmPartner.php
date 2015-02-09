@@ -17,6 +17,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
 	}
     public function addPartner($data=NULL)
     {
+    	$_db = new Application_Model_DbTable_DbGlobal();
     	$id=new Zend_Form_Element_Hidden('id');
         /* Form Elements & Other Definitions Here ... */
     	$request=Zend_Controller_Front::getInstance()->getRequest();
@@ -43,11 +44,11 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     			'iconclass'=>'dijitIconSearch'
     	));
     	
-    	//////-------------------------------
-    	
+    	//////-------------------------------    	
     	$mainbranch=new Zend_Dojo_Form_Element_FilteringSelect('main_branch');
     	$mainbranch->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
+    			'dojoType'=>'dijit.form.FilteringSelect',
+    			));
     	$db = new Partner_Model_DbTable_DbPartner();
     	$opt = $db->getNamePartnerparent(null,1);
     	$mainbranch->setMultiOptions($opt);
@@ -55,7 +56,50 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
 //     	$mainbranch->setMultiOptions($opt);
     	$mainbranch->setValue($request->getParam('main_branch'));
     	
+    	///---------------------------------------សាខាកូន----------------------------  
+//     	$province_name=new Zend_Dojo_Form_Element_FilteringSelect('province_name');
+//     	$province_name->setAttribs(array(
+//     			'dojoType'=>'dijit.form.FilteringSelect',
+//     			'OnChange'=>'getfillterDistrict()'));
+//     	$db = new Partner_Model_DbTable_DbPartner();
+//     	$opt = $db->getNameProvice(null,1);
+//     	$province_name->setMultiOptions($opt);
+//     	$province_name->setValue($request->getParam('province_name'));
+//     	//--------------------------------------------------------------------------
+//     	$district_name=new Zend_Dojo_Form_Element_FilteringSelect('district_name');
+//     	$district_name->setAttribs(array(
+//     			'dojoType'=>'dijit.form.FilteringSelect',
+//     			'OnChange'=>'getfillterDistrict()'));
+// //     	$db = new Partner_Model_DbTable_DbPartner();
+// //     	$opt = $db->getNameDisticts(null,1);
+// //   	$district_name->setMultiOptions();
+// //    	$district_name->setValue($request->getParam('district_name'));
+//     	////-------------------------------------------------------------
+//     	$commune_name=new Zend_Dojo_Form_Element_FilteringSelect('commune_name');
+//     	$commune_name->setAttribs(array(
+//     			'dojoType'=>'dijit.form.FilteringSelect',
+//     			'OnChange'=>'getfillterCommune()'));
+// //     	$db = new Partner_Model_DbTable_DbPartner();
+// //     	$opt = $db->getNameCommune(null,1);
+// //     	$commune_name->setMultiOptions($opt);
+//     	$commune_name->setValue($request->getParam('commune_name'));
+    	/////////////////////////////////////////////////////////////////////////////////    	
+    	$rows_provice = $_db->getAllProvince();
+    	$opt_province = "";
+    	if(!empty($rows_provice))foreach($rows_provice AS $row) $opt_province[$row['id']]=$row['name'];
+    	$province_name = new Zend_Dojo_Form_Element_FilteringSelect('province_name');
+    	$province_name->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect',
+//     			'class'=>'fullside',
+    			'onchange'=>'filterDistrict();'
+    	));
     	
+    	$province_name->setMultiOptions($opt_province);
+    	$province_name->setAttribs(array(
+    			'dojoType'=>'dijit.form.FilteringSelect',
+    			'required'=>'true',
+//    			'class'=>'fullside',
+    	));
+    	//------------------------------------------------------------------------
     	$branchname=new Zend_Dojo_Form_Element_ValidationTextBox('branch_name');	
     	$branchname->setAttribs(array(
     			'dojoType'=>'dijit.form.ValidationTextBox',
@@ -73,12 +117,20 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     			));
     	$photo=new Zend_Form_Element_File('photo');
     	$photo->setAttribs(array(
-    			));
-    	$accournnumber=new Zend_Dojo_Form_Element_TextBox('accournt_number');
+    			));    	
+//     	$accournnumber=new Zend_Dojo_Form_Element_TextBox('accournt_number');
+//     	$accournnumber->setAttribs(array(
+//     			'dojoType'=>'dijit.form.ValidationTextBox',
+//     			'Required'=>true
+//     			));
+    	$id_accournnumber = $db->getNewAccountNumber();
+    	$accournnumber = new Zend_Dojo_Form_Element_TextBox('account_number');
     	$accournnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox',
-    			'Required'=>true
-    			));
+    			'dojoType'=>'dijit.form.TextBox',
+    			'readonly'=>'readonly',
+    			'style'=>'color:red;'
+    	));
+    	$accournnumber->setValue($id_accournnumber);
 
     	$Address=new Zend_Dojo_Form_Element_TextBox('address');
     	$Address->setAttribs(array(
@@ -107,28 +159,36 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
 //     			5=>'Monorom',6=>'Ttoul Ssvay Prey 1',7=>'Ttuk Tthlar',);
 //     	$communnumber->setMultiOptions($opt);
     	
-    	$districtnumber=new Zend_Dojo_Form_Element_ValidationTextBox('district_number');
-    	$districtnumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.ValidationTextBox',
-    			'required'=>true
-    			));
+//     	$districtnumber=new Zend_Dojo_Form_Element_ValidationTextBox('district_number');
+//     	$districtnumber->setAttribs(array(
+//     			'dojoType'=>'dijit.form.ValidationTextBox',
+//     			'required'=>true
+//     			));
 //     	$opt=array(1=>'Khan Toulkok',2=>'Khan Daun Penh',3=>'Khan 7 Makara',4=>'Khan Chamkarmorn',);
 //     	$districtnumber->setMultiOptions($opt);
     	
-    	$provicenumber=new Zend_Dojo_Form_Element_FilteringSelect('province_number');
-    	$provicenumber->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'
-    			));
-    	$db = new Partner_Model_DbTable_DbPartner();
-    	$opt = $db->getNamePartner(null,1);
-    	$provicenumber->setMultiOptions($opt);
+//     	$provicenumber=new Zend_Dojo_Form_Element_FilteringSelect('province_number');
+//     	$provicenumber->setAttribs(array(
+//     			'dojoType'=>'dijit.form.FilteringSelect'
+//     			));
+//     	$db = new Partner_Model_DbTable_DbPartner();
+//     	$opt = $db->getNamePartner(null,1);
+//     	$provicenumber->setMultiOptions($opt);
 //     	$opt=array(1=>'កំពង់ស្ពឺ',2=>'តាកែវ',3=>'កំពត',4=>'កែប',
 //     			5=>'កណ្តាល',6=>'ស្វាយរៀង',7=>'កំពង់ធំ',8=>'ព្រៃវែង',
 //     			9=>'ពោធិសាត',10=>'ក្រចេះ',11=>'កំពង់ឆ្នាំង',12=>'រតនគិរី',
 //     			13=>'ប់ោយប៉ែត',14=>'បន្ទាយមានជ័យ',15=>'សៀមរាប',16=>'ព្រះវិហារ',
 //     			17=>'មណ្ឌលគិរី',18=>'កំពង់សោម',19=>'ភ្នំពេញ',);
 //     	$provicenumber->setMultiOptions($opt);
-    	
+    	///////////-----------------------District-------------------------
+//     	$districtnumber = new Zend_Dojo_Form_Element_FilteringSelect('district_number');
+//     	$districtnumber->setAttribs(array(
+//     			'dojoType'=>'dijit.form.FilteringSelect'
+//     	));
+//     	$db = new Partner_Model_DbTable_DbPartner();
+//     	$opt_dis = $db->getNameDis(null,1);
+//     	$districtnumber->setMultiOptions($opt_dis);
+    	///////////////----------------------------------------------------
     	$phonenumber=new Zend_Dojo_Form_Element_TextBox('phone_number');
     	$phonenumber->setAttribs(array(
     			'dojoType'=>'dijit.form.ValidationTextBox'));
@@ -157,20 +217,19 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$money_usa=new Zend_Dojo_Form_Element_NumberTextBox('money_usa');
     	$money_usa->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'required'=>true
+    			'required'=>true,	
     			));
     	$money_usa->setValue(0);
     	
     	$money_bath=new Zend_Dojo_Form_Element_NumberTextBox('money_bath');
     	$money_bath->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'Required'=>true
-    			));
+    			'Required'=>true,	));
     	$money_bath->setValue(0);
     	$money_real=new Zend_Dojo_Form_Element_NumberTextBox('money_riel');
     	$money_real->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'Required'=>true));
+    			'Required'=>true,));
     	$money_real->setValue(0);
     	
     	$status_getmoney=new Zend_Dojo_Form_Element_FilteringSelect('status_getmoney');
@@ -195,6 +254,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	if($data!=null){
     		$mainbranch->setValue($data['parent']);
     		$branchname->setValue($data['partner_brand']);
+    		//$sub_branch->setValue($data['partner_brand']);
     		$partnername->setValue($data['partner_name']);
     		
     		$accournnumber->setValue($data['account_no']);
@@ -202,9 +262,12 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     		$homenumber->setValue($data['house_no']);
     		$groupnumber->setValue($data['group_no']);
     		$streetnumber->setValue($data['street']);
-    		$communnumber->setValue($data['commune']);
-    		$districtnumber->setValue($data['district']);
-    		$provicenumber->setValue($data['province']);
+//    		$commune_name->setValue($data['commune']);
+//     		$districtnumber->setValue($data['district']);
+//     		$provicenumber->setValue($data['province']);
+    		$province_name->setValue($data['province']);
+//    		$district_name->setValue($data['district']);
+    		
     		$faxnumber->setValue($data['tel']);
     		$salephone->setValue($data['mobile']);
     		$note->setValue($data['note']);
@@ -221,9 +284,10 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	
 		$this->addElements(array($id,$_title,$_status_search,$_btn_search,$date,$branchname,$partnername,$photo,
 				$Address,$accournnumber,$homenumber,$groupnumber,
-				$streetnumber,$communnumber,$districtnumber,$provicenumber,
+				$streetnumber,$communnumber,
+				//$districtnumber,$provicenumber,
 				$phonenumber,$faxnumber,$salephone,$note,$status,$cade_number,
-				$mainbranch,$money_usa,$money_bath,$money_real,$status_tran,$status_getmoney));
+				$mainbranch,$money_usa,$money_bath,$money_real,$status_tran,$status_getmoney,$province_name));
 		return $this;
     }
 
