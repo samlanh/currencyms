@@ -1,1 +1,31 @@
-index
+<title>Order List</title>
+<table style="border-collapse: collapse;" width="100%" border=1>
+<tr>
+    <th>ឈ្មោះចំណូល</th>
+	<th>ប្រភេទប្រាក់</th>
+	<th>ចំនួនទឹកប្រាក់</th>
+	<th>For_Date</th>
+	<th>ថ្ងៃខែឆ្នាំ</th>
+	<th>Status</th>
+	<th>Tran Type</th>
+</tr>
+
+<?php
+ 
+  foreach($this->tran_list AS $key =>$rs){
+	
+?>
+<tr align="center">
+      
+	
+	<td><?php echo $rs['account_name']; ?></td>
+	<td><?php echo $rs['currency_type']; ?></td>
+	<td><?php echo $rs['total_amount']; ?></td>
+	<td><?php echo $rs['fordate']; ?></td>
+	<td><?php echo $rs['date']; ?></td>
+	<td><?php echo $rs['status']; ?></td>
+	<td><?php echo $rs['tran_type']; ?></td>
+
+</tr>
+ <?php }?>
+</table>

@@ -40,7 +40,6 @@ class Accounting_IncomeController extends Zend_Controller_Action {
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm_income=$frm;
     	
-    	
     }
     public function addAction()
     {
