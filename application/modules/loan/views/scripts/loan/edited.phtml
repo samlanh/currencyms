@@ -1,0 +1,69 @@
+
+<?php $frm = $this->frm_loan;?>	
+
+<fieldset><legend style="font-size: 20px;"><h3>ការគ្រប់គ្រងប្រាក់កម្ចី</h3></legend>
+<form id='frm_add_tran' action="<?php echo $this->url(array('module'=>'loan','controller'=>'loan','action'=>'edited')); ?>" 
+    dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<script type="dojo/method" event="onSubmit">   
+   if(this.validate()) {
+    return true;
+   }else {
+    return false;
+   }
+</script>
+<table cellspacing="15" width="100%">
+  <tr >
+   <?php echo $frm->getElement('id');?>
+    <td>ឈ្មោះអ្នកខ្ចី :<td>
+    <td><?php echo $frm->getElement('borrower');?></td>
+    <td>លេខគណនី :<td>
+    <td><?php echo $frm->getElement('acc_number');?></td>
+    <td>ថ្ងៃខ្ចី :<td>
+    <td><?php echo $frm->getElement('date_borrow');?></td>
+  </tr>
+  <tr>
+    <td>លេខកម្ចី :<td>
+    <td><?php echo $frm->getElement('borrow_number');?></td>
+    <td>ថ្ងៃចេញ :<td>
+    <td><?php echo $frm->getElement('date_out');?></td>
+    <td>ថ្ងៃបព្ជាប់ :<td>
+    <td><?php echo $frm->getElement('date_end');?></td>
+  </tr>
+   <tr>
+    <td>រយះពេលគិតជា :<td>
+    <td><?php echo $frm->getElement('long_time');?></td>
+    <td>រយះពេលខ្ចី :<td>
+    <td><?php echo $frm->getElement('long_borrow');?></td>
+    <td>ប្រភេទប្រាក់ :<td>
+    <td><?php echo $frm->getElement('salary_type');?></td>
+   </tr>
+     <tr>
+    <td>អាត្រាការប្រាក់ :<td>
+    <td><?php echo $frm->getElement('rate');?></td>
+    <td>ការកត់ត្រា :<td>
+    <td><?php echo $frm->getElement('note');?></td>
+    <td>ចំនួនប្រាក់ :<td>
+    <td><?php echo $frm->getElement('amount');?></td>
+   </tr>
+    <tr>
+    <td>រយះពេលបង់(គិតជា) : <td>
+   	<td><?php echo $frm->getElement('Period');?></td>
+   	<td>រយះពេលបង់ :<td>
+   	<td><?php echo $frm->getElement('payment');?></td>
+   	<td>status<td>
+   	<td><?php echo $frm->getElement('status');?></td>
+   </tr>
+
+<table width="100%">
+   <tr>
+    	<td align="center">
+    	<input type="submit" value="រក្សាទុក" label ="រក្សាទុក" id="submitButton" dojoType ="dijit.form.Button"
+    	iconClass= "dijitEditorIcon dijitEditorIconSave"/>
+    	</td>
+   </tr>
+</table>
+</table>
+</form>
+</fieldset>
+
+
