@@ -6,13 +6,22 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     public function dakMoney($data=null)
     {
         /* Form Elements & Other Definitions Here ... */
-    	$nuber_account=new Zend_Dojo_Form_Element_NumberTextBox('nuber_account');
+    	$nuber_account=new Zend_Dojo_Form_Element_NumberTextBox('account_number');
     	$nuber_account->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside'));
-    	$phong=new Zend_Dojo_Form_Element_NumberTextBox('phong');
-    	$phong->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox',
+//     	$db = new Partner_Model_DbTable_DbWithdraw();
+//     	$id_accournnumber = $db->getNewAccountNumber();
+//     	$accournnumber = new Zend_Dojo_Form_Element_TextBox('account_number');
+//     	$accournnumber->setAttribs(array(
+//     			'dojoType'=>'dijit.form.TextBox',
+//     			'readonly'=>'readonly',
+//     			'style'=>'color:red;'
+//     	));
+//    	$accournnumber->setValue($id_accournnumber);
+    	$phone =new Zend_Dojo_Form_Element_TextBox('phone');
+    	$phone->setAttribs(array(
+    			'dojoType'=>'dijit.form.TextBox',
     			'class'=>'fullside'));
     	 
     	$note=new Zend_Dojo_Form_Element_TextBox('note');
@@ -22,14 +31,8 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$namesend=new Zend_Dojo_Form_Element_FilteringSelect('namesend');
     	$namesend->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',
-    			'class'=>'fullside'));
-    	$db = new Application_Model_DbTable_DbGlobal();
-    	$opt = $db->getAllPartner(null,1);
-    	$namesend->setMultiOptions($opt);
-    	$namesend=new Zend_Dojo_Form_Element_FilteringSelect('namesend');
-    	$namesend->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'Onchange'=>'getfillterById()'));
     	$db = new Application_Model_DbTable_DbGlobal();
     	$opt = $db->getAllPartner(null,1);
     	$namesend->setMultiOptions($opt);
@@ -133,6 +136,8 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     			'class'=>'fullside'));
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
+    		//$accournnumber->setValue($data['account_number']);
+    		//$nuber_account->setValue($data['account_number']);
     		$namesend->setValue($data['partner_id']);
     		$daydokmoney->setValue($data['date']);
     		$note->setValue($data['note']);
@@ -146,7 +151,7 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	}
     	
     	$this->addElements(array($nuber_account,$namesend,$daydokmoney,
-    			$dola,$dola1,$bath,$bath1,$real,$real1,$phong,$note,$d1,
+    			$dola,$dola1,$bath,$bath1,$real,$real1,$phone,$note,$d1,
     			$d2,$d3,$b1,$r1,$b2,$b3,$r2,$r3,$id));
 		return $this;
     }

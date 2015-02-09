@@ -304,5 +304,41 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     	$db = $this->getAdapter();
     	return $db->fetchAll($sql.$where);
     }
+    public function getAllProvince(){
+    	$this->_name ='cs_provinces';
+    	$sql = " SELECT id,`name` FROM $this->_name WHERE `name`!=''";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
+    public function getAllDistrict(){
+    	$this->_name='cms_district';
+    	$sql = " SELECT dis_id,pro_id,district_name FROM $this->_name WHERE status=1 AND district_name!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
+    public function getAllDistricts(){
+    	$this->_name='cms_district';
+    	$sql = " SELECT dis_id AS id,pro_id,district_name AS name FROM $this->_name WHERE status=1 AND district_name!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
+    public function getCommune(){
+    	$this->_name='cms_commune';
+    	$sql = " SELECT com_id,com_id AS id,commune_name,commune_name AS name,district_id FROM $this->_name WHERE status=1 AND commune_name!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
+    public function getVillage(){
+    	$this->_name='cms_village';
+    	$sql = " SELECT vill_id,village_name FROM $this->_name WHERE status=1 AND village_name!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
+    public function getZoneList(){
+    	$this->_name='cms_zone';
+    	$sql = " SELECT zone_id,zone_name,zone_num FROM $this->_name WHERE status=1 AND zone_name!='' ";
+    	$db = $this->getAdapter();
+    	return $db->fetchAll($sql);
+    }
 }
 ?>

@@ -3,19 +3,66 @@
 	echo $this->headTitle();
         
 	$form = $this->frm;
-	
 ?>
-<script type="text/javascript">	
-	dojo.require("dijit.form.ValidationTextBox");
+<script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dojo.store.Memory");
+dojo.require("dojo.data.ObjectStore");
+dojo.require("dijit.form.SimpleTextarea");
+dojo.require("dijit.form.Button");
+dojo.require("dijit.form.RadioButton");
+dojo.ready(function(){
+	var district_data = new dojo.store.Memory({
+	       data: <?php print_r(Zend_Json::encode($this->district));?>
+	}); 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: district_data}),
+	autoComplete: true,
+	query: {
+		pro_id: "-1"
+	},            
+	required: false,		           
+	name: "district_name",
+	id: "district_name",
+	searchAttr: "name",
+//	class: 'fullside',
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+				filterCommune();
+	 	}
+	}, "district_name");
 
-	dojo.require("dijit.form.NumberTextBox");
-	dojo.require("dijit.form.SimpleTextarea");
-	dojo.require('dijit.form.Form');
-	dojo.require('dijit.form.FilteringSelect');	
-	dojo.require('dijit.form.Button');
+	var commune_data = new dojo.store.Memory({
+	      data: <?php print_r(Zend_Json::encode($this->commune_name));?>
+	});
+	 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: commune_data}),
+	autoComplete: true,
+	query: {
+		district_id: "-1"
+	},            
+	required: false,		           
+	name: "commune_name",
+	id: "commune_name",
+	searchAttr: "name",
+//	class: 'fullside',
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+  }
+	}, "commune_name");
+
+	
+});
+function filterDistrict(){
+	dijit.byId('district_name').query.pro_id = dijit.byId('province_name').get('value');
+}
+function filterCommune(){
+	dijit.byId('commune_name').query.district_id = dijit.byId('district_name').get('value');
+}
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
@@ -32,7 +79,9 @@
 								<td>ដៃគូមេ</td>
 								<td><?php echo $form->getElement('main_branch');?></td>
 								<td>ឈ្មោះដៃគូរសហការណ៏</td>
-								<td><?php echo $form->getElement('branch_name');?></td>
+								<td><?php //echo $form->getElement('branch_name');?>
+									<?php echo $form->getElement('branch_name');?>
+								</td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -42,46 +91,50 @@
 								<td>លេខអត្តសញ្ញាណប័ណ្ណ</td>
 								<td><?php echo $form->getElement('cade_number');?></td>
 								<td>លេខគណនេយ្យ</td>
-								<td><?php echo $form->getElement('accournt_number');?></td>
+								<td><?php echo $form->getElement('account_number');?></td>
 							</tr>
 							<tr>
-								<td>រូបថត</td>
-								<td><?php echo $form->getElement('photo');?></td>
+								<td>ខេត្ត/ក្រុង</td>
+								<td><?php echo $form->getElement('province_name');?></td>
+								<td>ស្រុក/ខ័ណ្ឌ</td>
+								<td><input id="district_name" ><?php //echo $form->getElement('district_name');?></td>								
+				                <td>ឃុំ/សង្កាត់</td>
+								<td><input id="commune_name" ><?php //echo $form->getElement('commune_name');?>
+									
+								</td>								
+							</tr>
+							<tr>								
 								<td>អាស័យដ្ឋាន</td>
 								<td><?php echo $form->getElement('address');?></td>
 								<td>លេខផ្ទះ</td>
 								<td><?php echo $form->getElement('home_number');?></td>
+								<td>លេខផ្លូវ</td>
+								<td><?php echo $form->getElement('street_number');?></td>
 							</tr>
 							<tr>
 								<td>លេខក្រុម</td>
-								<td><?php echo $form->getElement('group_number');?></td>
-								<td>លេខផ្លូវ</td>
-								<td><?php echo $form->getElement('street_number');?></td>
-								<td>ឃុំ/សង្កាត់</td>
-								<td><?php echo $form->getElement('commun_number');?></td>
-							</tr>
-							<tr>
-								<td>ស្រុក/ខ័ណ្ឌ</td>
-								<td><?php echo $form->getElement('district_number');?></td>
-								<td>ខេត្ត/ក្រុង</td>
-								<td><?php echo $form->getElement('province_number');?></td>
-				                <td>លេខទូរស័ព្ទ  </td>
+								<td><?php echo $form->getElement('group_number');?></td>								
+				                <td>លេខទូរស័ព្ទ  ១ </td>
 								<td><?php echo $form->getElement('fax_number');?></td>
+								<td>លេខទូរស័ព្ទដៃ​​ ២</td>
+								<td><?php echo $form->getElement('sele_phone');?></td>
 								
 							</tr>
 							<tr>
-								
-								<td>លេខទូរស័ព្ទដៃ</td>
-								<td><?php echo $form->getElement('sele_phone');?></td>
 								<td>កាលបរិច្ឆេត</td>
 								<td><?php echo $form->getElement('date');?></td>
 								<td>ស្ថានភាព</td>
 								<td><?php echo $form->getElement('status');?></td>
+								<td>សំគាល់</td>
+								<td ><?php echo $form->getElement('note');?><br /></td>
 							</tr>
 							<tr>
-								<td>សំគាល់</td>
-								<td colspan="5"><?php echo $form->getElement('note');?><br /></td>
-								
+								<td>រូបថត</td>
+								<td><?php echo $form->getElement('photo');?></td>
+								<td></td>
+								<td><?php //echo $form->getElement('status');?></td>
+								<td></td>
+								<td ><?php //e/cho $form->getElement('note');?><br /></td>
 							</tr>
 							
 						</table>
@@ -120,10 +173,13 @@
 		</tr>
 		<tr>
 			<td colspan="2" align="center">
-				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 							
+				<input type="submit" value="រក្សាទុក" name="btn_save" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<?php $url_close = $this->url(array('module'=>'partner','controller'=>'index','action'=>'')); ?>
+				<a href="<?php echo $url_close ?>">
+				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
+				</a>
 			</td>
 		</tr>
 	</table>		
 </form>
-
-
