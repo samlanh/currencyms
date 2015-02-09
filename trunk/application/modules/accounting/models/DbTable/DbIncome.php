@@ -1,7 +1,7 @@
 <?php
 class Accounting_Model_DbTable_DbIncome extends Zend_Db_Table_Abstract
 {
-	protected $_name = 'ln_income_expense';
+	protected $_name = 'cms_income_expense';
 	function addasset($data){
 		$data = array(
 				
