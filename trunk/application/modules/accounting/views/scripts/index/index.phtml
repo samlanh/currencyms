@@ -1,4 +1,5 @@
 <title>Order List</title>
+<h2>ចំណូល</h2>
 <table style="border-collapse: collapse;" width="100%" border=1>
 <tr>
     <th>ឈ្មោះចំណូល</th>
@@ -28,4 +29,76 @@
 
 </tr>
  <?php }?>
-</table>
+ </table><br/>
+  <?php if(empty($this->owerlist['err'])):?>
+		<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+<?php $num=1; $l_ower = ''; $pa = '5px'; $row_id=1; $div_id=2; 
+	  $_total_dollar=0;$_total_bath=0;$_total_riel=0; $is_set='';
+?>
+	 			<tr class="bgtop style-bold">
+	 			     <td align="center" style="border:1px solid #000;" rowspan="2"><h3>&nbsp;សរុបទឹកប្រាក់(Total)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយដុល្លារ($)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយបាត(B)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយរៀល(R)&nbsp;</h3></td>
+				 </tr>
+				 <tr>
+				    
+		             <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_dollar; ?></b></td>
+					 <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_bat; ?></b></td>
+				     <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_reil; ?></b></td>
+			    </tr> 
+		</table>
+<?php endif;?>
+<br><br>
+<h2>ចំណាយ</h2>
+<table style="border-collapse: collapse;" width="100%" border=1>
+<tr>
+    <th>ឈ្មោះចំណូល</th>
+	<th>ប្រភេទប្រាក់</th>
+	<th>ចំនួនទឹកប្រាក់</th>
+	<th>For_Date</th>
+	<th>ថ្ងៃខែឆ្នាំ</th>
+	<th>Status</th>
+	<th>Tran Type</th>
+</tr>
+
+<?php
+ 
+  foreach($this->tran_list AS $key =>$rs){
+	
+?>
+<tr align="center">
+      
+	
+	<td><?php echo $rs['account_name']; ?></td>
+	<td><?php echo $rs['currency_type']; ?></td>
+	<td><?php echo $rs['total_amount']; ?></td>
+	<td><?php echo $rs['fordate']; ?></td>
+	<td><?php echo $rs['date']; ?></td>
+	<td><?php echo $rs['status']; ?></td>
+	<td><?php echo $rs['tran_type']; ?></td>
+
+</tr>
+ <?php }?>
+ </table><br/>
+  <?php if(empty($this->owerlist['err'])):?>
+		<table style="width: auto; min-width:50%; float:right; line-height: 25px; border:1px solid #000; border-collapse: collapse;" border="2px" cellspacing="2">
+<?php $num=1; $l_ower = ''; $pa = '5px'; $row_id=1; $div_id=2; 
+	  $_total_dollar=0;$_total_bath=0;$_total_riel=0; $is_set='';
+?>
+	 			<tr class="bgtop style-bold">
+	 			     <td align="center" style="border:1px solid #000;" rowspan="2"><h3>&nbsp;សរុបទឹកប្រាក់(Total)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយដុល្លារ($)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយបាត(B)&nbsp;</h3></td>
+					 <td align="center" style="border:1px solid #000;"><h3>&nbsp;លុយរៀល(R)&nbsp;</h3></td>
+				 </tr>
+				 <tr>
+				    
+		             <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_dollar; ?></b></td>
+					 <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_bat; ?></b></td>
+				     <td align="center" style="border:1px solid #000;"><b style="color:red;"><?php echo $this->total_reil; ?></b></td>
+			    </tr> 
+		</table>
+<?php endif;?>
+
+

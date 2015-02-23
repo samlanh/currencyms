@@ -25,6 +25,18 @@ class Accounting_IndexController extends Zend_Controller_Action
     		}
 			$rs_rows= $db->getAllIncomeAndExpense($search=null);//call frome model
 			$this->view->tran_list =$rs_rows;
+			$total_r = $db->getTotalRiel();
+			foreach ($total_r as $reil){
+				$this->view->total_reil = $reil['total_amount'];
+			}
+			$total_d = $db->getTotalDollar();
+			foreach ($total_d as $dollar){ 
+				$this->view->total_dollar = $dollar['total_amount'];
+			}
+			$total_b = $db->getTotalBat();
+			foreach ($total_b as $bat){
+				$this->view->total_bat = $bat['total_amount'];
+			}
     		
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
