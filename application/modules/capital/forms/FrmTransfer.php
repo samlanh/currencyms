@@ -11,17 +11,18 @@ Class Capital_Form_FrmTransfer extends Zend_Dojo_Form {
 // 			$options[$row['br_id']]=$row['branch_namekh'];
 // 		}
 		
-		$brance_from = new Zend_Dojo_Form_Element_FilteringSelect('brance_from');
+		$brance_from = new Zend_Dojo_Form_Element_FilteringSelect('user_from');
 		$brance_from->setAttribs(array(
 				'dojoType'=>'dijit.form.FilteringSelect',
 				'required' =>'true',
+				'OnChange'=>'getAmountFrom();',
 				//'OnChange'	=> 'getAmountFrom();',
 		));
 		$db = new Capital_Model_DbTable_DbTransfer();
 		$opt = $db->getCapitalByName(null,1);
 		$brance_from->setMultiOptions($opt);
 		
-		$brance_to = new Zend_Dojo_Form_Element_FilteringSelect('brance_to');
+		$brance_to = new Zend_Dojo_Form_Element_FilteringSelect('user_to');
 		$brance_to->setAttribs(array(
 				'dojoType'=>'dijit.form.FilteringSelect',
 				'required' =>'true',
