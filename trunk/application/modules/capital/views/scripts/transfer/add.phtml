@@ -29,7 +29,7 @@ $frm = $this->frm;
 						<?php //echo $frm->getElement('id');?>
 						<tr>
 							<td><?php echo $tr->translate("ឈ្មោះបុគ្គលិក")?></td>
-							<td class="td"><?php echo $frm->getElement('brance_from')?></td>
+							<td class="td"><?php echo $frm->getElement('user_from')?></td>
 							<td>ប្រាក់ដុល្លា</td>
 							<td><?php echo $frm->getElement('usa_from')?></td>
 							<td>ប្រាក់បាត</td>	
@@ -39,7 +39,7 @@ $frm = $this->frm;
 						</tr>
 						<tr>
 							<td><?php echo $tr->translate("ឈ្មោះបុគ្គលិក")?></td>
-							<td><?php echo $frm->getElement('brance_to')?></td>
+							<td><?php echo $frm->getElement('user_to')?></td>
 							<td>ប្រាក់ដុល្លា</td>
 							<td><?php echo $frm->getElement('usa_to')?></td>
 							<td>ប្រាក់បាត</td>	
@@ -71,8 +71,7 @@ $frm = $this->frm;
 					</table>
 				</fieldset>
 <!-- 				<td align="center"> -->
-		<center><input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"
-				 iconClass="dijitEditorIcon dijitEditorIconSave"/>
+		<center><input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave"/>
 		</center>	
 <!-- 		</td> -->
 <!-- 		</td> -->
@@ -128,18 +127,44 @@ function validateTransfer(type){
 		}
 	}
 }
-var getAmount ='<?php echo $this->url(array('module'=>'capital','controller'=>'capital-transfer','action'=>'getamountbybranceid'));?>'; 
+var getAmount ='<?php echo $this->url(array('module'=>'capital','controller'=>'transfer','action'=>'get-capital'));?>'; 
 function getAmountFrom(){
+	
 	dojo.xhrPost({
 	    url: getAmount,	
 	    content : { 
-		    'brance_id':dijit.byId('brance_from').get('value'),
+		    'user_id':dijit.byId('user_from').get('value'),
 		},	
 		handleAs:"json",
 		load: function(data) {
-			dijit.byId('usa_from').attr('value',data.amount_dollar);
-			dijit.byId('bath_from').attr('value',data.amount_bath);
-			dijit.byId('reil_from').attr('value',data.amount_riel);
+			 //alert(data);
+			 tmp = dojo.fromJson(data);	
+			 for(var i=0; i< tmp.length; i++){
+				 alert(tmp[i]);
+				 //alert(a);
+		    	  //if(tmp[i].currency_id==1){
+		    		//  dijit.byId('usa_from').attr('value',tmp[i].amount);
+			      //}else if(tmp[i].currency_id==2){
+			    	 // dijit.byId('bath_from').attr('value',tmp[i].amount);
+			      //}else if(tmp[i].currency_id==3){
+			    	//  dijit.byId('reil_from').attr('value',tmp[i].amount);
+			      //}
+	    	  }
+			/*if(dijit.byId('usa_from').attr('value',data.currency_id)==1){
+				dijit.byId('bath_from').attr('value',0);
+				dijit.byId('reil_from').attr('value',0);
+			    dijit.byId('usa_from').attr('value',data.amount);
+			 }else if(dijit.byId('bath_from').attr('value',data.currency_id)==2){
+				dijit.byId('usa_from').attr('value',0);
+				dijit.byId('reil_from').attr('value',0);
+			    dijit.byId('bath_from').attr('value',data.amount);
+			    }
+			else if(dijit.byId('reil_from').attr('value',data.currency_id)==3){
+				dijit.byId('usa_from').attr('value',0);
+				dijit.byId('bath_from').attr('value',0);
+				dijit.byId('reil_from').attr('value',data.amount);
+				}*/
+			//dijit.byId('reil_from').attr('value',data.amount_riel);
 		},
 		error: function(err) {
 			alert(err);
@@ -149,10 +174,11 @@ function getAmountFrom(){
 }
 
 function getAmountTo(){
+
 	dojo.xhrPost({
 	    url: getAmount,	
 	    content : { 
-		    'brance_id':dijit.byId('brance_to').get('value'),
+		    'brance_id':dijit.byId('user_to').get('value'),
 		},	
 		handleAs:"json",
 		load: function(data) {

@@ -26,7 +26,15 @@ class Capital_TransferController extends Zend_Controller_Action
 			 
 			defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
 		}
-		
+		function  getCapitalAction(){
+				 if($this->getRequest()->isPost()){
+			        $data=$this->getRequest()->getPost();
+					$db=new Capital_Model_DbTable_DbTransfer();
+					$row=$db->getCapitalInfo($data['user_id']);
+					print_r(Zend_Json::encode($row));
+					exit();
+			}
+		}
 	public function indexAction(){
 		try {
 			 
