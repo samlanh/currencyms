@@ -3,43 +3,64 @@
 	echo $this->headTitle();
 	$base_url = Application_Form_FrmMessage::getUrl("/");
 ?>	
+<script type="text/javascript">
+dojo.require('dijit.form.Form');
+dojo.require('dijit.form.Button');
+dojo.require('dijit.form.NumberTextBox');
+dojo.require("dijit.Dialog");
+</script>
 <style>
 <!--
-	.panel{
-		height: 430px;
-	}
 	.tbtable{		
 		text-align: center;
 		font-size: 2em;	
 		color: #fff;
-		line-height: 90px;
+		line-height: 40px;
 		font-weight: bolder;
+	}
+	.tbtable td{
+		vertical-align: middle;
 	}
 	.tbtable .tbheader{
 		background-color: #dddddd;
-		height: 60px; 
 		color: #000;
 	}
 	.tbtable .first{
 		background-color: #012a15; 
 	}
+	
 	.tbtable .second{
 		background-color: #016315; 
 	}
-	.special_cus{
-		color: RED;
+	
+	.tbtable .input-inner {
+		margin: 0px;
+		padding: 0px;
+		width: 99%;	
+		border: none;
+	}
+	
+	#DB.dijitInputInner, #BD.dijitInputInner, #BR.dijitInputInner,#RB.dijitInputInner{
+		text-align: center;		
+		background-color: #012a15 !important;
+	}
+	
+	#DR.dijitInputInner, #RD.dijitInputInner{
+		text-align: center;		
+		background-color: #016315 !important;
+	}
+	
+	.col-symbol{
+		width: 20%;
+	}
+	.col-input{
+		width: 40%;
 	}
 -->
 </style>
-<form id='frm_add_exch' action="<?php echo $this->url(array('module'=>'exchange','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form id='frm_add_exch' action="<?php echo $this->url(array('module'=>'exchange','controller'=>'exchangrate','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
-				if(dijit.byId('recieve_money').get('value') < dijit.byId('from_amount').get('value') || dijit.byId('return_money').get('value') < 0){
-					alert('សូម​ពិនិត្រ ទឹកប្រាក់​ដែល​​ទទួល​បាន​ម្តង ​ទៀត..');
-					dijit.byId('recieve_money').focus();
-					return false;
-				}
-
 				return true;
 			} else {
 				return false;
@@ -48,131 +69,106 @@
 	
 	<table cellspacing="20" width="100%"  >
 		<tr>
-			<td width="48%" valign="top">	
+			<td width="100%" valign="top">	
 				<fieldset class="panel">
 					<legend><strong>ព៌ត័មាន ទាក់​ទង នឹង​ អត្រាប្តូរប្រាក់</strong></legend>			
 					<table class="tbtable" style="margin:10px auto; width: 90%;" cellspacing='0' border="1">									
 						<tr class="tbheader">
-							<th>និមិត្តសញ្ញា</th>
-							<th>ទិញចូល</th>
-							<th>លក់ចេញ</th>
+							<th class="col-symbol">និមិត្តសញ្ញា</th>
+							<th class="col-input">អត្រា​ទិញចូល</th>
+							<th class="col-input">អត្រា​លក់ចេញ</th>
 						</tr>
 						<tr class="first">
 							<td>$ - ฿</td>
-							<td><label id="DB"></label></td>
-							<td><label id="BD"></label></td>
+							<td>
+								<input type="text" name="DB" id="DB"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'DB',
+									id:'DB',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['DB']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
+							<td>
+								<input type="text" name="BD" id="BD"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'BD',
+									id:'BD',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['BD']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
 						</tr>
 						<tr class="second">
 							<td>$ - ៛</td>
-							<td><label id="DR"></label></td>
-							<td><label id="RD"></label></td>
+							<td>
+								<input type="text" name="DR" id="DR"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'DR',
+									id:'DR',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['DR']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
+							<td>
+								<input type="text" name="RD" id="RD"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'RD',
+									id:'RD',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['RD']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
 						</tr>
 						<tr class="first">
 							<td>฿ - ៛</td>
-							<td><label id="BR"></label></td>
-							<td><label id="RB"></label></td>
-						</tr>				
-					</table>	
+							<td>
+								<input type="text" name="BR" id="BR"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'BR',
+									id:'BR',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['BR']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
+							<td>
+								<input type="text" name="RB" id="RB"  data-dojo-type="dijit.form.NumberTextBox"
+									data-dojo-props="required:true,																		
+									name:'RB',
+									id:'RB',	
+									class:'input-inner',								
+									value:<?php echo $this->ratelist['RB']?>,
+									constraints:{pattern:'#,###.##'},
+									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
+									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
+							</td>
+						</tr>
+					</table>
+					<div style="text-align: center; margin: 10px 0px;">
+						<input type="button" value="បោះពុម្ព" label="បោះពុម្ព" id="busyButton" dojoType="dijit.form.Button" 
+							iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="showDialog();"/> 
+						<input type="button" value="សំអាត" label="សំអាត" id="clearButton" onclick="clearText();" dojoType="dijit.form.Button"/>
+						<input type="reset" value="សាដើម" label="សាដើម" id="resetButton" dojoType="dijit.form.Button"/>
+						<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  />	
+					</div>	
 				</fieldset>
 			</td>
-			<td width="48%">
-				<fieldset class="panel">
-					<legend><strong>ព៌ត័មាន ទាក់​ទង នឹង​ ទឹកប្រាក់</strong></legend>			
-					<table style="margin: 0 auto; width: 90%;" cellspacing='10'>									
-						<tr>
-							<td style="width: 150px">ពីប្រភេទ​លុយ</td>
-							<td>
-								<input id="from_amount_type" >
-							</td>
-						</tr>
-						<tr>
-							<td style="width: 150px">ទៅជាប្រភេទ​លុយ</td>
-							<td>
-								<input id="to_amount_type" >
-							</td>
-						</tr>
-						<tr>
-							<td valign="top">អត្រាប្តូរប្រាក់ </td>
-							<td>
-								<input type="text" name="rate" id="rate"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true, readOnly:true,
-									name:'rate',
-									class:'fullside',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​  អត្រាប្តូរប្រាក់!',
-									invalidMessage:'អត្រាប្តូរប្រាក់ មិន​ត្រឹម​ត្រូវ!'">&nbsp;&nbsp;								
-								<input id="special_cus" name="special_cus" dojoType="dijit.form.CheckBox" value="1"
-									 onChange="changRateTextbox();">
-								<label for="special_cus" class="special_cus">អតិថិជនពិសេស</label>
-							</td>
-						</tr>
-						<tr>
-							<td>ចំនួន​ទឹក​ប្រាក់ <label id="lbl_from_amount" class="special_cus"></label></td>
-							<td>
-								<input type="text" name="from_amount" id="from_amount"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,																		
-									name:'from_amount',
-									class:'fullside',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
-							</td>
-						</tr>
-						<tr>
-							<td>ចំនួន​ទឹក​ប្រាក់ <label id="lbl_to_amount" class="special_cus"></label></td>
-							<td>
-								<input type="text" name="to_amount" id="to_amount"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,																		
-									name:'to_amount',
-									class:'fullside',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ចំនួន​ទឹក​ប្រាក់!',
-									invalidMessage:'ចំនួន​ទឹក​ប្រាក់​ មិន​ត្រឹម​ត្រូវ!'">
-							</td>
-						</tr>
 						
-						<tr>
-							<td>ប្រាក់​ទទួល​បាន​</td>
-							<td>
-								<input type="text" name="recieve_money" id="recieve_money"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="required:true,									
-									name:'recieve_money',
-									class:'fullside',
-									constraints:{pattern:'#,###.##'},
-									missingMessage:'អ្នក​ភ្លេច​បំពេញ​ ប្រាក់​ទទួល​បាន​!',
-									invalidMessage:'ប្រាក់​ទទួល​បាន​​ មិន​ត្រឹម​ត្រូវ!'">
-							</td>
-						</tr>
-						<tr>
-							<td>ប្រាក់​អាប់</td>
-							<td>
-								<input type="text" name="return_money" id="return_money"  data-dojo-type="dijit.form.NumberTextBox"
-									data-dojo-props="								
-									name:'return_money',
-									class:'fullside',
-									constraints:{pattern:'#,###.##'},
-									value:'0',	
-									readOnly:true,
-									invalidMessage:'ប្រាក់​ទទួល​បាន​​ មិន​ត្រឹម​ត្រូវ!'">
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" align="center">
-								<input type="button" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" 
-								 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId('frm_add_exch').submit();"/>
-								<input type="button" value="រក្សាទុក & បោះពុម្ព" label="រក្សាទុក & បោះពុម្ព" id="busyButton" dojoType="dijit.form.Button" 
-									iconClass="dijitEditorIcon dijitEditorIconPrint" onclick="printSave();"/> 
-							</td>
-						</tr>						
-					</table>	
-				</fieldset>			
-			</td>			
 		</tr>		
 	</table>
-	<input type="hidden" name="inv_no" value="<?php echo $this->inv_no;?>">
 </form>
 <div class="dijitHidden">
-	<div data-dojo-type="dijit.Dialog" style="width:7cm;" data-dojo-props="title:'របាយការណ៍ ប្តូរ', onCancel:hideDialog" id="terms" >
+	<div data-dojo-type="dijit.Dialog" style="width:7cm;" data-dojo-props="title:'អត្រាប្តូរប្រាក់', onCancel:hideDialog" id="terms" >
 		<div id="divPrint" style="width: 7cm; padding: 0px; margin: 0px;">
 			<style>
 				.fontbig{
@@ -210,142 +206,48 @@
 							<strong class="fontbig"><?php echo $this->keycode['rpt-transfer-tel-eng'];?></strong>
 						</td>
 				   </tr>
-				   <?php /*
-				   <tr>
-					   	<td align="center" colspan="3">	
-				            <strong class="fonttel"><label id="lblinvioice">ប័ណ្ណ​ប្តូរប្រាក់</label></strong>		
-			            </td>	   	        
-				   </tr> 
-				   <tr>
-						<td class="pleft">
-							Nº: <?php echo $this->inv_no;?>
-						</td>
-						<td align="right" colspan="2">
-							ឈ្មោះបុគ្គលិក៖ <?php print($this->user_name);?>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់ប្តូរ
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong class="fontbig"><label id="rpt_from_amount"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							អត្រាប្តូរប្រាក់
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong class="fontbig"><label id="rpt_rate"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់សរុប
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong class="fontbig"><label id="rpt_to_amount"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់ទទួល
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong class="fontbig"><label id="rpt_recieve"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់អាប់
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong class="fontbig"><label id="rpt_change"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td colspan="3" align="center">
-							<label>
-								<?php echo $this->keycode['rpt-transfer-warnning-kh'];?>
-							</label>
-						</td>			
-				   </tr>
-				   <tr style="border:1px solid #000;">
-						<td colspan="3" align="center" style="border:1px solid #000;">
-								<?php echo $this->keycode['comment'];?>
-						</td>			
-				   </tr>
-				   <tr>
-						<td colspan="3"><br />
-							<hr style="background: transparent; border-left:  none;	border-right: none;	border-top:   none;
-								border-bottom: 2px dashed #000;" />
-						</td>			
-				   </tr>
-				   <tr>
-						<td>
-							<img src="<?php echo $base_url.$this->keycode['imgPath'];?>" width="50%"/>
-						</td>	
-						<td align='right'  valign="top" colspan="2">
-							<?php echo date("d/m/Y H:i:s");?>
-						</td>
-				   </tr> */?>
 				   <tr style="border-bottom:1px solid #000; font-size:8px;">
 						<td class="pleft" style="border-bottom:1px solid #000;">
-							<strong class="fonttel" style="font-size:10px;"><label id="lblinvioice">ប័ណ្ណ​ប្តូរប្រាក់</label></strong>
+							<strong class="fonttel" style="font-size:10px;"><label id="lblinvioice">អត្រាប្តូរប្រាក់</label></strong>
 						</td>
 						<td align="right" colspan="2" style="border-bottom:1px solid #000;">
 							ឈ្មោះបុគ្គលិក៖ <?php print($this->user_name);?>
 						</td>
 				   </tr>
 				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់ប្តូរ
+				   	<td>និមិត្តសញ្ញា</td>
+				   	<td>​ទិញចូល</td>
+				   	<td align="right">លក់ចេញ</td>
+				   </tr>
+				   <tr>
+						<td  style="font-family:'KH Koulen';">
+							ដុល្លា-បាត<strong>($-B) :</strong>
 						</td>
-						<td>:</td>
+						<td><strong ><label id="lbl_dollar_bath_in"></label></strong></td>
 						<td align="right">
-							<strong ><label id="rpt_from_amount"></label></strong>
+							<strong ><label id="lbl_dollar_bath_out"></label></strong>
 						</td>
 				   </tr>
 				   <tr>
-						<td>
-							អត្រាប្តូរប្រាក់
+						<td  style="font-family:'KH Koulen';">
+								ដុល្លា-រៀល<strong>($-R)&nbsp;:</strong>
 						</td>
-						<td>:</td>
+						<td>
+							<strong ><label id="lbl_dollar_riel_in"></label></strong>
+						</td>
 						<td align="right">
-							<strong ><label id="rpt_rate"></label></strong>
+							<strong ><label id="lbl_dollar_riel_out"></label></strong>
 						</td>
 				   </tr>
 				   <tr>
+						<td  style="font-family:'KH Koulen';">
+							បាត-រៀល<strong>(B-R) : </strong>
+						</td>
 						<td>
-							ចំនួន​ទឹក​ប្រាក់សរុប
+							<strong style="font-size:10px;"><label id="lbl_bath_riel_in"></label></strong>
 						</td>
-						<td>:</td>
 						<td align="right">
-							<strong style="font-size:10px;"><label id="rpt_to_amount"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់ទទួល
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong style="font-size:10px;"><label id="rpt_recieve"></label></strong>
-						</td>
-				   </tr>
-				   <tr>
-						<td>
-							ចំនួន​ទឹក​ប្រាក់អាប់
-						</td>
-						<td>:</td>
-						<td align="right">
-							<strong style="font-size:10px;"><label id="rpt_change"></label></strong>
+							<strong style="font-size:10px;"><label id="lbl_bath_riel_out"></label></strong>
 						</td>
 				   </tr>
 				   <tr>
@@ -370,10 +272,11 @@
 							<img src="<?php echo $base_url.$this->keycode['imgPath'];?>" width="50%"/>
 						</td>	
 						<td align='right'  valign="top" colspan="2">
-							<?php echo date("d/m/Y H:i:s");?>
+							<strong><?php echo date("d/m/Y H:i:s");?></strong>
 						</td>
 				   </tr>
 			</table>
+			
 		</div>
 		<iframe name=print_frame width=0 height=0 frameborder=0 src=about:blank></iframe>	
 		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconPrint"
@@ -384,295 +287,42 @@
 
 	</div>
 </div>
-
 <script type="text/javascript">
-	dojo.require("dijit.form.DateTextBox");
-	dojo.require("dijit.form.ValidationTextBox");
-	dojo.require('dijit.form.Form');
-	dojo.require('dijit.form.FilteringSelect');	
-	dojo.require('dijit.form.Button');
-	dojo.require('dijit.form.NumberTextBox');
-	dojo.require("dojo.store.Memory");
-	dojo.require("dojo.data.ObjectStore");
-	dojo.require("dijit.form.CheckBox");     
-	dojo.require("dojo.number");
-	dojo.require('dojox.form.BusyButton');
-	dojo.require("dijit.Dialog");
-
-	
-	 var calcSysble = "";
-	 var lblrateid = "";
-	
-	dojo.ready(function(){		
-		var curency_type_data = new dojo.store.Memory({
-		       data: <?php print_r(Zend_Json::encode($this->currency));?>
-		 });
-		 
-		new dijit.form.FilteringSelect({
-	        store: dojo.data.ObjectStore({objectStore: curency_type_data}),
-	        autoComplete: true,           
-	        required: true,
-	        id: "to_amount_type",
-	        name: "to_amount_type",
-	        class: 'fullside',
-	        searchAttr: "name",
-	        missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ប្រភេទ​លុយ!",
-	        onChange: function() {
-	        	clearText(true);
-	        	checkRate();
-	        	var lblid = '';
-	        	var from_type = dijit.byId('from_amount_type').item.id;
-	        	if(from_type == 1){
-		        	if(this.item.id == 2){
-		        		lblrateid="DB";
-		    		  calcSysble = "*";
-		        	}
-		        	else if(this.item.id == 3){
-		        		lblrateid="DR";
-		        		calcSysble = "*";
-		        	}
-			    } 
-		    	else if(from_type == 2){
-		    		if(this.item.id == 1){
-		    			lblrateid="BD";		 
-		    			calcSysble = "/";   		  
-		        	}
-		        	else if(this.item.id == 3){
-		        		lblrateid="BR";
-		        		calcSysble = "*";
-		        	}
-		  	    }
-		    	else if(from_type == 3){
-		    		if(this.item.id == 1){
-		    			lblrateid="RD";		
-		    			calcSysble = "/";    		  
-		        	}
-		        	else if(this.item.id == 2){
-		        		lblrateid="RB";
-		        		calcSysble = "/";
-		        	}
-			    }
-	        	dojo.byId("rate").value = dojo.byId(lblrateid).innerHTML;
-	        	dojo.byId("lbl_to_amount").innerHTML = " ជា " + dijit.byId('to_amount_type').item.name;
-	        }
-
-	    }, "to_amount_type");
-	    
-		new dijit.form.FilteringSelect({
-	        store: dojo.data.ObjectStore({objectStore: curency_type_data}),
-	        autoComplete: true,           
-	        required: true,
-	        id: "from_amount_type",
-	        name: "from_amount_type",
-	        class: 'fullside',
-	        searchAttr: "name",
-	        missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ប្រភេទ​លុយ!",
-	        onChange: function() {
-		        if(this.item.id === "1"){
-	        		dijit.byId('to_amount_type').attr("query",{dollar:1});
-		        }
-		        else if(this.item.id === "2"){
-		        	dijit.byId('to_amount_type').attr("query",{bath:1});
-		        }
-		        else if(this.item.id === "3"){
-		        	dijit.byId('to_amount_type').attr("query",{rail:1});
-		        }
-		        clearText();
-		        dojo.byId("lbl_from_amount").innerHTML = " ជា " + dijit.byId('from_amount_type').item.name;
-	        }
-
-	    }, "from_amount_type");
-
-		checkRate();
-
-		dojo.connect(dojo.byId("from_amount"), "onkeyup", function(evt){			
-			if(!dojo.byId("special_cus").checked){
-				if(dojo.byId("rate").value != dojo.byId(lblrateid).innerHTML){		
-					dojo.byId("rate").value = dojo.byId(lblrateid).innerHTML;
-				}
-			}
-			total();
-	    });
-
-		dojo.connect(dojo.byId("to_amount"), "onkeyup", function(evt){
-			rev_total();
-	    });	
-
-		dojo.connect(dojo.byId("rate"), "onkeyup", function(evt){
-			total();
-	    });
-
-		dojo.connect(dojo.byId("recieve_money"), "onkeyup", function(evt){
-			return_money();
-	    });	
-		
-	});   
-
-	function clearText(exp){
-		if(exp !== true){
-			dojo.byId('to_amount_type').value="";
-		}
-        dojo.byId('rate').value="";
-        dojo.byId('to_amount').value="";
-        dojo.byId('from_amount').value="";
-        dojo.byId('recieve_money').value="";
-        dojo.byId('return_money').value=0;
-        dijit.byId("special_cus").attr("checked", false);
-        dojo.byId("lbl_to_amount").innerHTML = "";
-        changRateTextbox();
+function hideDialog() {		
+	dijit.byId("terms").hide();
+}
+	function clearText(){
+		dojo.byId("DB").value = 0;
+		dojo.byId("BD").value = 0;
+		dojo.byId("DR").value = 0;
+		dojo.byId("RD").value = 0;
+		dojo.byId("BR").value = 0;
+		dojo.byId("RB").value = 0;		
 	}
-	
-	function checkRate(){
-		url = "<?php echo BASE_URL;?>/exchange/index/check-rate";
-		dojo.xhrPost({
-		      url: url,
-		      load: function(data){
-		    	  tmp = dojo.fromJson(data);		    	  
-		    	  for(var i=0; i< tmp.length; i++){
-			    	  var lblid1="";
-			    	  var lblid2="";
-			    	  if(tmp[i].in_cur_id === "1" && tmp[i].out_cur_id === "2"){
-			    		  lblid1="DB";
-				    	  lblid2="BD";
-				      }
-			    	  else if(tmp[i].in_cur_id === "1" && tmp[i].out_cur_id === "3"){
-			    		  lblid1="DR";
-				    	  lblid2="RD";
-
-				      }
-			    	  else if(tmp[i].in_cur_id === "2" && tmp[i].out_cur_id === "3"){
-			    		  lblid1="BR";
-				    	  lblid2="RB";
-				      }
-			    	  dojo.byId(lblid1).innerHTML = dojo.number.format(tmp[i].rate_in);
-			    	  dojo.byId(lblid2).innerHTML = dojo.number.format(tmp[i].rate_out);
-		    	  }
-		    	  
-		      },
-		      error: function(error){	        
-		        alert("Error, please reload page, Try it again.");
-		      }
-	    });
-	}
-
-	function return_money(){
-		var r_m=0;
-		if (calcSysble === "/"){		
-			amount = dijit.byId('from_amount').get('value');
-			rate = dijit.byId('rate').get('value');
-			tt = amount / rate;	
-			var lbl = '';	
-			var from_type = dijit.byId('from_amount_type').item.id;
-			var to_type = dijit.byId('to_amount_type').item.id;
-			if(from_type == 2 && to_type == 1){
-				lbl = "DB";
-			}
-			else if(from_type == 3){
-				if(to_type == 1){
-					lbl = "DR";
-				}
-				else if(to_type == 2){
-					lbl = "BR";
-				}
-			}
-			var r_rate = dojo.number.parse(dojo.byId(lbl).innerHTML);
-			r_m =parseFloat((tt - parseFloat(tt)) * r_rate);
-		}
-		
-		rm = parseFloat(dijit.byId('recieve_money').get('value')) - parseFloat(dijit.byId('from_amount').get('value')) ;
-		r_money =dijit.byId('recieve_money').get('value')- amount;
-		dojo.byId("return_money").value = dojo.number.format(dojo.number.round(rm,2));
-		//dojo.byId("return_money").value=r_money;
-		//dojo.byId("return_money").value = dojo.number.format(rm + r_m);
-		
-	}
-		
-	function total(){
-		tt=0;
-		r_money=0;
-		amount = dijit.byId('from_amount').get('value');
-		rate = dijit.byId('rate').get('value');
-		if(isNaN(rate)){
-			rate = 0;
-		}
-		if (calcSysble === "*"){
-			tt = amount * rate;
-		}
-		else{
-			tt = amount / rate;			
-		}
-		
-		dojo.byId("to_amount").value = dojo.number.format(dojo.number.round(tt,2));
-		dojo.byId("recieve_money").value = dojo.number.format(dojo.number.round(amount,2));
-		return_money();
-	}
-
-	function rev_total(){
-		tt=0;
-		r_money=0;
-		amount = dijit.byId('to_amount').get('value');
-		rate = dijit.byId('rate').get('value');
-		if(isNaN(rate)){
-			rate = 0;
-		}
-		if (calcSysble === "*"){
-			tt = amount / rate;
-		}
-		else{
-			tt = amount * rate;	
-		}
-// 		dojo.byId("from_amount").value = dojo.number.format(Math.ceil(tt));
-// 		dojo.byId("recieve_money").value = dojo.number.format(Math.ceil(tt));	
-		dojo.byId("from_amount").value = dojo.number.format(dojo.number.round(tt,2));
-		dojo.byId("recieve_money").value = dojo.number.format(dojo.number.round(tt,2));
-		return_money();
-	}
-	
 	function printSave(){		
 		if(dijit.byId('frm_add_exch').validate()) {
-			if(dijit.byId('recieve_money').get('value') < dijit.byId('from_amount').get('value') || dijit.byId('return_money').get('value') < 0){
-				alert('សូម​ពិនិត្រ ទឹក​ដែល​​ទទួល​បាន​ម្តង ​ទៀត..');
-				dijit.byId('recieve_money').focus();
 				return false;
-			}
-			showDialog();			
 		}
+		showDialog();	
 		
 	}
-	
 	function showDialog() {		
-		var from_type = dojo.byId("from_amount_type").value;
-		var to_type = dojo.byId("to_amount_type").value;
-		var css_s = "<label class='fonttel'>";
-		var css_e = "</label>"
-		dojo.byId("rpt_from_amount").innerHTML = dojo.byId("from_amount").value +" "+ from_type;		
-		dojo.byId("rpt_rate").innerHTML = dojo.byId("rate").value +" "+ to_type;
-		dojo.byId("rpt_to_amount").innerHTML = css_s + dojo.byId("to_amount").value + css_e +" "+ to_type;
-		dojo.byId("rpt_recieve").innerHTML = css_s + dojo.byId("recieve_money").value + css_e + " " + from_type;
-		dojo.byId("rpt_change").innerHTML = css_s + dojo.byId("return_money").value + css_e + " " + from_type;
+		dojo.byId('lbl_dollar_bath_in').innerHTML=dijit.byId('DB').get('value');
+		dojo.byId('lbl_dollar_bath_out').innerHTML=dijit.byId('BD').get('value');
+		
+		dojo.byId('lbl_dollar_riel_in').innerHTML=dijit.byId('DR').get('value');
+		dojo.byId('lbl_dollar_riel_out').innerHTML=dijit.byId('RD').get('value');
+		
+		dojo.byId('lbl_bath_riel_in').innerHTML=dijit.byId('BR').get('value');
+		dojo.byId('lbl_bath_riel_out').innerHTML=dijit.byId('RB').get('value');
+
 		
 		dijit.byId("terms").show();
 	}
-	
-	// Hide the dialog
-	function hideDialog() {		
-		dijit.byId("terms").hide();
-		dijit.byId('frm_add_exch').submit();
-	}
-	// Force them to provide an answer
 	function doPrint() {
 		window.frames["print_frame"].document.body.innerHTML=dojo.byId('divPrint').innerHTML;
 	    window.frames["print_frame"].window.focus();
 	    window.frames["print_frame"].window.print();
 	    hideDialog();
-	}
-
-	function changRateTextbox(){		
-		if(dojo.byId("special_cus").checked){
-			dijit.byId("rate").setAttribute('readOnly', false);
-		}
-		else{
-			dijit.byId("rate").setAttribute('readOnly', true);
-		}
 	}
 </script>
