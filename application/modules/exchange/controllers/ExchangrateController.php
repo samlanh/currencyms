@@ -25,11 +25,11 @@ class Exchange_ExchangrateController extends Zend_Controller_Action
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("និមិត្តសញ្ញា","អត្រា​ទិញចូល ","អត្រា​លក់ចេញ","Status");
+    		$collumns = array("និមិត្តសញ្ញា","អត្រា​ទិញចូល ","អត្រា​លក់ចេញ","create_date","active");
     		$link=array(
     				'module'=>'exchange','controller'=>'exchangrate','action'=>'edit',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array(''=>$link,''=>$link,''=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('rate_in'=>$link,'rate_out'=>$link,''=>$link));
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
     		echo $e->getMessage();
@@ -39,12 +39,17 @@ class Exchange_ExchangrateController extends Zend_Controller_Action
     }
     function addAction(){
     	$db_rate=new Application_Model_DbTable_DbRate();
-    	 
+    	
     	if($this->getRequest()->isPost()){
     		$formdata=$this->getRequest()->getPost();
+    		try {
     		$db_rate->setNewRate($formdata);
-    	}
-    	 
+    		Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/exchange/exchangrate');
+    		}catch(Exception $e){
+    			echo $e->getMessage();exit();
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    		}	
     	$this->view->ratelist = $db_rate->getCurrentRate();
     	$db_keycode = new Application_Model_DbTable_DbKeycode();
     	$this->view->keycode = $db_keycode->getKeyCodeMiniInv();
@@ -59,8 +64,15 @@ class Exchange_ExchangrateController extends Zend_Controller_Action
     	
     	if($this->getRequest()->isPost()){
     		$formdata=$this->getRequest()->getPost();
+    		//$db_rate=new Application_Model_DbTable_DbRate();
+    		try {
     		$db_rate->setNewRate($formdata);
-    	}
+    		Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/exchange/exchangrate');
+    		}catch(Exception $e){
+    			echo $e->getMessage();exit();
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    		}	
     	
     	$this->view->ratelist = $db_rate->getCurrentRate();
     	$db_keycode = new Application_Model_DbTable_DbKeycode();
