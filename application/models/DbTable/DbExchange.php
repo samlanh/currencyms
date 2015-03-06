@@ -6,6 +6,7 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
     protected $_name = 'cs_exchange';
     
     function getDataById($id){
+    	
     	$sql ="SELECT
     				  e.`id`, 
 					  e.`statusDate`,
@@ -25,7 +26,7 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
 					  `cs_exchange` AS e 
     				WHERE `id` = ".$id;
     	$db = $this->getAdapter();
-//     	echo $sql; exit();
+//    	echo $sql; exit();
     	return $db->fetchRow($sql);
     }
     
@@ -338,8 +339,8 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
     	e.`toAmount`,
     	e.`recievedAmount`,
     	e.`changedAmount`,
-    	e.`toAmountType`,
-    	e.`fromAmountType`,
+     	e.`toAmountType`,
+     	e.`fromAmountType`,
     	(SELECT CONCAT(`last_name`,' ',`first_name`) AS name
 				FROM `cs_users` where id=e.userid) as staff_name
     	FROM
@@ -348,7 +349,7 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
     	ORDER BY e.`userid` DESC ,e.`statusDate` DESC ";
 //     	ORDER BY e.`statusDate` DESC";
     	$db = $this->getAdapter();
-//     	echo $sql;
+    	//echo $sql;
     	return ($db->fetchAll($sql));
     }
     /**
