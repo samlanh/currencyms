@@ -95,8 +95,10 @@ class Application_Model_DbTable_DbRate extends Zend_Db_Table_Abstract
     }
     function getAllRate(){
     	$db=$this->getAdapter();
-    	$sql = "SELECT in_cur_id,out_cur_id,rate_in,rate_out,create_date,active FROM cs_rate";
-    	
+    	$sql = "SELECT p.id,(SELECT symbol FROM cs_currencies WHERE id = p.id) AS symbol,
+    	(SELECT name FROM cs_currencies WHERE id = p.in_cur_id) AS in_cur_id,
+    	(SELECT name FROM cs_currencies WHERE id = p.out_cur_id) AS out_cur_id,
+    	p.rate_in,p.rate_out,p.create_date,p.active FROM cs_rate As p";
     	return $db->fetchAll($sql);
     	
     }
