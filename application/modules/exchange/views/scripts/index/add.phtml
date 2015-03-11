@@ -524,9 +524,11 @@
 	
 	function checkRate(){
 		url = "<?php echo BASE_URL;?>/exchange/index/check-rate";
+		
 		dojo.xhrPost({
 		      url: url,
 		      load: function(data){
+		    	 // alert(data);
 		    	  tmp = dojo.fromJson(data);		    	  
 		    	  for(var i=0; i< tmp.length; i++){
 			    	  var lblid1="";
