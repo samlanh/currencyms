@@ -16,11 +16,13 @@ class Exchange_ShowrateController extends Zend_Controller_Action
     	defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
     }
 
-    public function indexAction()
+    function indexAction()
     {
        
     }
-
+    function addAction() {
+     $this->_redirect("/exchange/showrate");
+    }   
    
 
     
