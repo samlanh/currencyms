@@ -161,6 +161,10 @@ dojo.require("dijit.Dialog");
 						<input type="button" value="សំអាត" label="សំអាត" id="clearButton" onclick="clearText();" dojoType="dijit.form.Button"/>
 						<input type="reset" value="សាដើម" label="សាដើម" id="resetButton" dojoType="dijit.form.Button"/>
 						<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  />	
+						<?php $url_close = $this->url(array('module'=>'exchange','controller'=>'exchangrate','action'=>'index'),null,true); ?>
+								<a href="<?php echo $url_close ?>">
+									<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
+								</a>
 					</div>	
 				</fieldset>
 			</td>
@@ -285,7 +289,7 @@ dojo.require("dijit.Dialog");
 		<button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconCancel"
 				showLabel="false" type="button" onclick="hideDialog();">Cancel</button>
 			
-
+         
 	</div>
 </div>
 <script type="text/javascript">

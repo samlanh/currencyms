@@ -1,11 +1,11 @@
 <?php
 
-/*class Partner_IndexController extends Zend_Controller_Action
+class Partner_IndexController extends Zend_Controller_Action
 {
  	const REDIRECT_URL = '/partner/index/add';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
 	
-	/*
+	
     public function init()
     {
     	header('content-type: text/html; charset=utf8');
@@ -15,7 +15,7 @@
     	Application_Form_FrmSessionManager::clearSessionSearch();
     }
 
-   /* public function indexAction()
+    public function indexAction()
     {
     	try{
     		$db = new Partner_Model_DbTable_DbPartner();
@@ -119,7 +119,8 @@
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     }
-    */
+    
+/*
 class Partner_IndexController extends Zend_Controller_Action {
 	const REDIRECT_URL_ADD = '/partner/index/add';
 	const REDIRECT_URL = '/partner/';
@@ -129,7 +130,6 @@ class Partner_IndexController extends Zend_Controller_Action {
 			'ប្រើ​ប្រាស់' 
 	);
 	public function init() {
-		/* Initialize action controller here */
 		header ( 'content-type: text/html; charset=utf8' );
 		defined ( 'BASE_URL' ) || define ( 'BASE_URL', Zend_Controller_Front::getInstance ()->getBaseUrl () );
 		
@@ -296,8 +296,8 @@ class Partner_IndexController extends Zend_Controller_Action {
 			exit();
 		}
 	}
+*/
 }
-
 
 
 

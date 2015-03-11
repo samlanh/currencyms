@@ -24,11 +24,11 @@ class Exchange_IndexController extends Zend_Controller_Action
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("ថ្ងៃប្រតិបត្តិ","ការប្តូរប្រាក់","ចំនួនទឹកប្រាក់","អត្រាប្តូរប្រាក់ ","ចំនួនទឹកប្រាក់បានប្តូររួច","ប្រាក់ទទួលបាន","ប្រាក់អាប់","toAmountType","fromAmountType","staff_name");
+    		$collumns = array("លេខវិក្ក័យប័ត្រ","ថ្ងៃប្រតិបត្តិ","ការប្តូរប្រាក់","ចំនួនទឹកប្រាក់","អត្រាប្តូរប្រាក់ ","ចំនួនទឹកប្រាក់បានប្តូររួច","ប្រាក់ទទួលបាន","ប្រាក់អាប់","ប្រភេទលុយបានប្ថូរ","ប្រភេទលុយទទួលបាន","ឈ្មោះបុគ្គលឹក");
     		$link=array(
     				'module'=>'exchange','controller'=>'index','action'=>'edit',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('from_to'=>$link,'statusDate'=>$link,'fromAmount'=>$link,'recievedAmount'=>$link,'rate'=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('from_to'=>$link,'statusDate'=>$link,'fromAmount'=>$link,''=>$link,'recieptNo'=>$link));
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
     		echo $e->getMessage();
@@ -60,6 +60,7 @@ class Exchange_IndexController extends Zend_Controller_Action
 			$formdata=$this->getRequest()->getPost();
 // 			print_r($formdata);exit();	
 			try {
+				$formdata['id']=$ex_id;
 				$result = $db_exc->getDataById($formdata['id']);
 				$to_type = $db_exc->getCurrencyById("`name`, `symbol`,`country_id`", $formdata["to_amount_type"]);
 				$from_type = $db_exc->getCurrencyById("`name`, `symbol`,`country_id`", $formdata["from_amount_type"]);
@@ -71,10 +72,11 @@ class Exchange_IndexController extends Zend_Controller_Action
 					$id = $db_exc->save($formdata);
 				}
 				
-				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+			 Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
 						
 			} catch (Exception $e) {
 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+				echo $e->getMessage();exit();
 			}
 		}       
     }

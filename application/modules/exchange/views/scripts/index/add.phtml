@@ -3,6 +3,7 @@
 	echo $this->headTitle();
 	$base_url = Application_Form_FrmMessage::getUrl("/");
 ?>	
+
 <style>
 <!--
 	.panel{
@@ -158,6 +159,11 @@
 						</tr>
 						<tr>
 							<td colspan="2" align="center">
+							 <?php $url_close = $this->url(array('module'=>'exchange','controller'=>'index','action'=>'index'),null,true); ?>
+								<a href="<?php echo $url_close ?>">
+									<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
+								</a>
+							 
 								<input type="button" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button" 
 								 iconClass="dijitEditorIcon dijitEditorIconSave" onclick="dijit.byId('frm_add_exch').submit();"/>
 								<input type="button" value="រក្សាទុក & បោះពុម្ព" label="រក្សាទុក & បោះពុម្ព" id="busyButton" dojoType="dijit.form.Button" 

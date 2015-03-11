@@ -25,11 +25,11 @@ class Exchange_ExchangrateController extends Zend_Controller_Action
 //     		$glClass = new Application_Model_GlobalClass();
 //     		$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
     		$list = new Application_Form_Frmtable();
-    		$collumns = array("និមិត្តសញ្ញា","in_cur_id","out_cur_id","អត្រា​ទិញចូល ","អត្រា​លក់ចេញ","create_date","active");
+    		$collumns = array("និមិត្តសញ្ញា","ប្រភេទលុយបានប្ថូរ","ប្រភេទលុយទទួលបាន","អត្រា​ទិញចូល ","អត្រា​លក់ចេញ","កាលបរិច្ឆែត","active");
     		$link=array(
     				'module'=>'exchange','controller'=>'exchangrate','action'=>'edit',
     		);
-    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('rate_in'=>$link,'rate_out'=>$link,''=>$link));
+    		$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('in_cur_id'=>$link,'out_cur_id'=>$link,'rate_in'=>$link));
     	}catch (Exception $e){
     		Application_Form_FrmMessage::message("Application Error");
     		echo $e->getMessage();

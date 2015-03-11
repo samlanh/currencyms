@@ -69,66 +69,10 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
     				"from_to"=>$from_type['name'] . " - " . $to_type["name"]
     		);
     		$ex_id = $this->insert($_data);
-    		
-    		$arr_cd = array(
-    				'tran_id'=>$ex_id,
-    				'tran_type'=>3,
-    				'date'=>date('Y-m-d'),
-    				'user_id'=>$user_id,
-    		);
-    		
-    		$db_cap = new Application_Model_DbTable_DbCapital();
-    		//from amount 
-    		$currency_type = $data["from_amount_type"];
-    		$amount = ($data["from_amount"] - $data["return_money"]);
-    		$rs = $db_cap->DetechCapitalExist($user_id,$currency_type,null);//check if add capital exist
-    		if(!empty($rs)){
-    			$arr = array(
-    					'amount'=>$rs['amount']+$amount
-    			);
-    			$db_cap->updateCurrentBalanceById($rs['id'],$arr);
-    		}else{
-    			$arr =array(
-    					'amount'=>$amount,
-    					'currencyType'=>$currency_type,
-    					'userid'=>$user_id,
-    					'statusDate'=>date("Y-m-d H:i:s")
-    			);
-    			$db_cap->AddCurrentBalanceById($arr);
-    		}
-    		//end from amount
-    		
-    		//insert to capital_detail
-    		$arr_cd['curr_type']=$currency_type;
-    		$arr_cd['amount']=$data["from_amount"];
-    		$db_cap->addMoneyToCapitalDetail($arr_cd);
-    		
-    		//to amount
-    		$currency_type = $data["to_amount_type"];
-    		$rs = $db_cap->DetechCapitalExist($user_id,$currency_type,null);//check if add capital exist
-    		if(!empty($rs)){
-    			$arr = array(
-    					'amount'=>$rs['amount']-$data["to_amount"]
-    			);
-    			$db_cap->updateCurrentBalanceById($rs['id'],$arr);
-    		}else{
-    			$arr =array(
-    					'amount'=>-$data["to_amount"],
-    					'currencyType'=>$currency_type,
-    					'userid'=>$user_id,
-    					'statusDate'=>date("Y-m-d H:i:s")
-    			);
-    			$db_cap->AddCurrentBalanceById($arr);
-    		}
-    		//end to amount
-    		//insert to capital_detail
-    		$arr_cd['curr_type']=$currency_type;
-    		$arr_cd['amount']=-$data["to_amount"];
-    		$db_cap->addMoneyToCapitalDetail($arr_cd);
-    		
     		return  $db->commit();
     	} catch (Exception $e) {
     		$db->rollBack();
+    		echo $e->getMessage();exit();
     		
     	}
     }
@@ -139,6 +83,7 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
      * @return number
      */
     function updateData($data){
+    	
     	$db_cap = new Application_Model_DbTable_DbCapital();
     	$session_user=new Zend_Session_Namespace('auth');
     	$to_type = $this->getCurrencyById("`name`, `symbol`,`country_id`", $data["to_amount_type"]);
@@ -147,113 +92,26 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
     	if(($data["from_amount_type"] == 2 && $data["to_amount_type"] == 1) || $data["from_amount_type"] == 3 ){
     		$status = "out";
     	}
-    	$_data=array(
-    			"changedAmount"=>$data["return_money"],
-    			"specail_customer"=>(empty($data['special_cus']))? 0 : 1,
-    			"toAmount"=>$data["to_amount"],
-    			"toAmountType"=>$to_type["symbol"],
-    			"rate"=>$data["rate"],
-    			"fromAmountType"=>$from_type["symbol"],
-    			"fromAmount"=>$data["from_amount"],
-    			"recievedType"=>$from_type["symbol"],
-    			"recievedAmount"=>$data["recieve_money"],
-    			"statusDate"=>date('Y-m-d H:i:s'),
-    			"userid"=>$session_user->user_id,
-    			"status"=>$status,
-    			"from_to"=>$from_type['name'] . " - " . $to_type["name"]
-    	);
-    	$result = $this->getDataById($data['id']);
-    	$user_id = $session_user->user_id;
+    	
     	$db = $this->getAdapter();
-    	$db->beginTransaction();
     	try {
-	    	if($result){
-		    		if($data['from_amount'] != $result['fromAmount']){//if amount has changed
-			    		//update to capital_detail
-		    			$arr_cdfrom = array(
-		    					'curr_type'=>$data["from_amount_type"],
-		    					'amount'=>$data["from_amount"],
-	    						'date'=>date('Y-m-d'),
-		    			);
-		    			$capital_detail = $db_cap->getCapitalDetailById($data['id'],3,$data["from_amount_type"]);
-		    			$db_cap->updateCapitalDetailById($capital_detail['id'],$arr_cdfrom);
-		
-		    			$arr_cdto = array(
-		    					'curr_type'=>$data["to_amount_type"],
-		    					'amount'=>$data["to_amount"],
-	    						'date'=>date('Y-m-d'),
-		    			);
-		    			$capital_detail = $db_cap->getCapitalDetailById($data['id'],3,$data["to_amount_type"]);
-		    			$db_cap->updateCapitalDetailById($capital_detail['id'],$arr_cdto);
-		    			//*************************************************************
-			    		//update to cs_current_capital
-			    		$amount = $data["from_amount"] - $data["return_money"];
-			    		$to = $data['to_amount']-$result['toAmount'];
-			    		$from = $amount - $result['fromAmount'];
-			    		$currency_type_from = $data["from_amount_type"];
-			    		$currency_type_to = $data["to_amount_type"];
-// 			    		print_r($_data);echo "**data<br/>";
-// 			    		print_r($result);echo "**result<br/>";
-// 			    		echo "to=".$to."<br/>from=".$from."<br/>amount=".$amount."<br/>";
-	// 		    		echo $amount." *** ".$amount_to;
-	// 		    		exit;
-			    		//from amount
-			    		$rs = $db_cap->DetechCapitalExist($user_id,$currency_type_from,null);//check if add capital exist
-// 			    		print_r($rs);echo "***rs from<br/>";
-			    		if(!empty($rs)){
-			    			$balan = $rs['amount'] - abs($from);
-			    			if($from>0){
-			    				$balan = $rs['amount'] + abs($from);
-			    			}
-			    			$arr = array(
-			    					'amount'=>$balan
-			    			);
-			    			$db_cap->updateCurrentBalanceById($rs['id'],$arr);
-			    		}else{
-			    			$arr =array(
-			    					'amount'=>$data["from_amount"],
-			    					'currencyType'=>$currency_type_from,
-			    					'userid'=>$user_id,
-			    					'statusDate'=>date("Y-m-d H:i:s")
-			    			);
-			    			$db_cap->AddCurrentBalanceById($arr);
-			    		}
-// 			    		print_r($arr);echo "**arr from<br/>";
-			    		//end from amount
-	
-			    		//to amount
-			    		$rs = $db_cap->DetechCapitalExist($user_id,$currency_type_to,null);//check if add capital exist
-// 			    		print_r($rs);echo "***rs to<br/>";
-			    		if(!empty($rs)){
-			    			$balan = $rs['amount'] + abs($to);
-			    			if($from>0){
-			    				$balan = $rs['amount'] - abs($to);
-			    			}
-			    			$arr = array(
-			    					'amount'=>$balan
-			    			);
-			    			$db_cap->updateCurrentBalanceById($rs['id'],$arr);
-			    		}else{
-			    			$arr =array(
-			    					'amount'=>-$data['to_amount'],
-			    					'currencyType'=>$currency_type_to,
-			    					'userid'=>$user_id,
-			    					'statusDate'=>date("Y-m-d H:i:s")
-			    			);
-			    			$db_cap->AddCurrentBalanceById($arr);
-			    		}
-// 			    		print_r($arr);echo "**arr to<br/>";exit;
-			    		//end to amount
-		    		}
-				    $this->_name = 'cs_exchange';
-			    	$where=$this->getAdapter()->quoteInto('id=?', $data['id']);
-			    	$this->update($_data, $where);
-	    	}
-	//     	return  $this->update($_data, $where);
-	    	return  $db->commit();
+    		$_data=array(
+    				"changedAmount"=>$data["return_money"],
+    				"specail_customer"=>(empty($data['special_cus']))? 0 : 1,
+    				"toAmount"=>$data["to_amount"],
+    				"toAmountType"=>$to_type["symbol"],
+    				"rate"=>$data["rate"],
+    				"fromAmountType"=>$from_type["symbol"],
+    				"fromAmount"=>$data["from_amount"],
+    				"recievedType"=>$from_type["symbol"],
+    				"recievedAmount"=>$data["recieve_money"],
+    				"statusDate"=>date('Y-m-d H:i:s'),
+    				"userid"=>$session_user->user_id,
+    				"status"=>$status,
+    		     );
+    		$where=$this->getAdapter()->quoteInto('id=?', $data['id']);
+    		$this->update($_data, $where);
     	} catch (Exception $e) {
-    		$db->rollBack();
-    		
     	}
     }
     
@@ -332,6 +190,7 @@ class Application_Model_DbTable_DbExchange extends Zend_Db_Table_Abstract
  	
     	$sql = "SELECT
     	e.`id`,
+    	e.`recieptNo`,
     	DATE_FORMAT(e.`statusDate`,'%d/%m/%Y') as `statusDate`,
     	e.`from_to`,
     	e.`fromAmount`,
