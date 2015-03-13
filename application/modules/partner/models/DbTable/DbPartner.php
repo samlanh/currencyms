@@ -104,6 +104,13 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 		   
 				
 		}
+		function getPartnerById($id){
+			$db=$this->getAdapter();
+        	$sql="SELECT id,parent,partner_brand,partner_name,account_no,
+        	nation_id,house_no,photo,group_no,street,commune,district,province,tel,mobile,note,is_cashoperation,cash_riel,
+        	cash_dollar,cash_bath,date,status,address  FROM cms_partner where id = '$id'";
+        	return $db->fetchRow($sql);
+		}
         function getAllPartner($search=null){
         	$db=$this->getAdapter();
         	$sql="SELECT p.id,

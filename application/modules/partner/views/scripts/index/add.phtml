@@ -1,7 +1,7 @@
 <?php
 	$this->headTitle('Currency Smart | Agent add page'); 
 	echo $this->headTitle();
-        
+  
 	$form = $this->frm;
 ?>
 <script type="text/javascript">
@@ -14,7 +14,8 @@ dojo.require("dijit.form.RadioButton");
 dojo.ready(function(){
 	var district_data = new dojo.store.Memory({
 	       data: <?php print_r(Zend_Json::encode($this->district));?>
-	}); 
+	});
+	 
 	new dijit.form.FilteringSelect({
 	store: dojo.data.ObjectStore({objectStore: district_data}),
 	autoComplete: true,
@@ -22,18 +23,18 @@ dojo.ready(function(){
 		pro_id: "-1"
 	},            
 	required: false,		           
-	name: "district_name",
-	id: "district_name",
+	name: "district",
+	id: "district",
 	searchAttr: "name",
 //	class: 'fullside',
 	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
 		onChange: function() {
 				filterCommune();
-	 	}
-	}, "district_name");
+	    }
+	}, "district");
 
 	var commune_data = new dojo.store.Memory({
-	      data: <?php print_r(Zend_Json::encode($this->commune_name));?>
+	       data: <?php print_r(Zend_Json::encode($this->commune_name));?>
 	});
 	 
 	new dijit.form.FilteringSelect({
@@ -43,23 +44,50 @@ dojo.ready(function(){
 		district_id: "-1"
 	},            
 	required: false,		           
-	name: "commune_name",
-	id: "commune_name",
+	name: "commune",
+	id: "commune",
 	searchAttr: "name",
-//	class: 'fullside',
+	//class: 'fullside',
 	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
 		onChange: function() {
+			filterVillage();
   }
-	}, "commune_name");
+	}, "commune");
+
+	var village_data = new dojo.store.Memory({
+	       data: <?php print_r(Zend_Json::encode($this->village_name));?>
+	});
+	 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: village_data}),
+	autoComplete: true,
+	query: {
+		commune_id:"-1"
+	},            
+	required: false,		           
+	name: "village",
+	id: "village",
+	searchAttr: "name",
+	//class: 'fullside',
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+}
+	}, "village");
+
+	
 
 	
 });
 function filterDistrict(){
-	dijit.byId('district_name').query.pro_id = dijit.byId('province_name').get('value');
+	dijit.byId('district').query.pro_id = dijit.byId('province_name').get('value');
 }
 function filterCommune(){
-	dijit.byId('commune_name').query.district_id = dijit.byId('district_name').get('value');
+	dijit.byId('commune').query.district_id = dijit.byId('district').get('value');
 }
+function filterVillage(){
+	dijit.byId('village').query.commune_id = dijit.byId('commune').get('value');
+}
+
 </script>
 
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
@@ -97,15 +125,15 @@ function filterCommune(){
 								<td>ខេត្ត/ក្រុង</td>
 								<td><?php echo $form->getElement('province_name');?></td>
 								<td>ស្រុក/ខ័ណ្ឌ</td>
-								<td><input id="district_name" ><?php //echo $form->getElement('district_name');?></td>								
+								<td><input id="district" ><?php //echo $form->getElement('district_name');?></td>								
 				                <td>ឃុំ/សង្កាត់</td>
-								<td><input id="commune_name" ><?php //echo $form->getElement('commune_name');?>
+								<td><input id="commune" ><?php //echo $form->getElement('commune_name');?>
 									
 								</td>								
 							</tr>
 							<tr>								
-								<td>អាស័យដ្ឋាន</td>
-								<td><?php echo $form->getElement('address');?></td>
+								<td>ភូមិ</td>
+								<td><input id="village" ><?php // echo $form->getElement('address');?></td>
 								<td>លេខផ្ទះ</td>
 								<td><?php echo $form->getElement('home_number');?></td>
 								<td>លេខផ្លូវ</td>
