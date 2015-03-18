@@ -128,7 +128,8 @@ class Partner_IndexController extends Zend_Controller_Action {
 				// $db = $db_partner->updatePartner($data);
 				$db_patner = new Partner_Model_DbTable_DbPartner ();
 				if($this->getRequest()->getParam("btn_save_close")){
-					$db = $db_patner->getupdatePartner( $data );
+					//print_r($data);exit();
+					$db = $db_patner->getupdatePartner($data);
 					Application_Form_FrmMessage::Sucessfull ( 'ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL );
 				}elseif ($this->getRequest()->getParam("btn_save")){
 					//print_r($data);exit();

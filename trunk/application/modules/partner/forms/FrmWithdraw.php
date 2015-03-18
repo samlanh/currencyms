@@ -102,23 +102,21 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$d1->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdraw_dollar();'
+    			'onkeyup'=>'CalculateWithdrawDollar(1); CalculateWithdraw_dollar()'
     			 
-    	));
-    	 
+    	));    	 
     	$d2=new Zend_Dojo_Form_Element_NumberTextBox('withdraw_riel');
     	$d2->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdraw_riel();'
+    			'onkeyup'=>'CalculateWithdrawDollar(2); CalculateWithdraw_bath()'
     			
-    			));
-    	 
+    			));    	 
     	$d3=new Zend_Dojo_Form_Element_NumberTextBox('withdraw_bath');
     	$d3->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdraw_bath();'
+    			'onkeyup'=>'CalculateWithdrawDollar(3); CalculateWithdraw_riel()'
     		));
     	$r1=new Zend_Dojo_Form_Element_NumberTextBox('remain_dollar');
     	$r1->setAttribs(array(
