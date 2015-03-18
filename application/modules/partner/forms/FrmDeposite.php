@@ -11,10 +11,12 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	$name_partner=new Zend_Dojo_Form_Element_FilteringSelect('name_partner');
     	$name_partner->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'Onchange'=>'getPartner()'));
     	$db = new Application_Model_DbTable_DbGlobal();
-    	$opt = $db->getAllPartner(null,1);
+    	$opt = $db->getAllPartner(null,1);    	
     	$name_partner->setMultiOptions($opt);
+    	
     	$moneyinaccount=new Zend_Dojo_Form_Element_TextBox('moneyinaccount');
     	$moneyinaccount->setAttribs(array(
     			'dojoType'=>'dijit.form.TextBox'));
@@ -47,10 +49,15 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	'dojoType'=>'dijit.form.DateTextBox'
     			));
     	$creat_date->setValue(date('Y-m-d'));
+    	
+    	$db_Deposite = new Partner_Model_DbTable_DbDeposite();
+    	$invoices_num = $db_Deposite->getAutonumber();
     	$num_invoice=new Zend_Dojo_Form_Element_TextBox('num_invoice');
     	$num_invoice->setAttribs(array(
     			'dojoType'=>'dijit.form.TextBox',
     			'readOnly'=>true,'style'=>'color:red'));
+    	$num_invoice->setValue($invoices_num);
+    	
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
     		$name_partner->setValue($data['partner_id']);

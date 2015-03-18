@@ -3,7 +3,6 @@
 	echo $this->headTitle();
 	$session_user=new Zend_Session_Namespace('auth');
 	$form = $this->frm;
-	print_r($form);exit();
 ?>
 <?php $baseurl =  Zend_Controller_Front::getInstance()->getBaseUrl();?>
 <script src="<?php echo $baseurl;?>/js/help.js"></script>
@@ -68,22 +67,20 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 	</script>
 	<table  cellspacing="10" width="100%">
 		<tr>
-			<td>=
+			<td>
 				<fieldset>
 					<legend ><strong>ព៌ត័មាន ដៃគូរ</strong></legend>
 						<table cellspacing="5" cellpadding="0" width="100%">
 							<tr>
-								<td>លេខគណនី</td>
-								<td width="20%"><?php echo $form->getElement('accourn_number');?></td>
+								<td>ឈ្មោះដៃគូរ</td>
+								<td><?php echo $form->getElement('name_partner');?></td>								
 								<td>លេខវិកាប័ត្ត</td>
-								<td><?php echo $form->getElement('num_invoice');?></td>
-								<td></td>
-								<td></td>
-								
+								<td><?php echo $form->getElement('num_invoice');?></td>	
+												
 							</tr>
 							<tr>
-								<td>ឈ្មោះដៃគូរ</td>
-								<td><?php echo $form->getElement('name_partner');?></td>
+								<td>លេខគណនី</td>
+								<td width="20%"><?php echo $form->getElement('accourn_number');?></td>								
 								<td>កាលបរិច្ឆេត</td>
 								<td><?php echo $form->getElement('creat_date');?></td>
 								<td>សំគាល់</td>
@@ -157,6 +154,16 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 	</table>
 </form>
 <script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dojo.store.Memory");
+dojo.require("dojo.data.ObjectStore");
+dojo.require("dijit.form.ValidationTextBox");
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.SimpleTextarea");
+dojo.require('dijit.form.Form');
+dojo.require('dijit.form.FilteringSelect');	
+dojo.require('dijit.form.Button');
+dojo.require("dijit.form.DateTextBox");
 function deleteRecord(index){
 	var ids =dijit.byId('record_row').value;
 	if(ids.length=='' || ids.length==null){
@@ -221,5 +228,25 @@ function returnMoney(index){
 	recieve_amount = dijit.byId('recieve_'+index).get('value');
 	return_a = recieve_amount-input_amount;
 	dijit.byId('return_'+index).attr('value',return_a);
+}
+var url_fillterdiposite = "<?php echo $this->url(array('module'=>'partner','controller'=>'deposite','action'=>'getfillterdeposite'));?>";
+function getPartner(){
+	dojo.xhrPost({
+	     url: url_fillterdiposite, 
+	     content : { 
+	     'partner':dijit.byId('name_partner').get('value'),
+	  }, 
+	  handleAs:"json",
+	  load: function(data) {
+	   dijit.byId('accourn_number').attr('value',data.account_no);
+	   dijit.byId('usa').attr('value',data.cash_dollar);
+	   dijit.byId('bathe').attr('value',data.cash_bath);
+	   dijit.byId('reil').attr('value',data.cash_riel);
+	  },
+	  error: function(err) {
+	   alert(err);
+	  alert("Your message could not be sent, please try again!.");         
+	  }
+	 });
 }
 </script>

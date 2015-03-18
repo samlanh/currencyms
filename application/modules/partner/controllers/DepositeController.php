@@ -39,7 +39,7 @@ class Partner_DepositeController extends Zend_Controller_Action
 // 				
 			
 			$list = new Application_Form_Frmtable();
-			$collumns = array("áž›áŸ�áž�ážœáž·áž€áž¶áž”áŸ�áž�áŸ’áž�","áž›áŸ�áž�ážŠáŸƒáž‚áž¼","áž�áŸ’áž„áŸƒ","ážŸáž˜áŸ’áž‚áž¶áž›áŸ‹","áž…áŸ†áž“áž½áž“áž”áŸ’ážšáž¶áž€áŸ‹ážŠáž»áž›áŸ’áž›áž¶","áž…áŸ†áž“áž½áž“áž”áŸ’ážšáž¶áž€áŸ‹ážšáŸ€áž›","áž…áŸ†áž“áž½áž“áž”áŸ’ážšáž¶áž€áŸ‹áž”áž¶áž�");
+			$collumns = array("លេខវិកាប័ត្ត","លេខដៃគូ","ថ្ងៃ","សម្គាល់","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត");
 			
 			$link=array(
 					'module'=>'partner','controller'=>'deposite','action'=>'edit',
@@ -59,9 +59,9 @@ class Partner_DepositeController extends Zend_Controller_Action
 			$_data = $this->getRequest()->getPost();
 			try{
 				$db_deposite->updateDeposite($_data);
-				Application_Form_FrmMessage::Sucessfull("áž€áž¶ážšâ€‹áž”áž‰áŸ’áž…áž¼áž›â€‹áž‡áŸ„áž‚â€‹áž‡áŸ�áž™ !",'/partner/deposite');
+				Application_Form_FrmMessage::Sucessfull("ការ​បញ្ចូល​ជោគ​ជ័យ !",'/partner/deposite');
 			}catch(Exception $e){
-				Application_Form_FrmMessage::message("áž€áž¶ážšâ€‹áž”áž‰áŸ’áž…áž¼áž›â€‹áž˜áž·áž“â€‹áž‡áŸ„áž‚â€‹áž‡áŸ�áž™");
+				Application_Form_FrmMessage::message("ការ​បញ្ចូល​មិន​ជោគ​ជ័យ");
 				$err =$e->getMessage();
 				Application_Model_DbTable_DbUserLog::writeMessageError($err);
 			}
@@ -79,16 +79,16 @@ class Partner_DepositeController extends Zend_Controller_Action
 	}
  	public function addAction()
 	    {
-	    	    	if($this->getRequest()->isPost()){
-	    				$data=$this->getRequest()->getPost();
-	    				$db = new Partner_Model_DbTable_DbDeposite();
-	    				try {
+			if($this->getRequest()->isPost()){
+				$data=$this->getRequest()->getPost();
+	    			$db = new Partner_Model_DbTable_DbDeposite();
+	    			try {
 	    					$db = $db->partnerDeposite($data);
-	    					//Application_Form_FrmMessage::Sucessfull('áž€áž¶ážšâ€‹áž”áž‰áŸ’áž…áž¼áž›â€‹â€‹áž‡áŸ„áž‚â€‹áž‡áŸ�áž™', self::REDIRECT_URL);
+	    					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/deposite');
 	    				} catch (Exception $e) {
 	    					echo $e->getMessage();
 	    					exit();
-	    					$this->view->msg = 'áž€áž¶ážšâ€‹áž”áž‰áŸ’áž…áž¼áž›â€‹áž˜áž·áž“â€‹áž‡áŸ„áž‚â€‹áž‡áŸ�áž™';
+	    					$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
 	    				}
 	    			}
 	    	$pructis=new Partner_Form_FrmDeposite();
@@ -98,5 +98,16 @@ class Partner_DepositeController extends Zend_Controller_Action
 	    	$db = new Application_Model_DbTable_DbGlobal();
 	    	$this->view->currency_type = $db->CurruncyTypeOption();
     }
+	public function getfillterdepositeAction(){
+	if($this->getRequest()->isPost()){
+			$post=$this->getRequest()->getPost();
+			$ids = $post["partner"];
+			$sql = "SELECT account_no,`cash_dollar`,`cash_bath`,cash_riel FROM cms_partner WHERE id=".$ids;
+			$db = new Application_Model_DbTable_DbGlobal();
+			$row=$db->getGlobalDbRow($sql);
+			print_r(Zend_Json::encode($row));
+			exit();
+		}
+	}
 }
 ?>

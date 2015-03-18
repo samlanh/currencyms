@@ -77,7 +77,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'partner_brand'=>$data['branch_name'],
 					'partner_name'=>$data['partner_name'],
 					'nation_id'=>$data['cade_number'],
-					'account_no'=>$data['accournt_number'],
+					'account_no'=>$data['account_number'],
 					'nation_id'=>$data['cade_number'],
 					'house_no'=>$data['home_number'],
 					'group_no'=>$data['group_number'],

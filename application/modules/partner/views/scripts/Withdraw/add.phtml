@@ -17,8 +17,7 @@
 	dojo.require("dijit.form.DateTextBox");
 	var url_fillter = "<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'getfillter'));?>";
 	function getfillterById(){
-		//id = dijit.byId('namesend').get('value');
-		
+		//id = dijit.byId('namesend').get('value');		
 		dojo.xhrPost({
 		     url: url_fillter, 
 		     content : { 
@@ -48,7 +47,6 @@
 			}
 			return false;
 	</script>
-		
 	<table cellspacing="10" width="100%" style="font-size: 15px">
 		<tr>
 			<td>
@@ -134,7 +132,6 @@
 	</table>		
 </form>
 <script type="text/javascript">
-<!--
 from=0;
 to=0;
 function CalculateWithdraw_dollar(){
@@ -158,6 +155,34 @@ function CalculateWithdraw_riel(){
 	dijit.byId('remain_riel').attr('value',remain);
 }
 //-->
+function CalculateWithdrawDollar(type){
+	if(type == 1){
+		var usa = dijit.byId('withdraw_dollar').get('value');
+		var usa_from = dijit.byId('curr_dollar').get('value');
+		if(usa > usa_from){
+			alert("Money transfer is not enought");
+			dijit.byId('usa').attr('value',usa_from);
+		}
+	}
+
+	if(type == 2){
+		var bath = dijit.byId('withdraw_bath').get('value');
+		var bath_from = dijit.byId('curr_bath').get('value');
+		if(bath > bath_from){
+			alert("Money transfer is not enought");
+			dijit.byId('bath').attr('value',bath_from);
+		}
+	}
+
+	if(type == 3){
+		var riel = dijit.byId('withdraw_riel').get('value');
+		var riel_from = dijit.byId('curr_riel').get('value');
+		if(riel > riel_from){
+			alert("Money transfer is not enought");
+			dijit.byId('reil').attr('value',riel_from);
+		}
+	}
+}
 </script>
 
 

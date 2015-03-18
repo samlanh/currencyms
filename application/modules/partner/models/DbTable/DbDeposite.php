@@ -28,13 +28,11 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			);
 			$this->insert($arr);
 		}
-		}
+	}
 	function getAllDeposite(){
 	$db = $this->getAdapter();
 	$sql=" SELECT id,invoice,
-	(SELECT partner_brand FROM cms_partner WHERE id=partner_id) AS partner_name,
-	date,
-	note
+	(SELECT partner_brand FROM cms_partner WHERE id = partner_id) AS partner_name,date,	note
 	 FROM $this->_name ORDER BY id DESC";
 	return $db->fetchAll($sql);
 	}
@@ -67,6 +65,19 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 		$sql.=" GROUP BY currency_type ORDER BY date LIMIT 3";
 		$row=$db->fetchAll($sql);
 		return $row;
+	}
+	public function getAutonumber(){
+		$this->_name='cms_partner_deposit';
+		$db = $this->getAdapter();
+		$sql=" SELECT id ,invoice FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+		$invoice = $db->fetchOne($sql);
+		$new_invoice= (int)$invoice+1;
+		$invoice= strlen((int)$invoice+1);
+		$pre = "";
+		for($i = $invoice;$i<7;$i++){
+			$pre.='0';
+		}
+		return $pre.$new_invoice;
 	}
 }
 
