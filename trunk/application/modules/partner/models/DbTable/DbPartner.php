@@ -25,13 +25,14 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'partner_brand'=>$data['branch_name'],
 					'partner_name'=>$data['partner_name'],
 					'nation_id'=>$data['cade_number'],
-					'account_no'=>$data['accournt_number'],
+					'account_no'=>$data['account_number'],
 					'nation_id'=>$data['cade_number'],
 					'house_no'=>$data['home_number'],
 					'group_no'=>$data['group_number'],
 					'street'=>$data['street_number'],
-					'commune'=>$data['commune_name'],
-					'district'=>$data['district_name'],
+					'commune'=>$data['commune'],
+					'district'=>$data['district'],
+					'village'=>$data['village'],
 					'province'=>$data['province_name'],
 					'tel'=>$data['fax_number'],
 					'mobile'=>$data['sele_phone'],
@@ -41,7 +42,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'cash_dollar'=>$data['money_usa'],
 					'cash_bath'=>$data['money_bath'],
 					'date'=>$data['date'],
-					'address'=>$data['address'],
+					//'address'=>$data['address'],
 					'is_cashoperation'=>$data['tran_type'],
 					'status'=>$data['status']
 				
@@ -82,8 +83,8 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'house_no'=>$data['home_number'],
 					'group_no'=>$data['group_number'],
 					'street'=>$data['street_number'],
-					'commune'=>$data['commune_name'],
-					'district'=>$data['district_name'],
+					'commune'=>$data['commune'],
+					'district'=>$data['district'],
 					'province'=>$data['province_name'],
 					'tel'=>$data['fax_number'],
 					'mobile'=>$data['sele_phone'],
@@ -93,23 +94,25 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 					'cash_dollar'=>$data['money_usa'],
 					'cash_bath'=>$data['money_bath'],
 					'date'=>$data['date'],
-					'address'=>$data['address'],
+					'village'=>$data['village'],
+				//	'address'=>$data['address'],
 					'is_cashoperation'=>$data['tran_type'],
 					'status'=>$data['status']
 		
 			);
 				$where="id=".$data['id'];
 				//print_r($where);exit();
-			$d=$this->update($arr,$where);
+			$this->update($arr,$where);
 		   
 				
 		}
 		function getPartnerById($id){
-			$db=$this->getAdapter();
-        	$sql="SELECT id,parent,partner_brand,partner_name,account_no,
-        	nation_id,house_no,photo,group_no,street,commune,district,province,tel,mobile,note,is_cashoperation,cash_riel,
-        	cash_dollar,cash_bath,date,status,address  FROM cms_partner where id = '$id'";
-        	return $db->fetchRow($sql);
+			$db = $this->getAdapter();
+			$sql = "SELECT * FROM $this->_name WHERE id = ".$db->quote($id);
+			$sql.=" LIMIT 1 ";
+			$row=$db->fetchRow($sql);
+			//print_r($row);
+			return $row;
 		}
         function getAllPartner($search=null){
         	$db=$this->getAdapter();
@@ -127,6 +130,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         		$s_where[] = "partner_name LIKE '%{$s_search}%'";
         		$s_where[]="partner_brand LIKE '%{$s_search}%'";
         		$s_where[]="tel LIKE '%{$s_search}%'";
+        		$s_where[]="mobile LIKE '%{$s_search}%'";
         		$s_where[]="nation_id LIKE '%{$s_search}%'";
         		
         		$where .=' AND ('.implode(' OR ',$s_where).')';

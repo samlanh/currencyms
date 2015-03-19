@@ -1,106 +1,123 @@
 <?php
 	$this->headTitle('Currency Smart | Agent add page'); 
 	echo $this->headTitle();
-        
+  
 	$form = $this->frm;
-	
 ?>
-<script type="text/javascript">	
-	dojo.require("dojo.data.ItemFileWriteStore");  
-	dojo.require("dojo.store.Memory");
-	dojo.require("dojo.data.ObjectStore");
-	dojo.require("dijit.form.SimpleTextarea");
-	dojo.require("dijit.form.Button");
-	dojo.require("dijit.form.RadioButton");
-	dojo.ready(function(){
-		var district_data = new dojo.store.Memory({
-		       data: <?php print_r(Zend_Json::encode($this->district));?>
-		});	 
-		new dijit.form.FilteringSelect({
-		store: dojo.data.ObjectStore({objectStore: district_data}),
-		autoComplete: true,
-		query: {
-			pro_id:"<?php echo $this->row['province'];?>"
-		},            
-		required: false,		           
-		name: "district_name",
-		id: "district_name",
-		searchAttr: "name",
-		value: "<?php echo $this->row['district'];?>",
-		missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
-			onChange: function() {
-					filterCommune();
-		    }
-		}, "district_name");
-
-		var commune_data = new dojo.store.Memory({
-		       data: <?php print_r(Zend_Json::encode($this->commune_name));?>
-		});
-		 
-		new dijit.form.FilteringSelect({
-		store: dojo.data.ObjectStore({objectStore: commune_data}),
-		autoComplete: true,
-		query: {
-			district_id: "<?php echo $this->row['district'];?>"
-		},            
-		required: false,		           
-		name: "commune_name",
-		id: "commune_name",
-		value: "<?php echo $this->row['commune'];?>",
-		searchAttr: "name",
-		missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
-			onChange: function() {
-	  }
-		}, "commune_name");
-
-		
+<script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dojo.store.Memory");
+dojo.require("dojo.data.ObjectStore");
+dojo.require("dijit.form.SimpleTextarea");
+dojo.require("dijit.form.Button");
+dojo.require("dijit.form.RadioButton");
+dojo.ready(function(){
+	var district_data = new dojo.store.Memory({
+	       data: <?php print_r(Zend_Json::encode($this->district));?>
 	});
-	function filterDistrict(){
-		dijit.byId('district_name').query.pro_id = dijit.byId('province_name').get('value');
-	}
-	function filterCommune(){
-		//alert();
-		dijit.byId('commune_name').query.district_id = dijit.byId('district_name').get('value');
-	}
+	 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: district_data}),
+	autoComplete: true,
+	query: {
+		//pro_id: "-1"
+		pro_id:"<?php echo $this->row['province'];?>"
+	},            
+	required: false,		           
+	name: "district",
+	id: "district",
+	searchAttr: "name",
+	value: "<?php echo $this->row['district'];?>",
+//	class: 'fullside',
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+				filterCommune();
+	    }
+	}, "district");
+
+	var commune_data = new dojo.store.Memory({
+	       data: <?php print_r(Zend_Json::encode($this->commune_name));?>
+	});
+	 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: commune_data}),
+	autoComplete: true,
+	query: {
+		//district_id: "-1"
+		district_id: "<?php echo $this->row['district'];?>"
+	},            
+	required: false,		           
+	name: "commune",
+	id: "commune",
+	searchAttr: "name",
+	value: "<?php echo $this->row['commune'];?>",
+	//class: 'fullside',
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+			filterVillage();
+  }
+	}, "commune");
+
+	var village_data = new dojo.store.Memory({
+	       data: <?php print_r(Zend_Json::encode($this->village_name));?>
+	});
+	 
+	new dijit.form.FilteringSelect({
+	store: dojo.data.ObjectStore({objectStore: village_data}),
+	autoComplete: true,
+	query: {
+		//commune_id:"-1"
+		commune_id:"<?php echo $this->row['commune'];?>"
+	},            
+	required: false,		           
+	name: "village",
+	id: "village",
+	searchAttr: "name",
+	//class: 'fullside',
+	value: "<?php echo $this->row['village'];?>",
+	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+		onChange: function() {
+}
+	}, "village");
+
+	
+
+	
+});
+function filterDistrict(){
+	dijit.byId('district').query.pro_id = dijit.byId('province_name').get('value');
+}
+function filterCommune(){
+	dijit.byId('commune').query.district_id = dijit.byId('district').get('value');
+}
+function filterVillage(){
+	dijit.byId('village').query.commune_id = dijit.byId('commune').get('value');
+}
+
 </script>
-<style>
-	table tr{padding-bottom: 3px;}
-</style>
-<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data">
+
+<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
 			}
 			return false;
 	</script>
-	<table cellspacing="1" width="100%">
+	<table cellspacing="1" width="100%" style="font-family:'Kh Battambang'">
 		<tr>
 			<td>
 				<fieldset>
 					<legend style="font-size: 15px; font-family:'Khmer OS Muol'; color: black;"><strong>ពត័មាន ទំនាក់ទំនង របស់​ភ្នាក់ងារ</strong></legend>
 						<table width="100%" style="font-size: 15px; font-family:'Khmer OS Battambang';">
-						   <tr style="height: 72px;">
-						   		<td></td>
-						   		<td></td>
-						   		<td></td>
-						   		<td></td>
-						   		<td></td>
-						   		<td style="padding-left: 0px; position: absolute;">
-								<?php $photo = $this->row['photo'];?>
-								<?php if($photo !=null){ ?>
-			                		<img width="80px" height="70px" title="Porfile" src="<?php echo $this->baseUrl();?>/images/<?php echo $photo;?>"/>
-			                	<?php } else {?>                		
-			                		<img width="80px" height="60px" title="Porfile" src="<?php echo $this->baseUrl();?>/images/images_profile.jpg" />
-			                	<?php }?>
-								<?php echo $form->getElement('photo');?>
-                				</td>
-						   </tr>
 							<tr>
-								<td>ដៃគូមេ</td><?php echo $form->getElement('id');?>
-								<td ><?php echo $form->getElement('main_branch');?></td>
+								<td>ដៃគូមេ</td>
+								<td><?php echo $form->getElement('main_branch');echo $form->getElement('id')?></td>
 								<td>ឈ្មោះដៃគូរសហការណ៏</td>
-								<td><?php echo $form->getElement('branch_name');?></td>								
-								
+								<td><?php //echo $form->getElement('branch_name');?>
+									<?php echo $form->getElement('branch_name');?>
+								</td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td>ឈ្មោះអ្នកគ្រប់គ្រង</td>
@@ -114,13 +131,15 @@
 								<td>ខេត្ត/ក្រុង</td>
 								<td><?php echo $form->getElement('province_name');?></td>
 								<td>ស្រុក/ខ័ណ្ឌ</td>
-								<td><input id="district_name" ><?php //echo $form->getElement('district_name');?></td>								
+								<td><input id="district" ><?php //echo $form->getElement('district_name');?></td>								
 				                <td>ឃុំ/សង្កាត់</td>
-								<td><input id="commune_name" ><?php //echo $form->getElement('commune_name');?>	</td>								
+								<td><input id="commune" ><?php //echo $form->getElement('commune_name');?>
+									
+								</td>								
 							</tr>
 							<tr>								
-								<td>អាស័យដ្ឋាន</td>
-								<td><?php echo $form->getElement('address');?></td>
+								<td>ភូមិ</td>
+								<td><input id="village" ><?php // echo $form->getElement('address');?></td>
 								<td>លេខផ្ទះ</td>
 								<td><?php echo $form->getElement('home_number');?></td>
 								<td>លេខផ្លូវ</td>
@@ -141,8 +160,19 @@
 								<td>ស្ថានភាព</td>
 								<td><?php echo $form->getElement('status');?></td>
 								<td>សំគាល់</td>
-								<td><?php echo $form->getElement('note');?><br /></td>
+								<td ><?php echo $form->getElement('note');?><br /></td>
 							</tr>
+							<tr>
+								<td>រូបថត</td>
+								<td><?php echo $form->getElement('photo');?> <br/>
+								<img height="100px" width="100px" src="<?php echo $this->baseUrl().'/images/'.$this->photo;?>" /> 
+								</td>
+								<td></td>
+								<td><?php //echo $form->getElement('status');?></td>
+								<td></td>
+								<td ><?php //e/cho $form->getElement('note');?><br /></td>
+							</tr>
+							
 						</table>
 								
 				</fieldset>
@@ -179,15 +209,12 @@
 		</tr>
 		<tr>
 			<td colspan="2" align="center">
-				<input type="submit" value="កែប្រែ" name="btn_save" label="កែប្រែ" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitIconEdit dijitIconEdit"/> 							
-				<input type="submit" value="កែប្រែ & ចាកចេញ" name="btn_save_close" label="កែប្រែ & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitIconEdit dijitIconEdit"/>
-				<?php $url_close = $this->url(array('module'=>'partner','controller'=>'index','action'=>''),null,true); ?>
+				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<?php $url_close = $this->url(array('module'=>'partner','controller'=>'index','action'=>'')); ?>
 				<a href="<?php echo $url_close ?>">
-				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass="dijitIconDelete dijitIconDelete"/>							
+				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
 				</a>
 			</td>
 		</tr>
 	</table>		
 </form>
-
-

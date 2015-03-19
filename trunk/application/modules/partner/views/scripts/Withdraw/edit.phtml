@@ -17,7 +17,7 @@
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
@@ -45,7 +45,7 @@
 						    </tr>
 						     <tr>
 						        <td>លេខទូរស័ព្ទ</td>
-						        <td><?php echo $form->getElement('phong');?></td>
+						        <td><?php echo $form->getElement('phone');?></td>
 						        <td>សម្គាល់</td>
 						        <td><?php echo $form->getElement('note');?></td>
 						    </tr>

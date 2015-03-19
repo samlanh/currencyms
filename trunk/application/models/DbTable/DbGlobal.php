@@ -331,7 +331,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     }
     public function getVillage(){
     	$this->_name='cms_village';
-    	$sql = " SELECT vill_id AS id,village_name AS name,commune_id FROM $this->_name WHERE status=1 AND village_name!='' ";
+    	$sql = " SELECT vill_id,vill_id AS id,village_name,village_name AS name,commune_id FROM $this->_name WHERE status=1 AND village_name!='' ";
     	$db = $this->getAdapter();
     	return $db->fetchAll($sql);
     }
