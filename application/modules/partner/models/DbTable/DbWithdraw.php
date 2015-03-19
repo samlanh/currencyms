@@ -2,6 +2,7 @@
 Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 	protected $_name="cms_withdraw";
 	function insertWithdraw($data){
+		 //   print_r($data['namesend']);exit();
 			$arr=array(
 					'partner_id'=>$data['namesend'],
 					'date'=>$data['daydokmoney'],
@@ -14,6 +15,7 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 					'withdraw_riel'=>$data['withdraw_riel'],
 			);
 			$this->insert($arr);
+			
 			$arr_update=array(
 					'cash_dollar'=>$data['remain_dollar'],
 					'cash_bath'=>$data['remain_bath'],
@@ -30,7 +32,7 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 				withdraw_bat,withdraw_riel FROM cms_withdraw ORDER By id";
 			return $db->fetchAll($sql);
 		}
-		function updatepartner($data){
+		function updatewithdraw($data){
 			$_partner_data=array(
 					'partner_id'=>$data['namesend'],
 					'date'=>$data['daydokmoney'],
@@ -42,7 +44,8 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 					'withdraw_bat'=>$data['withdraw_bath'],
 					'withdraw_riel'=>$data['withdraw_riel'],
 			);
-			return  $this->update($_partner_data);
+			$where="partner_id=".$data['namesend'];
+			$this->update($_partner_data,$where);
 		}
 		public function getpartnerById($id){
 			$db = $this->getAdapter();

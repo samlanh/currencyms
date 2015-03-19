@@ -52,7 +52,8 @@ class Partner_WithdrawController extends Zend_Controller_Action
 	   	if($this->getRequest()->isPost()){
 	   		$_data = $this->getRequest()->getPost();
 	   		try{
-	   			$db_wihtdraw->updatepartner($_data);
+	   			$db_wihtdraw->updatewithdraw($_data);
+	   			
 	   			Application_Form_FrmMessage::Sucessfull("ការ​បញ្ចូល​ជោគ​ជ័យ !",'/partner/withdraw');
 	   		}catch(Exception $e){
 	   			Application_Form_FrmMessage::message("ការ​បញ្ចូល​មិន​ជោគ​ជ័យ");

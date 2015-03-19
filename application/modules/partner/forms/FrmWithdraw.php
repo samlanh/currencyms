@@ -138,6 +138,7 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     		//$nuber_account->setValue($data['account_number']);
     		$namesend->setValue($data['partner_id']);
     		$daydokmoney->setValue($data['date']);
+    		
     		$note->setValue($data['note']);
     		$b1->setValue($data['riel_before']);
     		$b2->setValue($data['dollar_before']);
