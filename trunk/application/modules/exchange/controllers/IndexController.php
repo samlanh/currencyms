@@ -55,6 +55,7 @@ class Exchange_IndexController extends Zend_Controller_Action
 		
 		$db_exc=new Application_Model_DbTable_DbExchange();
 		$this->view->dataedit = $db_exc->getDataById($ex_id);
+		//print_r($db_exc);
 		
 		if($this->getRequest()->isPost()){
 			$formdata=$this->getRequest()->getPost();
