@@ -185,12 +185,8 @@ curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
 	function initList(){
 		<?php if(!empty($this->rs_rows)) {
 			foreach($this->rs_rows AS $i=>$rs){?>
-			
-			var rowId = dijit.byId('record_row').get('value');
-			   var rowIDArray = rowId.split(',');
-			    if(rowIDArray.length>=3){
-			     return false;
-			     }
+			r++;
+
 			r++;
 			if(fund_title!=1){
 				thead='<th >លុប</th>';

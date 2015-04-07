@@ -60,12 +60,16 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
+    		
     		$name_partner->setValue($data['partner_id']);
+    		$accourn_number->setValue($data['account_no']);
     		$creat_date->setValue($data['date']);
     		$moneyinaccount->setValue($data['note']);
     		$num_invoice->setValue($data['invoice']);
     		$id->setValue($data['id']);
-    		
+    		$usa->setValue($data['cash_dollar']);
+    		$reil->setValue($data['cash_riel']);
+    		$bathe->setValue($data['cash_bath']);
     	}
 		$this->addElements(array($accourn_number,$name_partner,$moneyinaccount,$account,$box1,$box2,$box3,$box4,
 				$bathe,$usa,$creat_date,$reil,$id,$num_invoice));

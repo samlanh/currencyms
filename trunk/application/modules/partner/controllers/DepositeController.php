@@ -53,20 +53,23 @@ class Partner_DepositeController extends Zend_Controller_Action
 	}
 	function viewAction(){
 	}
-	function editAction(){
-		$db_deposite = new Partner_Model_DbTable_DbDeposite();
+	function editAction()
+	{
 		if($this->getRequest()->isPost()){
-			$_data = $this->getRequest()->getPost();
-			try{
-				$db_deposite->updateDeposite($_data);
-				Application_Form_FrmMessage::Sucessfull("ការ​បញ្ចូល​ជោគ​ជ័យ !",'/partner/deposite');
-			}catch(Exception $e){
-				Application_Form_FrmMessage::message("ការ​បញ្ចូល​មិន​ជោគ​ជ័យ");
-				$err =$e->getMessage();
-				Application_Model_DbTable_DbUserLog::writeMessageError($err);
-			}
-		}
-		$id = $this->getRequest()->getParam("id");
+				$data=$this->getRequest()->getPost();
+	    			$db = new Partner_Model_DbTable_DbDeposite();
+	    			//print_r($data);
+	    			try {
+	    					$db = $db->updateDeposite($data);
+	    					//Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/deposite');
+	    				} catch (Exception $e) {
+	    					echo $e->getMessage();
+	    					exit();
+	    					$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+	    				}
+	    			}
+	   $db_deposite=new Partner_Model_DbTable_DbDeposite();
+	   $id = $this->getRequest()->getParam("id");
 		$row = $db_deposite->getpartnerById($id);
 		$deposite=new Partner_Form_FrmDeposite();
 		$frm = $deposite->partnerinformation($row);

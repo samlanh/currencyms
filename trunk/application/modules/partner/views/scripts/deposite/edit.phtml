@@ -12,7 +12,9 @@
 	dojo.require("dojo.html");
 	dojo.ready(function(){
 		initList();		
+		//addAmountTypeMoney();		
 	});  
+	    
 </script>
 <style>
 <!--
@@ -69,31 +71,30 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 			<td>
 				<fieldset>
 					<legend ><strong>ព៌ត័មាន ដៃគូរ</strong></legend>
-						<table cellspacing="5" cellpadding="0" width="100%" >
-							<tr>
-								<td>លេខគណនី</td>
-								<td width="20%"><?php echo $form->getElement('accourn_number');?></td>
-								<td>លេខវិកាប័ត្ត</td>
-								<td><?php echo $form->getElement('num_invoice');?></td>
-								<td></td>
-								<td></td>
-							</tr>
+						<table cellspacing="5" cellpadding="0" width="100%">
 							<tr>
 								<td>ឈ្មោះដៃគូរ</td>
-								<td><?php echo $form->getElement('name_partner');?></td>
+								<td><?php echo $form->getElement('name_partner');?></td>	
+								 <?php echo $form->getElement('id');?>							
+								<td>លេខវិកាប័ត្ត</td>
+								<td><?php echo $form->getElement('num_invoice');?></td>	
+							</tr>
+							<tr>
+								<td>លេខគណនី</td>
+								<td width="20%"><?php echo $form->getElement('accourn_number');?></td>								
 								<td>កាលបរិច្ឆេត</td>
 								<td><?php echo $form->getElement('creat_date');?></td>
 								<td>សំគាល់</td>
 								<td><?php echo $form->getElement('moneyinaccount');?></td>
 							</tr>
-								<input type="hidden" dojoType="dijit.form.TextBox" id="record_row" name="record_row" /></td>
+								<input type="text" dojoType="dijit.form.TextBox" id="record_row" name="record_row" /></td>
 					</table>
 					<fieldset>
 						<legend>ប្រាក់ក្នុងគណនីបច្ចុប្បន្ន</legend>
-						<table  width="100%" >
+						<table  cellpadding="0" width="100%">
 							<tr>
 								<td>ប្រាក់ជាដុល្លា</td>
-								<td><?php echo $form->getElement('usa');?></td>
+								<td width="20%"><?php echo $form->getElement('usa');?></td>
 								<td>ប្រាក់ជាបាត</td>
 								<td><?php echo $form->getElement('bathe');?></td>
 								<td>ប្រាក់ជារៀល</td>
@@ -107,8 +108,8 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 						<table cellspacing="5" cellpadding="0" width="100%" >
 							<tr>
 								<td valign="top">
-									 <table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
-											<tr id="head_title" class="head-title" align="center"></tr>
+									<table id="t_amountmoneytype" width="100%" style="border-collapse: collapse; border:1px solid #ccc !important;">
+									<tr id="head_title" class="head-title" align="center"></tr>
 									</table>
 								</td>
 							</tr>
@@ -128,7 +129,7 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 		</tr>
 	</table>		
 </form>
-<form id='frm_add_capital' action="<?php echo $this->url(array('module'=>'partner','controller'=>'deposite','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form id='frm_add_capital' action="<?php echo $this->url(array('module'=>'partner','controller'=>'deposite','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">			
 			if(this.validate()) {
 				/*if(dijit.byId('doloar').get('value') == 0 && dijit.byId('bath').get('value') == 0 && dijit.byId('rail').get('value') == 0){
@@ -140,6 +141,7 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 				return false;
 			}
 	</script>	 
+	
 	<table class="tbtable" style="margin:10px auto; width:100%; border-collapse: collapse; border:1px solid #ccc;" >
 		<tr>
 			<td width="50%" valign="top">
@@ -153,11 +155,22 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 	</table>
 </form>
 <script type="text/javascript">
+dojo.require("dojo.data.ItemFileWriteStore");  
+dojo.require("dojo.store.Memory");
+dojo.require("dojo.data.ObjectStore");
+dojo.require("dijit.form.ValidationTextBox");
+dojo.require("dijit.form.NumberTextBox");
+dojo.require("dijit.form.SimpleTextarea");
+dojo.require('dijit.form.Form');
+dojo.require('dijit.form.FilteringSelect');	
+dojo.require('dijit.form.Button');
+dojo.require("dijit.form.DateTextBox");
 function deleteRecord(index){
 	var ids =dijit.byId('record_row').value;
 	if(ids.length=='' || ids.length==null){
 		dijit.byId('record_row').attr('value','');
 		dojo.query("#row_capital"+ids).remove();
+		
 	}else{
 		var arrays = ids.split(',');
 		for(var i=0;i<arrays.length;i++) {
@@ -168,6 +181,7 @@ function deleteRecord(index){
 		dojo.query("#row_capital"+index).remove();
 	}
 }
+  
 	curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
 	temp='';
 	r = 0;
@@ -203,14 +217,16 @@ function deleteRecord(index){
 				dijit.byId("record_row").attr('value',ids+','+r);
 			} else { dijit.byId("record_row").attr('value',r);}
 	}	
+//sub money
 	sub_title=0;
 	s=0;
+
 	function initList() {
 		<?php if(!empty($this->rs_rows)) {
-			foreach($this->rs_rows AS $i=>$rs){?>
+			foreach($this->rs_rows AS $i=>$rs){ $inx = $i+1;?>
 			r++;
 
-			r++;
+			//r++;
 			if(fund_title!=1){
 				thead='<th>លុប</th>';
 				thead+='<th>​ថ្ងៃដាក់ប្រាក់</th>';
@@ -236,9 +252,14 @@ function deleteRecord(index){
 			    parseContent: true,
 			});
 			if(dijit.byId("record_row").value!="") {
+				
 				var ids = dijit.byId("record_row").value;
+				//alert(ids);
 				dijit.byId("record_row").attr('value',ids+','+r);
 			} else { dijit.byId("record_row").attr('value',r);}
+
+			
+			
 			dijit.byId('currency_type_'+r).attr('value',<?php echo $rs['currency_type']?>);
 			dijit.byId('amount_'+r).attr('value',<?php echo $rs['deposite_amount']?>);
 			dijit.byId('recieve_'+r).attr('value','<?php echo $rs['receive_amount']?>');
@@ -246,4 +267,35 @@ function deleteRecord(index){
 			dijit.byId('note_'+r).attr('value','<?php echo $rs['note']?>');
 			<?php } }?>
 	}
+function calCulateDeposit(index){
+	input_amount = dijit.byId('amount_'+index).get('value');
+	dijit.byId('recieve_'+index).attr('value',input_amount);
+	returnMoney(index);
+}
+function returnMoney(index){
+	input_amount = dijit.byId('amount_'+index).get('value');
+	recieve_amount = dijit.byId('recieve_'+index).get('value');
+	return_a = recieve_amount-input_amount;
+	dijit.byId('return_'+index).attr('value',return_a);
+}
+var url_fillterdiposite = "<?php echo $this->url(array('module'=>'partner','controller'=>'deposite','action'=>'getfillterdeposite'));?>";
+function getPartner(){
+	dojo.xhrPost({
+	     url: url_fillterdiposite, 
+	     content : { 
+	     'partner':dijit.byId('name_partner').get('value'),
+	  }, 
+	  handleAs:"json",
+	  load: function(data) {
+	   dijit.byId('accourn_number').attr('value',data.account_no);
+	   dijit.byId('usa').attr('value',data.cash_dollar);
+	   dijit.byId('bathe').attr('value',data.cash_bath);
+	   dijit.byId('reil').attr('value',data.cash_riel);
+	  },
+	  error: function(err) {
+	   alert(err);
+	  alert("Your message could not be sent, please try again!.");         
+	  }
+	 });
+}
 </script>

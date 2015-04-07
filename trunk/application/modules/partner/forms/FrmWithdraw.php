@@ -102,21 +102,21 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$d1->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdrawDollar(1); CalculateWithdraw_dollar()'
+    			'onkeyup'=>'CalculateWithdrawDollar(1);CalculateWithdraw_dollar()'
     			 
     	));    	 
     	$d2=new Zend_Dojo_Form_Element_NumberTextBox('withdraw_riel');
     	$d2->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdrawDollar(2); CalculateWithdraw_bath()'
+    			'onkeyup'=>'CalculateWithdrawDollar(3);CalculateWithdraw_riel()'
     			
     			));    	 
     	$d3=new Zend_Dojo_Form_Element_NumberTextBox('withdraw_bath');
     	$d3->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
     			'class'=>'fullside',
-    			'onkeyup'=>'CalculateWithdrawDollar(3); CalculateWithdraw_riel()'
+    			'onkeyup'=>'CalculateWithdrawDollar(2);CalculateWithdraw_bath()'
     		));
     	$r1=new Zend_Dojo_Form_Element_NumberTextBox('remain_dollar');
     	$r1->setAttribs(array(
@@ -134,7 +134,8 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     			'class'=>'fullside'));
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
-    		//$accournnumber->setValue($data['account_number']);
+    		//print_r($data);exit();
+    		$nuber_account->setValue($data['account_no']);
     		//$nuber_account->setValue($data['account_number']);
     		$namesend->setValue($data['partner_id']);
     		$daydokmoney->setValue($data['date']);
@@ -147,6 +148,7 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     		$d2->setValue($data['withdraw_dollar']);
     		$d3->setValue($data['withdraw_bat']);
     		$id->setValue($data['id']);
+    		$phone->setValue($data['mobile']);
     	}
     	
     	$this->addElements(array($nuber_account,$namesend,$daydokmoney,

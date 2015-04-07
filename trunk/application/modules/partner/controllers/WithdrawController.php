@@ -48,20 +48,20 @@ class Partner_WithdrawController extends Zend_Controller_Action
     function viewAction(){
     }
 	function editAction(){
-   		$db_wihtdraw = new Partner_Model_DbTable_DbWithdraw();
-	   	if($this->getRequest()->isPost()){
-	   		$_data = $this->getRequest()->getPost();
-	   		try{
-	   			$db_wihtdraw->updatewithdraw($_data);
-	   			
-	   			Application_Form_FrmMessage::Sucessfull("ការ​បញ្ចូល​ជោគ​ជ័យ !",'/partner/withdraw');
-	   		}catch(Exception $e){
-	   			Application_Form_FrmMessage::message("ការ​បញ្ចូល​មិន​ជោគ​ជ័យ");
-	   			$err =$e->getMessage();
-	   			Application_Model_DbTable_DbUserLog::writeMessageError($err);
-	   		}
-	   	}
-	   	$id = $this->getRequest()->getParam("id");
+   		 if($this->getRequest()->isPost()){
+	    	$data=$this->getRequest()->getPost();
+	    	$db_wihtdraw = new Partner_Model_DbTable_DbWithdraw();
+	    	try {
+	    		if($this->getRequest()->getPost("btn_save_close")){
+	    			$db_wihtdraw->updatewithdraw($data);
+	    			Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+	    		}
+	    		} catch (Exception $e) {
+	    		$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+	    	}
+	    }
+	    $db_wihtdraw = new Partner_Model_DbTable_DbWithdraw();
+	    $id = $this->getRequest()->getParam("id");
 	   	$row = $db_wihtdraw->getpartnerById($id);
 	   	if(empty($row)){
 	   	}
@@ -70,7 +70,6 @@ class Partner_WithdrawController extends Zend_Controller_Action
 		    $frm = $withdraw->dakMoney($row);
 		    Application_Model_Decorator::removeAllDecorator($frm);
 		    $this->view->frm=$frm;
-	    
    }
    public function getfillterAction(){
    	if($this->getRequest()->isPost()){

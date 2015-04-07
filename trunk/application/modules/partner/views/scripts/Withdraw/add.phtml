@@ -166,15 +166,18 @@ function CalculateWithdrawDollar(type){
 	}
 
 	if(type == 2){
+		    
 		var bath = dijit.byId('withdraw_bath').get('value');
 		var bath_from = dijit.byId('curr_bath').get('value');
 		if(bath > bath_from){
 			alert("Money transfer is not enought");
+			dijit.byId('remain_bath').attr('value',0);
 			dijit.byId('bath').attr('value',bath_from);
 		}
 	}
 
 	if(type == 3){
+		 
 		var riel = dijit.byId('withdraw_riel').get('value');
 		var riel_from = dijit.byId('curr_riel').get('value');
 		if(riel > riel_from){

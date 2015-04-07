@@ -49,12 +49,14 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 		}
 		public function getpartnerById($id){
 			$db = $this->getAdapter();
-			$sql = "SELECT *,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`
+			$sql = "SELECT *,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`,
+			        (SELECT `mobile` FROM cms_partner WHERE id = partner_id) AS `mobile`
 					FROM cms_withdraw WHERE id = ".$db->quote($id);
 			$sql.=" LIMIT 1 ";
 			$row=$db->fetchRow($sql);
 			return $row;
 		}
+		
 		public function getNewAccountNumber(){
 			$this->_name='cms_partner';
 			$db = $this->getAdapter();
