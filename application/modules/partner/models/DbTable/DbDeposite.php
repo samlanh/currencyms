@@ -37,21 +37,77 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 	return $db->fetchAll($sql);
 	}
 	function updateDeposite($data){
-	$_partner_data=array(
-			'partner_id'=>$data['name_partner'],
-			'date'=>$data['creat_date'],
-			'note'=>$data['moneyinaccount'],
-			'invoice'=>$data['num_invoice']
-	);
-	return  $this->update($_partner_data);
+		$db = $this->getAdapter();
+		$db->beginTransaction();
+		//update cms_partner_deposit
+		try{
+	        $arr=array(
+						'partner_id'=>$data['name_partner'],
+						'date'=>$data['creat_date'],
+						'note'=>$data['moneyinaccount'],
+						'invoice'=>$data['num_invoice']
+				);
+	        $where=" id =".$data['id'];
+				//print_r($where);exit();
+	        $db->getProfiler()->setEnabled(true);
+			$this->update($arr, $where);
+			
+			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+			$db->getProfiler()->setEnabled(false);
+		
+			
+			// Update cms_partnerdeposit_detail before new insert
+			$where = " pd_id = ".$data['id'];
+					//	print_r($where);exit();
+			$_arr = array('status'=>0);
+			$this->_name='cms_partnerdeposit_detail';
+			$db->getProfiler()->setEnabled(true);
+			$this->update($_arr,$where);
+			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+			$db->getProfiler()->setEnabled(false);
+			
+			// Insert new cms_partnerdeposit_detail
+			$ids = explode(',',$data['record_row']);
+			print_r($ids);
+			foreach ($ids as $i){
+				$arr = array(
+						'pd_id'=>$data['id'],
+						'date'=>$data['date_'.$i],
+						'currency_type'=>$data['currency_type_'.$i],
+						'deposite_amount'=>empty($data['amount_'.$i])?0:1,
+						'receive_amount'=>$data['recieve_'.$i],
+						'return_amount'=>$data['return_'.$i],
+						'note'=>$data['note_'.$i],
+				);
+				$db->getProfiler()->setEnabled(true);
+				
+				$this->insert($arr);
+				
+// 				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 				$db->getProfiler()->setEnabled(false);
+			}
+// 			exit();
+			$db->commit();
+		}catch (Exception $e){
+			$db->rollBack();
+			echo $e->getMessage();exit();
+		}
 	}
 	public function getpartnerById($id){
 		$db = $this->getAdapter();
-		$sql = "SELECT * FROM cms_partner_deposit WHERE id = ".$db->quote($id);
+		$sql = "SELECT *,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`,
+		(SELECT `cash_riel` FROM cms_partner WHERE id = partner_id) AS `cash_riel`,
+		(SELECT `cash_bath` FROM cms_partner WHERE id = partner_id) AS `cash_bath`,
+		(SELECT `cash_dollar` FROM cms_partner WHERE id = partner_id) AS `cash_dollar`
+		 FROM cms_partner_deposit WHERE id = ".$db->quote($id);
 		$sql.=" LIMIT 1 ";
 		$row=$db->fetchRow($sql);
 		return $row;
 	}
+	
 	public function getdepositedetail($id){
 		$db = $this->getAdapter();
 		$sql = "SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id);
