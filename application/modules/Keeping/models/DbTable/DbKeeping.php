@@ -122,7 +122,7 @@
 		}
 		function getNameKeeping($id=null,$option=null){
 			$db=$this->getAdapter();
-			$sql = " select id,client_name from cms_client where status=1 ";
+			$sql = " SELECT id,client_name FROM cms_client WHERE STATUS=1 AND client_type=1 ";
 			if($id!=null){
 				$sql.=" AND id = $id";
 			}
