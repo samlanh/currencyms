@@ -1,10 +1,10 @@
 <?php
 
 
-class Partner_IndexController extends Zend_Controller_Action {
-	const REDIRECT_URL_ADD = '/partner/index/add';
-	const REDIRECT_URL = '/partner/';
-	const REDIRECT_URL_EDIT = '/partner/index/edit';
+class Keeping_CustomerController extends Zend_Controller_Action {
+	const REDIRECT_URL_ADD = '/Keeping/customer/add';
+	const REDIRECT_URL = '/Keeping/';
+	const REDIRECT_URL_EDIT = '/Keeping/customer/edit';
 	private $activelist = array (
 			'មិនប្រើ​ប្រាស់',
 			'ប្រើ​ប្រាស់' 
@@ -49,8 +49,8 @@ class Partner_IndexController extends Zend_Controller_Action {
 					"STATUS" 
 			);
 			$link = array (
-					'module' => 'partner',
-					'controller' => 'index',
+					'module' => 'Keeping',
+					'controller' => 'Customer',
 					'action' => 'edit' 
 			);
 			$this->view->list = $list->getCheckList ( 0, $collumns, $rs_rows, array (
@@ -77,6 +77,7 @@ class Partner_IndexController extends Zend_Controller_Action {
 		$db_partner = new Partner_Model_DbTable_DbPartner ();
 		if ($this->getRequest ()->isPost ()) {
 			$data = $this->getRequest ()->getPost();
+			//print_r($data);exit();
 			try {
 				if($this->getRequest()->getParam("btn_save_close")){
 					//print_r($data);exit();
@@ -120,7 +121,7 @@ class Partner_IndexController extends Zend_Controller_Action {
 				if($this->getRequest()->getParam("btn_save_close")){
 					//print_r($data);exit();
 					$db = $db_partner->getupdatePartner ( $data );
-					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/');
+					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/Keeping/Customer');
 				}
 			} catch ( Exception $e ) {
 				echo $e->getMessage();
