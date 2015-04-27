@@ -9,7 +9,16 @@ class Partner_DepositeController extends Zend_Controller_Action
 	public function indexAction(){
 		try{
 			$db = new Partner_Model_DbTable_DbDeposite();
-			$rows= $db->getAllDeposite($search=null);
+			if ($this->getRequest ()->isPost ()) {
+				$search = $this->getRequest ()->getPost ();
+				//print_r($search);
+			} else {
+				$search = array (
+						'adv_search' => '',
+						'status_search' => - 1
+				);
+			}
+			$rows= $db->getAllDeposite($search);
 			$arr = array();
 			foreach($rows as $index =>$rs){
 				$arr[$index]=array(
@@ -32,14 +41,9 @@ class Partner_DepositeController extends Zend_Controller_Action
 								$arr[$index]['amount_bath']=$r['amount'];
 							}
 				           }
-
-				
 			}
-			
-// 				
-			
 			$list = new Application_Form_Frmtable();
-			$collumns = array("លេខវិកាប័ត្ត","លេខដៃគូ","ថ្ងៃ","សម្គាល់","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត");
+			$collumns = array("លេខវិកាប័ត្ត","ឈ្មោះដៃគូ","ថ្ងៃ","សម្គាល់","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត");
 			
 			$link=array(
 					'module'=>'partner','controller'=>'deposite','action'=>'edit',
@@ -50,6 +54,14 @@ class Partner_DepositeController extends Zend_Controller_Action
 			echo $e->getMessage();
 			//Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
+		$pructis = new Partner_Form_FrmPartner ();
+		$frm = $pructis->addPartner ();
+		Application_Model_Decorator::removeAllDecorator ( $frm );
+		$form = $this->view->frm_partner = $frm;
+		$pructis=new Partner_Form_FrmDeposite();
+		$frm_de = $pructis->partnerinformation();
+		Application_Model_Decorator::removeAllDecorator($frm_de);
+		$this->view->frm_deposite=$frm_de;
 	}
 	function viewAction(){
 	}
@@ -61,7 +73,7 @@ class Partner_DepositeController extends Zend_Controller_Action
 	    			//print_r($data);
 	    			try {
 	    					$db = $db->updateDeposite($data);
-	    					//Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/deposite');
+	    					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/deposite');
 	    				} catch (Exception $e) {
 	    					echo $e->getMessage();
 	    					exit();

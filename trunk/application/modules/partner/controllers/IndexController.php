@@ -20,14 +20,29 @@ class Partner_IndexController extends Zend_Controller_Action {
 		try {
 			$db = new Partner_Model_DbTable_DbPartner ();
 			if ($this->getRequest ()->isPost ()) {
-				$search = $this->getRequest ()->getPost ();
+				$formdata = $this->getRequest ()->getPost ();
+				$search = array(
+						'adv_search' => $formdata['adv_search'],
+						'province_id'=>$formdata['province_name'],
+						'comm_id'=>$formdata['commune'],
+						'district_id'=>$formdata['district'],
+						'village'=>$formdata['village'],
+						'status'=>$formdata['status_search'],
+						'main_branch'=>$formdata['main_branch']
+				);
 			} else {
 				$search = array (
 						'adv_search' => '',
-						'status_search' => - 1 
+						'status' => -1, 
+						'province_id'=> -1,
+						'district_id'=> '',
+						'comm_id'=> '',
+						'village'=> '',
+						'main_branch'=> '',
 				);
+				//print_r($search);exit();
 			}
-			$rs_rows = $db->getAllPartner ( $search );
+			$rs_rows = $db->getAllPartner ($search );
 			// print_r($rs_rows);exit();
 			
 			$glClass = new Application_Model_GlobalClass ();
@@ -63,15 +78,22 @@ class Partner_IndexController extends Zend_Controller_Action {
 					'address' => $link 
 			) );
 		} catch ( Exception $e ) {
-			// Application_Form_FrmMessage::message("Application Error");
-			echo $e->getMessage ();
-			// Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			 Application_Form_FrmMessage::message("Application Error");
+			 Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
 		$pructis = new Partner_Form_FrmPartner ();
-		
 		$frm = $pructis->addPartner ();
 		Application_Model_Decorator::removeAllDecorator ( $frm );
 		$form = $this->view->frm_partner = $frm;
+		
+		$this->view->result=$search;
+		
+		$db= new Application_Model_DbTable_DbGlobal();
+		$this->view->district = $db->getAllDistricts();
+		$this->view->commune_name = $db->getCommune();
+		$this->view->village_name = $db->getVillage();
+		
+		
 	}
 	public function addAction() {
 		$db_partner = new Partner_Model_DbTable_DbPartner ();

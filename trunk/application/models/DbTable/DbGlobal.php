@@ -276,7 +276,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     	}
     	$rows = $db->fetchAll($sql);
     	if($option!=null){
-    		$opt= (array("" =>"----- ជ្រើសរើស ----"));
+    		$opt= (array("" =>"ជ្រើសរើស ឈ្មោះដៃគូ ----"));
     		foreach ($rows as $rs){
     			
     			$opt[$rs['id']]=$rs['partner_brand'];

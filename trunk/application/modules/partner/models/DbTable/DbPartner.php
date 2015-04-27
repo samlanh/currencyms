@@ -123,7 +123,6 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	p.cash_dollar,p.cash_bath,p.date,p.status  FROM cms_partner AS p WHERE 1 ";
         	
         	$where = '';
-        	
         	if(!empty($search['adv_search'])){
         		$s_where = array();
         		$s_search = $search['adv_search'];
@@ -132,16 +131,26 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         		$s_where[]="tel LIKE '%{$s_search}%'";
         		$s_where[]="mobile LIKE '%{$s_search}%'";
         		$s_where[]="nation_id LIKE '%{$s_search}%'";
-        		
         		$where .=' AND ('.implode(' OR ',$s_where).')';
         	}
-        	if($search['status_search']>-1){
-        		$where.= " AND status = ".$search['status_search'];
+        	if($search['status']>-1){
+        		$where.= " AND status = ".$search['status'];
+        	}
+        	if($search['province_id']>0){
+        		$where.=" AND province = ".$search['province_id'];
+        	}
+        	if(!empty($search['district_id'])){
+        		$where.=" AND district= ".$search['district_id'];
+        	}
+        	if(!empty($search['comm_id'])){
+        		$where.=" AND commune = ".$search['comm_id'];
+        	}
+        	if(!empty($search['village'])){
+        		$where.=" AND village = ".$search['village'];
         	}
         	if(!empty($search['main_branch'])){
         		$where.=" AND parent= ".$search['main_branch'];
         	}
-        	
         	return $db->fetchAll($sql.$where);
         }
         function getNamePartner($id=null,$option=null){
