@@ -77,7 +77,8 @@ class Transfer_Form_FrmIndex extends Zend_Dojo_Form
     	$tran_type=new Zend_Dojo_Form_Element_FilteringSelect('tran_type');
     	$tran_type->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect'));
-    	
+    	$tran_opt=array(1=>'partner',2=>'client');
+    	$tran_type->setMultiOptions($tran_opt);
     	$commission=new Zend_Dojo_Form_Element_TextBox('commission');
     	$commission->setAttribs(array(
     			'dojoType'=>'dijit.form.TextBox'));

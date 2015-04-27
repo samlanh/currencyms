@@ -9,7 +9,8 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$nuber_account=new Zend_Dojo_Form_Element_NumberTextBox('account_number');
     	$nuber_account->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'readOnly'=>true));
 //     	$db = new Partner_Model_DbTable_DbWithdraw();
 //     	$id_accournnumber = $db->getNewAccountNumber();
 //     	$accournnumber = new Zend_Dojo_Form_Element_TextBox('account_number');
@@ -86,17 +87,20 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$b1=new Zend_Dojo_Form_Element_NumberTextBox('curr_bath');
     	$b1->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'readOnly'=>true));
     	
     	$b2=new Zend_Dojo_Form_Element_NumberTextBox('curr_riel');
     	$b2->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'readOnly'=>true));
     	
     	$b3=new Zend_Dojo_Form_Element_NumberTextBox('curr_dollar');
     	$b3->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'ReadOnly'=>true));
     	
     	$d1=new Zend_Dojo_Form_Element_NumberTextBox('withdraw_dollar');
     	$d1->setAttribs(array(

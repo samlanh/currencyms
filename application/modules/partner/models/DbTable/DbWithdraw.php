@@ -2,7 +2,6 @@
 Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 	protected $_name="cms_withdraw";
 	function insertWithdraw($data){
-		 //   print_r($data['namesend']);exit();
 			$arr=array(
 					'partner_id'=>$data['namesend'],
 					'date'=>$data['daydokmoney'],
@@ -29,8 +28,27 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 			$db=$this->getAdapter();
 			$sql="SELECT id,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`,			
 				date,note,dollar_before,bath_before,riel_before,withdraw_dollar,
-				withdraw_bat,withdraw_riel FROM cms_withdraw ORDER By id";
-			return $db->fetchAll($sql);
+				withdraw_bat,withdraw_riel FROM cms_withdraw WHERE 1";
+			$where = '';
+			if(!empty($search['adv_search'])){
+				$s_where = array();
+				$s_search = $search['adv_search'];
+				//print_r($s_search);exit();
+				$s_where[] = "date LIKE '%{$s_search}%'";
+				$s_where[]="  note LIKE '%{$s_search}%'";
+				$s_where[]="id LIKE '%{$s_search}%'";
+				$s_where[]="dollar_before LIKE '%{$s_search}%'";
+				$s_where[]="bath_before LIKE '%{$s_search}%'";
+				$where .=' AND ('.implode(' OR ',$s_where).')';
+			}
+			if($search['status_search']>-1){
+				$where.= " AND status = ".$search['status_search'];
+			}
+			if(!empty($search['main_branch'])){
+				$where.=" AND parent= ".$search['main_branch'];
+			}
+			return $db->fetchAll($sql.$where);
+		//	return $db->fetchAll($sql);
 		}
 		function updatewithdraw($data){
 			$_partner_data=array(

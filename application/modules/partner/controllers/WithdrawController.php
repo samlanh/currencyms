@@ -10,7 +10,17 @@ class Partner_WithdrawController extends Zend_Controller_Action
 	public function indexAction(){
 			try{
 				$db = new Partner_Model_DbTable_DbWithdraw();
-				$rows= $db->getAllwithdraw($search=null);
+				if ($this->getRequest ()->isPost ()) {
+					$search = $this->getRequest ()->getPost ();
+					//print_r($search);exit();
+				} else {
+					$search = array (
+							'adv_search' => '',
+							'status_search' => - 1
+					);
+				}
+				
+				$rows= $db->getAllwithdraw($search);
 				$list = new Application_Form_Frmtable();
 				$collumns = array("លេខដៃគូ","ថ្ងៃ","សម្គាល់","ប្រាក់ជាដុល្លា","ប្រាក់ជាបាត","ប្រាក់ជារៀល","ប្រាក់ជាដុល្លា(-)","ប្រាក់ជាបាត(-)","ប្រាក់ជារៀល(-)");
 				$link=array(
@@ -22,6 +32,10 @@ class Partner_WithdrawController extends Zend_Controller_Action
 				echo $e->getMessage();
 				//Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			}
+			$pructis = new Partner_Form_FrmPartner ();
+			$frm = $pructis->addPartner ();
+			Application_Model_Decorator::removeAllDecorator ( $frm );
+			$form = $this->view->frm_partner = $frm;
 		}
 	 public function addAction(){
 	    if($this->getRequest()->isPost()){

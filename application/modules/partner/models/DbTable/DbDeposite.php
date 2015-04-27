@@ -6,6 +6,7 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 		return $session_user->user_id;
 	}
 	function partnerDeposite($data){
+		$db=$this->getAdapter();
 		$arr=array(
 				'partner_id'=>$data['name_partner'],
 				'date'=>$data['creat_date'],
@@ -14,6 +15,8 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 				'user_id'=>$this->getUserId(),
 				);
 		$id=$this->insert($arr);
+		//print_r($id);exit();
+		//print_r($id);exit();
 		$this->_name='cms_partnerdeposit_detail';
 		$ids = explode(',', $data['record_row']);
 		foreach ($ids as $i){
@@ -29,12 +32,32 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			$this->insert($arr);
 		}
 	}
-	function getAllDeposite(){
+	function getAllDeposite($search=null){
 	$db = $this->getAdapter();
 	$sql=" SELECT id,invoice,
 	(SELECT partner_brand FROM cms_partner WHERE id = partner_id) AS partner_name,date,	note
-	 FROM $this->_name ORDER BY id DESC";
-	return $db->fetchAll($sql);
+	 FROM $this->_name  WHERE 1   ";
+	$where = '';
+	if(!empty($search['adv_search'])){
+		$s_where = array();
+		$s_search = $search['adv_search'];
+		$s_where[] = "note LIKE '%{$s_search}%'";
+		$s_where[]="  invoice LIKE '%{$s_search}%'";
+		$s_where[]="id LIKE '%{$s_search}%'";
+		$s_where[]="date LIKE '%{$s_search}%'";
+		//$s_where[]="partner_brand LIKE '%{$s_search}%'";
+		$where .=' AND ('.implode(' OR ',$s_where).')';
+	}
+	if($search['status_search']>-1){
+		$where.= " AND status = ".$search['status_search'];
+	}
+	if(!empty($search['name_partner'])){
+		//print_r($search['name_partner']);exit();
+		$where.=" AND partner_id= ".$search['name_partner'];
+	}
+	echo $sql.$where;
+	return $db->fetchAll($sql.$where);
+	//return $db->fetchAll($sql);
 	}
 	function updateDeposite($data){
 		$db = $this->getAdapter();
@@ -64,9 +87,9 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			$this->_name='cms_partnerdeposit_detail';
 			$db->getProfiler()->setEnabled(true);
 			$this->update($_arr,$where);
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-			$db->getProfiler()->setEnabled(false);
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 			$db->getProfiler()->setEnabled(false);
 			
 			// Insert new cms_partnerdeposit_detail
 			$ids = explode(',',$data['record_row']);
@@ -110,7 +133,7 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 	
 	public function getdepositedetail($id){
 		$db = $this->getAdapter();
-		$sql = "SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id);
+		$sql = "SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = ".$db->quote($id) .' AND status=1';
 		$row=$db->fetchAll($sql);
 		return $row;
 	}

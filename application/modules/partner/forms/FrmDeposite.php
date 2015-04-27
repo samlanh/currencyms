@@ -4,10 +4,16 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
 {
     public function partnerinformation($data=null)
     {
+    	$_db = new Application_Model_DbTable_DbGlobal();
+    	$id=new Zend_Form_Element_Hidden('id');
+    	/* Form Elements & Other Definitions Here ... */
+    	$request=Zend_Controller_Front::getInstance()->getRequest();
+    	
         /* Form Elements & Other Definitions Here ... */
     	$accourn_number=new Zend_Dojo_Form_Element_NumberTextBox('accourn_number');
     	$accourn_number->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'readOnly'=>true));
     	$name_partner=new Zend_Dojo_Form_Element_FilteringSelect('name_partner');
     	$name_partner->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',
@@ -16,6 +22,7 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	$db = new Application_Model_DbTable_DbGlobal();
     	$opt = $db->getAllPartner(null,1);    	
     	$name_partner->setMultiOptions($opt);
+    	$name_partner->setValue($request->getParam('name_partner'));
     	
     	$moneyinaccount=new Zend_Dojo_Form_Element_TextBox('moneyinaccount');
     	$moneyinaccount->setAttribs(array(
@@ -37,13 +44,16 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     			'dojoType'=>'dijit.form.NumberTextBox'));
     	$usa=new Zend_Dojo_Form_Element_NumberTextBox('usa');
     	$usa->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'readOnly'=>true,));
     	$bathe=new Zend_Dojo_Form_Element_NumberTextBox('bathe');
     	$bathe->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'readOnly'=>true));
     	$reil=new Zend_Dojo_Form_Element_NumberTextBox('reil');
     	$reil->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox'));
+    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'readOnly'=>true,));
     	$creat_date=new Zend_Dojo_Form_Element_DateTextBox('creat_date');
     	$creat_date->setAttribs(array(
     	'dojoType'=>'dijit.form.DateTextBox'
