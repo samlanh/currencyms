@@ -34,9 +34,10 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 	}
 	function getAllDeposite($search=null){
 	$db = $this->getAdapter();
+	$order='ORDER BY partner_name DESC ';
 	$sql=" SELECT id,invoice,
 	(SELECT partner_brand FROM cms_partner WHERE id = partner_id) AS partner_name,date,	note
-	 FROM $this->_name  WHERE 1   ";
+	 FROM $this->_name  WHERE 1  ";
 	$where = '';
 	if(!empty($search['adv_search'])){
 		$s_where = array();
@@ -75,9 +76,9 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 	        $db->getProfiler()->setEnabled(true);
 			$this->update($arr, $where);
 			
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-			$db->getProfiler()->setEnabled(false);
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 			$db->getProfiler()->setEnabled(false);
 		
 			
 			// Update cms_partnerdeposit_detail before new insert
