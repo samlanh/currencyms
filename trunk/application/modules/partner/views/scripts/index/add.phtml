@@ -93,6 +93,11 @@ function filterVillage(){
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+               if(dijit.byId('province_name').get('value')==-1){
+                alert('Please Select Province Name');
+                dijit.byId('province_name').focus();
+                return false;
+               }
 				return true;
 			}
 			return false;

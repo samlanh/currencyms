@@ -55,7 +55,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$mainbranch->setValue($request->getParam('main_branch'));
     	$rows_provice = $_db->getAllProvince();
     	$opt_province = "";
-    	$opt_province=array(''=>"------Select Province------",-1=>"Add New");
+    	$opt_province=array('-1'=>"------Select Province------");
     	if(!empty($rows_provice))foreach($rows_provice AS $row) $opt_province[$row['id']]=$row['name'];
     	$province_name = new Zend_Dojo_Form_Element_FilteringSelect('province_name');
     	$province_name->setAttribs(array('dojoType'=>'dijit.form.FilteringSelect',
@@ -182,6 +182,30 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     			'dojoType'=>'dijit.form.DateTextBox'
     			));
     	 $date->setValue(date('Y-m-d'));
+    	 
+    	 $from_date = new Zend_Dojo_Form_Element_DateTextBox('start_date');
+    	 $from_date->setAttribs(array('dojoType'=>'dijit.form.DateTextBox',
+    	 		'required'=>'true',
+    	 		'class'=>'fullside',
+    	 		'onchange'=>'CalculateDate();'));
+    	 $_date = $request->getParam("start_date");
+    	 
+    	 if(empty($_date)){
+    	 	$_date = date('Y-m-01');
+    	 }
+    	 $from_date->setValue( $_date);
+    	 
+    	 
+    	 $to_date = new Zend_Dojo_Form_Element_DateTextBox('end_date');
+    	 $to_date->setAttribs(array('dojoType'=>'dijit.form.DateTextBox',
+    	 		'required'=>'true','class'=>'fullside',
+    	 ));
+    	 $_date = $request->getParam("end_date");
+    	 
+    	 if(empty($_date)){
+    	 	$_date = date("Y-m-d");
+    	 }
+    	 $to_date->setValue($_date);
     	if($data!=null){
     		$mainbranch->setValue($data['parent']);
     		$branchname->setValue($data['partner_brand']);
@@ -213,7 +237,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	
     	}
     	
-		$this->addElements(array($id,$_title,$_status_search,$_btn_search,$date,$branchname,$partnername,$photo,
+		$this->addElements(array($id,$_title,$_status_search,$_btn_search,$date,$to_date,$from_date,$branchname,$partnername,$photo,
 				$Address,$accournnumber,$homenumber,$groupnumber,
 				$streetnumber,$communnumber,
 				//$districtnumber,$provicenumber,

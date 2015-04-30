@@ -9,7 +9,9 @@ $form=$this->frm_deposite;
    <table>
    		<tr>
 		   <td><?php echo $frm->getElement("adv_search");?></td>
-		  <td><?php  echo $form->getElement('name_partner');?></td>
+		   <td><?php  echo $form->getElement('name_partner');?></td>
+		   <td><?php echo $frm->getElement('start_date');?></td>
+		   <td><?php echo $frm->getElement('end_date');?></td>
 		   <td><?php echo $frm->getElement('status_search');?></td>
 		   <td><?php echo $frm->getElement("btn_search");?></td>
 		   <?php echo $this->list;?>

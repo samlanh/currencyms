@@ -26,10 +26,12 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 		}
 		function getAllwithdraw($search=null){
 			$db=$this->getAdapter();
+			$from_date =(empty($search['start_date']))? '1': "date >= '".$search['start_date']." 00:00:00'";
+			$to_date = (empty($search['end_date']))? '1': "date <= '".$search['end_date']." 23:59:59'";
+			$where = " WHERE ".$from_date." AND ".$to_date;
 			$sql="SELECT id,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`,			
 				date,note,dollar_before,bath_before,riel_before,withdraw_dollar,
-				withdraw_bat,withdraw_riel FROM cms_withdraw WHERE 1";
-			$where = '';
+				withdraw_bat,withdraw_riel FROM cms_withdraw";
 			if(!empty($search['adv_search'])){
 				$s_where = array();
 				$s_search = $search['adv_search'];
@@ -47,6 +49,7 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 			if(!empty($search['main_branch'])){
 				$where.=" AND parent= ".$search['main_branch'];
 			}
+			//echo $sql.$where;
 			return $db->fetchAll($sql.$where);
 		//	return $db->fetchAll($sql);
 		}
