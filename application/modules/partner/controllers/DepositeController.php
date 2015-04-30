@@ -11,14 +11,17 @@ class Partner_DepositeController extends Zend_Controller_Action
 			$db = new Partner_Model_DbTable_DbDeposite();
 			if ($this->getRequest ()->isPost ()) {
 				$search = $this->getRequest ()->getPost ();
-				//print_r($search);
+// 				print_r($search);exit();
 			} else {
 				$search = array (
 						'adv_search' => '',
-						'status_search' => - 1
+						'status_search' => - 1,
+						'start_date'=>date('Y-m-01'),
+						'end_date'=>date('Y-m-d')
 				);
 			}
 			$rows= $db->getAllDeposite($search);
+		//	print_r($rows);exit();
 			$arr = array();
 			foreach($rows as $index =>$rs){
 				$arr[$index]=array(
@@ -30,7 +33,9 @@ class Partner_DepositeController extends Zend_Controller_Action
  						'amount_dollar'=>0,
  						'amount_riel'=>0,
  						'amount_bath'=>0,
+						'status'=>$rs['status'],
 						);
+				
 				$rs_detail = $db->getGroupDepositeDetail($rs['id']);
 				foreach ($rs_detail as $key =>$r){
 							if($r['currency_type']==3){
@@ -42,8 +47,10 @@ class Partner_DepositeController extends Zend_Controller_Action
 							}
 				           }
 			}
+			$glClass = new Application_Model_GlobalClass ();
+			$arr = $glClass->getImgActive ( $arr, BASE_URL, true, null );
 			$list = new Application_Form_Frmtable();
-			$collumns = array("លេខវិកាប័ត្ត","ឈ្មោះដៃគូ","ថ្ងៃ","សម្គាល់","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត");
+			$collumns = array("លេខវិកាប័ត្ត","ឈ្មោះដៃគូ","ថ្ងៃ","សម្គាល់","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត","status");
 			
 			$link=array(
 					'module'=>'partner','controller'=>'deposite','action'=>'edit',
@@ -70,7 +77,6 @@ class Partner_DepositeController extends Zend_Controller_Action
 		if($this->getRequest()->isPost()){
 				$data=$this->getRequest()->getPost();
 	    			$db = new Partner_Model_DbTable_DbDeposite();
-	    			//print_r($data);
 	    			try {
 	    					$db = $db->updateDeposite($data);
 	    					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/partner/deposite');

@@ -28,7 +28,9 @@ class Partner_IndexController extends Zend_Controller_Action {
 						'district_id'=>$formdata['district'],
 						'village'=>$formdata['village'],
 						'status'=>$formdata['status_search'],
-						'main_branch'=>$formdata['main_branch']
+						'main_branch'=>$formdata['main_branch'],
+						'start_date'=>$formdata['start_date'],
+						'end_date'=>$formdata['end_date']
 				);
 			} else {
 				$search = array (
@@ -39,6 +41,8 @@ class Partner_IndexController extends Zend_Controller_Action {
 						'comm_id'=> '',
 						'village'=> '',
 						'main_branch'=> '',
+						'start_date'=> date('Y-m-01'),
+						'end_date'=>date('Y-m-d')
 				);
 				//print_r($search);exit();
 			}
@@ -60,7 +64,7 @@ class Partner_IndexController extends Zend_Controller_Action {
 					"​ប្រាក់រៀល",
 					"ប្រាក់ដុល្លា",
 					"ប្រាក់បាត",
-					"date",
+					"ថ្ងៃ",
 					"STATUS" 
 			);
 			$link = array (
@@ -85,6 +89,7 @@ class Partner_IndexController extends Zend_Controller_Action {
 		$frm = $pructis->addPartner ();
 		Application_Model_Decorator::removeAllDecorator ( $frm );
 		$form = $this->view->frm_partner = $frm;
+		//echo $form;exit();
 		
 		$this->view->result=$search;
 		

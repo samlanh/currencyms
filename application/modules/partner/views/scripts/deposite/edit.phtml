@@ -199,7 +199,7 @@ function deleteRecord(index){
 				fund_title=1;
 				dojo.query("#head_title").append(thead);
 	        }
-			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp='<td style="width:30px !important;"><input id="id_'+r+'" type="text" dojoType="dijit.form.TextBox"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 			temp+='<td><input type="text" required="true" value="<?php echo date('Y-m-d');?>" name="date_'+r+'" id="date_'+r+'" dojoType="dijit.form.DateTextBox"/></td>';
 			temp+='<td><select style=" width:70%;" id="currency_type_'+r+'" name="currency_type_'+r+'" dojoType="dijit.form.FilteringSelect">'+curr_dollar_amountoption+'</select></td>';
 			temp+='<td><input type="text" style=" width:70%;" onkeyup="calCulateDeposit('+r+');" required="true" name="amount_'+r+'" id="amount_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
@@ -238,10 +238,10 @@ function deleteRecord(index){
 				fund_title=1;
 				dojo.query("#head_title").append(thead);
 	        }
-			temp='<td style="width:30px !important;"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp='<td style="width:30px !important;"><input id="id_'+r+'" type="hidden" dojoType="dijit.form.TextBox"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 			temp+='<td><input type="text" required="true" value="<?php echo date('Y-m-d');?>" name="date_'+r+'" id="date_'+r+'" dojoType="dijit.form.DateTextBox"/></td>';
 			temp+='<td><select style=" width:70%;" id="currency_type_'+r+'" name="currency_type_'+r+'" dojoType="dijit.form.FilteringSelect">'+curr_dollar_amountoption+'</select></td>';
-			temp+='<td><input type="text" style=" width:70%;" onkeyup="calCulateDeposit('+r+');" required="true" name="amount_'+r+'" id="amount_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
+			temp+='<td><input type="text" style=" width:70%;"  onkeyup="calCulateDeposit('+r+');" required="true" name="amount_'+r+'" id="amount_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" style=" width:70%;" onkeyup="returnMoney('+r+');" required="true" name="recieve_'+r+'" id="recieve_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" style=" width:70%;" readOnly="true" required="true" name="return_'+r+'" id="return_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" name="note_'+r+'" id="note_'+r+'" dojoType="dijit.form.TextBox" s/></td>';
@@ -258,8 +258,8 @@ function deleteRecord(index){
 				dijit.byId("record_row").attr('value',ids+','+r);
 			} else { dijit.byId("record_row").attr('value',r);}
 
-			
-			
+			dijit.byId('id_'+r).attr('value',<?php echo $rs['id']?>);
+			dijit.byId('currency_type_'+r).attr('value',<?php echo $rs['currency_type']?>);
 			dijit.byId('currency_type_'+r).attr('value',<?php echo $rs['currency_type']?>);
 			dijit.byId('amount_'+r).attr('value',<?php echo $rs['deposite_amount']?>);
 			dijit.byId('recieve_'+r).attr('value','<?php echo $rs['receive_amount']?>');
@@ -272,6 +272,20 @@ function calCulateDeposit(index){
 	dijit.byId('recieve_'+index).attr('value',input_amount);
 	returnMoney(index);
 }
+/*function totalAmount(index){
+	usa=dijit.byId('usa').get('value');
+	bath=dijit.byId('bathe').get('value');
+	riel=dijit.byId('reil').get('value');
+	amount=dijit.byId('amount_'+index).get('value');
+	currency_type=dijit.byId('currency_type_'+index).get('value');
+	if(currency_type==1){
+		total=0;
+		total=usa + amount;
+		alert(total);
+        dijit.byId('usa').attr('value',total);
+	}
+	    
+}*/
 function returnMoney(index){
 	input_amount = dijit.byId('amount_'+index).get('value');
 	recieve_amount = dijit.byId('recieve_'+index).get('value');

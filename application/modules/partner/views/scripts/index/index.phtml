@@ -2,6 +2,7 @@
 $tr = Application_Form_FrmLanguages::getCurrentlanguage();
 echo $this->headTitle($tr->translate("partner"));
 $frm = $this->frm_partner;
+// echo $frm;exit();
 //print_r($this->result['district_id']);exit();
 ?>
 
@@ -10,11 +11,14 @@ $frm = $this->frm_partner;
    		<tr>
 		   <td><?php echo $frm->getElement("adv_search");?></td>
 		   <td><?php echo $frm->getElement('main_branch');?></td>
+		   <td><?php echo $frm->getElement('start_date');?></td>
+		   <td><?php echo $frm->getElement('end_date');?></td>
 		   <td><?php echo $frm->getElement('status_search');?></td>
-		   <td><?php echo $frm->getElement('province_name')?></td>
-		  		<td><input id="district" ></td>
+		   
 		</tr>
 		<tr>
+				<td><?php echo $frm->getElement('province_name')?></td>
+				<td><input id="district" ></td>
 		     	<td><input id="commune" ></td>
 		      	<td><input id="village" ></td>
 		   <td><?php echo $frm->getElement("btn_search");?></td>
