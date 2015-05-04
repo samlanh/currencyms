@@ -18,7 +18,8 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	$name_partner->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',
     			'class'=>'fullside',
-    			'Onchange'=>'getPartner()'));
+    			'Onchange'=>'getPartner()',
+    			'Required'=>true));
     	$db = new Application_Model_DbTable_DbGlobal();
     	$opt = $db->getAllPartner(null,1);    	
     	$name_partner->setMultiOptions($opt);

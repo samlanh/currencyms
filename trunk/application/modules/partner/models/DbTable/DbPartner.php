@@ -125,7 +125,6 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	p.nation_id,(SELECT name FROM cs_provinces WHERE id = p.province LIMIT 1) AS name,p.tel,p.mobile,p.cash_riel,
         	p.cash_dollar,p.cash_bath,p.date,p.status  FROM cms_partner AS p ";
         	
-        	//$where = 'WHERE '.$from_date." AND ".$to_date;
         	if(!empty($search['adv_search'])){
         		$s_where = array();
         		$s_search = $search['adv_search'];
@@ -159,8 +158,9 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	if(!empty($search['main_branch'])){
         		$where.=" AND id= ".$search['main_branch'];
         	}
-        	echo $sql.$where;
-        	return $db->fetchAll($sql.$where);
+        	//echo $sql.$where;
+        	$order = "ORDER BY id DESC ";
+        	return $db->fetchAll($sql.$where.$order);
         }
         function getNamePartner($id=null,$option=null){
         	$db=$this->getAdapter();

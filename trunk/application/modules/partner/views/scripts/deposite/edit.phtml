@@ -62,9 +62,14 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'Deposite','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+               if(dijit.byId('name_partner').get('value')==""){
+                alert('សូមជ្រើសរើសឈ្មោះដៃគូរ');
+                dijit.byId('name_partner').focus();
+                return false;
+               }
 				return true;
-			}
-			return false;
+			}else{
+            return false;}
 	</script>
 	<table  cellspacing="10" width="100%">
 		<tr>
@@ -199,7 +204,7 @@ function deleteRecord(index){
 				fund_title=1;
 				dojo.query("#head_title").append(thead);
 	        }
-			temp='<td style="width:30px !important;"><input id="id_'+r+'" type="text" dojoType="dijit.form.TextBox"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
+			temp='<td style="width:30px !important;"><input id="id_'+r+'" type="hidden" dojoType="dijit.form.TextBox"><img style="cursor:pointer" onclick="deleteRecord('+r+')" src="<?php echo $this->baseUrl();?>/images/Delete_16.png"></td>';
 			temp+='<td><input type="text" required="true" value="<?php echo date('Y-m-d');?>" name="date_'+r+'" id="date_'+r+'" dojoType="dijit.form.DateTextBox"/></td>';
 			temp+='<td><select style=" width:70%;" id="currency_type_'+r+'" name="currency_type_'+r+'" dojoType="dijit.form.FilteringSelect">'+curr_dollar_amountoption+'</select></td>';
 			temp+='<td><input type="text" style=" width:70%;" onkeyup="calCulateDeposit('+r+');" required="true" name="amount_'+r+'" id="amount_'+r+'" value="" dojoType="dijit.form.NumberTextBox"/></td>';

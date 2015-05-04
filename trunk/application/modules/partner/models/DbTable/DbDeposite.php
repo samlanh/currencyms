@@ -76,11 +76,11 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 				);
 	        $where=" id =".$data['id'];
 	      //  print_r($where);exit();
-	       $db->getProfiler()->setEnabled(true);
+	      // $db->getProfiler()->setEnabled(true);
 			$this->update($arr, $where);
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-			$db->getProfiler()->setEnabled(false);
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 			$db->getProfiler()->setEnabled(false);
 			
 // 			$where = " pd_id = ".$data['id'];
 // 			$_arr = array('status'=>0);
@@ -91,7 +91,7 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			
 			$sql ="SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = $id";
 			$rs = $db->fetchAll($sql);
-			print_r($rs);
+			//print_r($rs);
 			if($rs!=""){
 				foreach ($rs as $row){
 					if($row["currency_type"]==1){
@@ -102,13 +102,13 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 						$this->_name="cms_partner";
 						$where = $db->quoteInto("id=?",$data['name_partner']);
 						
-						$db->getProfiler()->setEnabled(true);
+// 						$db->getProfiler()->setEnabled(true);
 						
 						$this->update($arr_update, $where);
 						
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-						$db->getProfiler()->setEnabled(false);
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 						$db->getProfiler()->setEnabled(false);
 					}
 					
 					if($row["currency_type"]==2){
@@ -119,13 +119,13 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 						$this->_name="cms_partner";
 						$where = $db->quoteInto("id=?",$data['name_partner']);
 					
-						$db->getProfiler()->setEnabled(true);
+// 						$db->getProfiler()->setEnabled(true);
 					
 						$this->update($arr_update, $where);
 					
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-						$db->getProfiler()->setEnabled(false);
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 						$db->getProfiler()->setEnabled(false);
 					}
 					if($row["currency_type"]==3){
 						$arr_update = array(
@@ -135,24 +135,24 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 						$this->_name="cms_partner";
 						$where = $db->quoteInto("id=?",$data['name_partner']);
 							
-						$db->getProfiler()->setEnabled(true);
+// 						$db->getProfiler()->setEnabled(true);
 							
 						$this->update($arr_update, $where);
 							
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-						$db->getProfiler()->setEnabled(false);
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 						Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 						$db->getProfiler()->setEnabled(false);
 					}
 					
 				}
 			}
 			
-			$db->getProfiler()->setEnabled(true);
+// 			$db->getProfiler()->setEnabled(true);
 			$sql ="DELETE FROM cms_partnerdeposit_detail WHERE pd_id = $id";
 			$db->query($sql);
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-			$db->getProfiler()->setEnabled(false);
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+// 			Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+// 			$db->getProfiler()->setEnabled(false);
 				
 // 			$db->query($sql);
 			
@@ -172,11 +172,11 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 						'note'=>$data['note_'.$i],
 				);
 				$this->_name="cms_partnerdeposit_detail";
-				$db->getProfiler()->setEnabled(true);
+// 				$db->getProfiler()->setEnabled(true);
 				$this->insert($arr);
-				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-                $db->getProfiler()->setEnabled(false);
+// 				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+//                 Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+//                 $db->getProfiler()->setEnabled(false);
 				
 				if($data['currency_type_'.$i]==3){
 					
@@ -196,11 +196,11 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 				}
 				$where = $db->quoteInto("id=?", $data['name_partner']);
 				$this->_name = "cms_partner";
-				$db->getProfiler()->setEnabled(true);
+// 				$db->getProfiler()->setEnabled(true);
 				$this->update($arr_partner, $where);
-				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
-                Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
-                $db->getProfiler()->setEnabled(false);
+// 				Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQuery());
+//                 Zend_Debug::dump($db->getProfiler()->getLastQueryProfile()->getQueryParams());
+//                 $db->getProfiler()->setEnabled(false);
 				
 			}
 			//exit();
