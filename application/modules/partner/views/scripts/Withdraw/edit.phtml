@@ -43,6 +43,11 @@
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+                if(dijit.byId('namesend').get('value')==''){
+                    alert('Please Select name of customer');
+                    dijit.byId('namesend').focus();
+                    return false;
+                }
 				return true;
 			}
 			return false;

@@ -43,6 +43,11 @@
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+                if(dijit.byId('namesend').get('value')==""){
+                alert('សូមជ្រើសរើសឈ្មោះអតិថិជន!');
+                dijit.byId('namesend').focus();
+                return false;
+            }
 				return true;
 			}
 			return false;
@@ -161,7 +166,7 @@ function CalculateWithdrawDollar(type){
 		var usa_from = dijit.byId('curr_dollar').get('value');
 		if(usa > usa_from){
 			alert("Money transfer is not enought");
-			dijit.byId('usa').attr('value',usa_from);
+			dijit.byId('withdraw_dollar').attr('value',usa_from);
 		}
 	}
 
@@ -172,7 +177,7 @@ function CalculateWithdrawDollar(type){
 		if(bath > bath_from){
 			alert("Money transfer is not enought");
 			dijit.byId('remain_bath').attr('value',0);
-			dijit.byId('bath').attr('value',bath_from);
+			dijit.byId('withdraw_bath').attr('value',bath_from);
 		}
 	}
 
@@ -182,7 +187,7 @@ function CalculateWithdrawDollar(type){
 		var riel_from = dijit.byId('curr_riel').get('value');
 		if(riel > riel_from){
 			alert("Money transfer is not enought");
-			dijit.byId('reil').attr('value',riel_from);
+			dijit.byId('withdraw_riel').attr('value',riel_from);
 		}
 	}
 }

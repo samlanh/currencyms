@@ -23,7 +23,7 @@ dojo.ready(function(){
 		//pro_id: "-1"
 		pro_id:"<?php echo $this->row['province'];?>"
 	},            
-	required: false,		           
+	required: true,		           
 	name: "district",
 	id: "district",
 	searchAttr: "name",
@@ -46,7 +46,7 @@ dojo.ready(function(){
 		//district_id: "-1"
 		district_id: "<?php echo $this->row['district'];?>"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "commune",
 	id: "commune",
 	searchAttr: "name",
@@ -69,7 +69,7 @@ dojo.ready(function(){
 		//commune_id:"-1"
 		commune_id:"<?php echo $this->row['commune'];?>"
 	},            
-	required: false,		           
+	required: true,		           
 	name: "village",
 	id: "village",
 	searchAttr: "name",
@@ -99,6 +99,11 @@ function filterVillage(){
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'index','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+                if(dijit.byId('province_name').get('value')==-1){
+                      alert('Please Select Province Name');
+               	      dijit.byId('province_name').focus();
+                      return false; 
+                    }
 				return true;
 			}
 			return false;

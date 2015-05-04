@@ -22,12 +22,12 @@ dojo.ready(function(){
 	query: {
 		pro_id: "-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "district",
 	id: "district",
 	searchAttr: "name",
 //	class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះdistrictទេ សូមជ្រើរើសprovinceម្តងទៀត!!",	
 		onChange: function() {
 				filterCommune();
 	    }
@@ -43,12 +43,12 @@ dojo.ready(function(){
 	query: {
 		district_id: "-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "commune",
 	id: "commune",
 	searchAttr: "name",
 	//class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះCommunទេ សូមជ្រើរើសdistrictម្តងទៀត!!",	
 		onChange: function() {
 			filterVillage();
   }
@@ -64,12 +64,12 @@ dojo.ready(function(){
 	query: {
 		commune_id:"-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "village",
 	id: "village",
 	searchAttr: "name",
 	//class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះភូមីទេ សូមជ្រើរើសសង្កាត់ម្តងទៀត!",	
 		onChange: function() {
 }
 	}, "village");
