@@ -14,7 +14,7 @@
 	dojo.require('dijit.form.Button');
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'Trasfer','controller'=>'Creatmoney','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+<form action="<?php echo $this->url(array('module'=>'transfer','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
 				return true;
@@ -81,13 +81,13 @@
 							<td>ខេត្តក្រុង</td>
 							<td><?php echo $form->getElement('provinc');?></td>
 							<td>សាខាមេ</td>
-							<td><?php echo $form->getElement('agent_id');?></td>
+							<td><?php// echo $form->getElement('agent_id');?></td>
 							<td>សាខាកូន</td>
-							<td><?php echo $form->getElement('sub_agant');?></td>
+							<td><?php //echo $form->getElement('sub_agant');?></td>
 						</tr>
 						<tr>
 							<td>ឈ្មោះអ្នកផ្ញើ</td>
-							<td><?php echo $form->getElement('sender');?></td>
+							<td><?php// echo $form->getElement('sender');?></td>
 							<td>ឈ្មោះអ្នកទទួល</td>
 							<td><?php echo $form->getElement('getter');?></td>
 							<td>លេខទូរស័ព្ទអ្នកទទូល</td>

@@ -3,8 +3,8 @@
 
 class Keeping_CustomerController extends Zend_Controller_Action {
 	const REDIRECT_URL_ADD = '/Keeping/customer/add';
-	const REDIRECT_URL = '/Keeping/';
-	const REDIRECT_URL_EDIT = '/Keeping/customer/edit';
+	const REDIRECT_URL = '/Keeping/customer/';
+	const REDIRECT_URL_EDIT = '/Keeping/index/edit';
 	private $activelist = array (
 			'មិនប្រើ​ប្រាស់',
 			'ប្រើ​ប្រាស់' 
@@ -20,14 +20,33 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 		try {
 			$db = new Partner_Model_DbTable_DbPartner ();
 			if ($this->getRequest ()->isPost ()) {
-				$search = $this->getRequest ()->getPost ();
+				$formdata = $this->getRequest ()->getPost ();
+				$search = array(
+						'adv_search' => $formdata['adv_search'],
+						'province_id'=>$formdata['province_name'],
+						'comm_id'=>$formdata['commune'],
+						'district_id'=>$formdata['district'],
+						'village'=>$formdata['village'],
+						'status'=>$formdata['status_search'],
+						'main_branch'=>$formdata['main_branch'],
+						'start_date'=>$formdata['start_date'],
+						'end_date'=>$formdata['end_date']
+				);
 			} else {
 				$search = array (
 						'adv_search' => '',
-						'status_search' => - 1 
+						'status' => -1, 
+						'province_id'=> -1,
+						'district_id'=> '',
+						'comm_id'=> '',
+						'village'=> '',
+						'main_branch'=> '',
+						'start_date'=> date('Y-m-01'),
+						'end_date'=>date('Y-m-d')
 				);
+				//print_r($search);exit();
 			}
-			$rs_rows = $db->getAllPartner ( $search );
+			$rs_rows = $db->getAllPartner ($search );
 			// print_r($rs_rows);exit();
 			
 			$glClass = new Application_Model_GlobalClass ();
@@ -45,12 +64,12 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 					"​ប្រាក់រៀល",
 					"ប្រាក់ដុល្លា",
 					"ប្រាក់បាត",
-					"date",
+					"ថ្ងៃ",
 					"STATUS" 
 			);
 			$link = array (
 					'module' => 'Keeping',
-					'controller' => 'Customer',
+					'controller' => 'customer',
 					'action' => 'edit' 
 			);
 			$this->view->list = $list->getCheckList ( 0, $collumns, $rs_rows, array (
@@ -63,21 +82,28 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 					'address' => $link 
 			) );
 		} catch ( Exception $e ) {
-			// Application_Form_FrmMessage::message("Application Error");
-			echo $e->getMessage ();
-			// Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+			 Application_Form_FrmMessage::message("Application Error");
+			 Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 		}
 		$pructis = new Partner_Form_FrmPartner ();
-		
 		$frm = $pructis->addPartner ();
 		Application_Model_Decorator::removeAllDecorator ( $frm );
 		$form = $this->view->frm_partner = $frm;
+		//echo $form;exit();
+		
+		$this->view->result=$search;
+		
+		$db= new Application_Model_DbTable_DbGlobal();
+		$this->view->district = $db->getAllDistricts();
+		$this->view->commune_name = $db->getCommune();
+		$this->view->village_name = $db->getVillage();
+		
+		
 	}
 	public function addAction() {
 		$db_partner = new Partner_Model_DbTable_DbPartner ();
 		if ($this->getRequest ()->isPost ()) {
 			$data = $this->getRequest ()->getPost();
-			//print_r($data);exit();
 			try {
 				if($this->getRequest()->getParam("btn_save_close")){
 					//print_r($data);exit();
@@ -121,7 +147,7 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 				if($this->getRequest()->getParam("btn_save_close")){
 					//print_r($data);exit();
 					$db = $db_partner->getupdatePartner ( $data );
-					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/Keeping/Customer');
+					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ','/Keeping/customer/');
 				}
 			} catch ( Exception $e ) {
 				echo $e->getMessage();

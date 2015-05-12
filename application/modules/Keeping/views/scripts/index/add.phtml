@@ -124,8 +124,11 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 		<tr>
 			<td align="center">
 <!-- 				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 	 -->
-				<input type="submit" value="រក្សាទុក" label="រក្សាទុក" id="submitButton1" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 
-			    <input type="submit" value="រក្សាទុក&បោះពុម្ព" label="រក្សាទុក&បោះពុម្ព" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>										
+				<input type="submit" value="រក្សាទុក" name="btn_save" label="រក្សាទុក" id="submitButton1" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/> 
+			    <?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'index','action'=>'')); ?>
+				<a href="<?php echo $url_close ?>">
+			    <input type="submit" value="ចាកចេញ" label="ចាកចេញ" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>										
+			    </a>
 			</td>
 		</tr>
 	</table>		
@@ -157,6 +160,52 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 	</table>
 </form>
 <script type="text/javascript">
+mm=0;
+function calCulateFirstPayment(){
+	pay_term = dijit.byId('pay_term').get('value');
+	amount_date = dijit.byId('amount_month').get('value');
+	release_date = dijit.byId("date").get('value');
+	var a = new Date(release_date);
+	if(pay_term==3){//month
+		mm = a.getMonth()+1+parseInt(amount_date);
+	}else if(pay_term==2){//week
+		a.setDate(a.getDate() + (amount_date*7)); 
+		var mm = a.getMonth() + 1;
+	}else if(pay_term==1){
+		a.setDate(a.getDate() + parseInt(amount_date)); 
+		var mm = a.getMonth() + 1;
+	}
+	var dd = a.getDate();
+	 if(dd<10){
+		 dd = "0"+dd;
+	}
+	 if(mm<10){
+		 mm = "0"+mm;
+	}
+	var y = a.getFullYear();
+	var epx_date = y + '-'+ mm + '-'+dd ;
+	dijit.byId('epx_date').attr('value',epx_date);
+
+}
+function calCulatePeriod(){
+//	alert('hello');
+	CalculateDate();
+}
+function CalculateDate(){
+	pay_term = dijit.byId('pay_term').get('value');
+	amount_date = dijit.byId('amount_month').get('value');
+	release_date = dijit.byId("date").get('value');
+	//alert('date first'+release_date);
+	
+	if(isNaN(amount_date)){
+		//alert('សូមបញ្ចលចំនួនរយៈពេល​ !');
+	}else{
+		setFirstPaymentAndDateLine(pay_term,release_date,amount_date);		
+    }
+}
+
+
+
 function deleteRecord(index){
 	var ids =dijit.byId('record_row').value;
 	if(ids.length=='' || ids.length==null){
@@ -252,36 +301,5 @@ curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
 	function calExpiredDate(){
 		
 	}
-	function calCulateFirstPayment(){
-		 pay_term = dijit.byId('pay_term').get('value');
-	var	 amount_date = dijit.byId('amount_month').get('value');
-		 release_date = dijit.byId("date").get('value');
-		 var a = new Date(release_date);		
-            // alert(a);
-		 if(pay_term==3){//month
-			  mm = a.getMonth()+amount_date+1;
-			  
-			 }
-		 else if(pay_term==2){//week
-			  a.setDate(a.getDate() + (amount_date*7)); 
-			  var mm = a.getMonth() + 1;
-			 }
-		 else if(pay_term==1){
-			  a.setDate(a.getDate() + (amount_date)); 
-			  var mm = a.getMonth() + 1;
-			 }
-		 var dd = a.getDate();
-		 //alert(a);
-		  if(dd<10){
-		   dd = "0"+dd;
-		 }
-		  if(mm<10){
-		   mm = "0"+mm;
-		 }
-		 var y = a.getFullYear();
-		 var epx_date = y + '-'+ mm + '-'+dd ;
-		 dijit.byId('epx_date').attr('value',epx_date);
-		
-     
-		 }
+	
 </script>

@@ -6,6 +6,15 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
     public function addSendMoney($data=null)
     {
         /* Form Elements & Other Definitions Here ... */
+    	$request=Zend_Controller_Front::getInstance()->getRequest();
+    	$_title = new Zend_Dojo_Form_Element_TextBox('adv_search');
+    	$_title->setAttribs(array(
+    			'dojoType'=>$this->tvalidate,
+    			'onkeyup'=>'this.submit()',
+    			'placeholder'=>$this->tr->translate("Keepping  INFO")
+    	));
+    	$_title->setValue($request->getParam("adv_search"));
+    	 
     	$sendname=new Zend_Dojo_Form_Element_FilteringSelect('send_name');
     	$sendname->setAttribs(array(
     			'dojoType'=>'dijit.form.FilteringSelect',

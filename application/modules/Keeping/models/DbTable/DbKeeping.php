@@ -56,13 +56,32 @@
 			}
 			return $option;
 		}
-		function getAllKeeping(){
+		function getAllKeeping($search=null){
 			$db=$this->getAdapter();
+			$from_date =(empty($search['start_date']))? '1': "date_keeping >= '".$search['start_date']." 00:00:00'";
+			$to_date = (empty($search['end_date']))? '1': "date_keeping <= '".$search['end_date']." 23:59:59'";
+			$where = " WHERE ".$from_date." AND ".$to_date;
 			$sql = "SELECT id ,
 						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name
-						,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,date_keeping,amount_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
-			
-			return $db->fetchAll($sql);
+						,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,
+			              date_keeping,amount_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
+			//$where='';
+			if(!empty($search['adv_search'])){
+				$s_where = array();
+				$s_search = $search['adv_search'];
+				$s_where[] = "invoice_number LIKE '%{$s_search}%'";
+				//$s_where[]="partner_brand LIKE '%{$s_search}%'";
+				$where.=' AND ('.implode(' OR ',$s_where).')';
+			}
+			if($search['status_search']>-1){
+				$where.= " AND status = ".$search['status_search'];
+			}
+			if(!empty($search['send_name_id'])){
+				$where.=" AND client_id= ".$search['send_name_id'];
+			}
+			$order = " ORDER BY id DESC ";
+			echo $sql.$where.$order;
+			return $db->fetchAll($sql.$where.$order);
 		}
 		function updateKeeping($data){
 				$arr=array(
@@ -128,7 +147,8 @@
 			}
 			$rows = $db->fetchAll($sql);
 			if($option!=null){
-				$opt = '';
+				$opt = array(''=>"-----ជ្រើសរើសឈ្មោះអ្នកផ្ញើរ----");
+				//$opt = '';
 				foreach ($rows as $rs){
 					$opt[$rs['id']]=$rs['client_name'];
 				}

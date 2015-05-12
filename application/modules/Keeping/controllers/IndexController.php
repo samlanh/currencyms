@@ -17,13 +17,32 @@ class Keeping_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
+    	if($this->getRequest()->isPost()){
+    		$data=$this->getRequest()->getPost();
+    		$search= array (
+    				'adv_search'=>$data['adv_search'],
+    				'send_name_id'=>$data['send_name'],
+    				'status_search'=>$data['status_search'],
+    				'start_date'=>$data['start_date'],
+    				'end_date'=>$data['end_date']
+    				);
+    		
+    	}
+    	else 
+    	{
+    		$search=array(
+    				'status_search'=>-1,
+    				'start_date'=>date('Y-m-01'),
+    				'end_date'=>date('Y-m-d')
+    				);
+    	}
     try{
 			$db = new Keeping_Model_DbTable_DbKeeping();
-			$rs_rows= $db->getAllKeeping();//call frome model
-// 			$glClass = new Application_Model_GlobalClass();
-// 			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+			$rs_rows= $db->getAllKeeping($search);//call frome model
+			$glClass = new Application_Model_GlobalClass();
+			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ(សប្តាហ៏)","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ","Status");
+			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ","Status");
 			$link=array(
 					'module'=>'Keeping','controller'=>'index','action'=>'edit',
 			);
@@ -34,7 +53,12 @@ class Keeping_IndexController extends Zend_Controller_Action
 			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
 			 
 		}
-    	
+        $sendmoney=new Keeping_Form_FrmSendMoney();
+    	//$db= new Keeping_Model_DbTable_DbKeeping();
+    	$frm = $sendmoney->addSendMoney();
+    	//echo $frm;exit();
+    	Application_Model_Decorator::removeAllDecorator($frm);
+    	$this->view->frm=$frm;
     	
     }
     function addAction(){
@@ -44,8 +68,10 @@ class Keeping_IndexController extends Zend_Controller_Action
 //     					print_r($data);exit();
     					$db_keeping = new Keeping_Model_DbTable_DbKeeping();
     					try {
+    						if($this->getRequest()->getParam("btn_save_close")){
     						$db = $db_keeping->insertKeeping($data);
     						Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
+    						}
     					} catch (Exception $e) {
     						echo $e->getMessage();exit();
     						$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
