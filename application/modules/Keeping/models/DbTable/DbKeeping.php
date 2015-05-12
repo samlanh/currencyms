@@ -56,15 +56,23 @@
 			}
 			return $option;
 		}
+		public function getGroupKeepingdetail($id){
+			$db = $this->getAdapter();
+			$sql = " SELECT currency_type, sum(money_inacc) AS amount
+			FROM cms_keepingdetail WHERE keeping_id = ".$db->quote($id).' AND status=1';
+			$sql.=" GROUP BY currency_type LIMIT 3 ";
+			$row=$db->fetchAll($sql);
+			return $row;
+		}
 		function getAllKeeping($search=null){
 			$db=$this->getAdapter();
 			$from_date =(empty($search['start_date']))? '1': "date_keeping >= '".$search['start_date']." 00:00:00'";
 			$to_date = (empty($search['end_date']))? '1': "date_keeping <= '".$search['end_date']." 23:59:59'";
 			$where = " WHERE ".$from_date." AND ".$to_date;
-			$sql = "SELECT id ,
-						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name
-						,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,
-			              date_keeping,amount_keeping,exp_date,invoice_number ,status  FROM $this->_name ";
+			$sql = "SELECT id ,invoice_number ,
+						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name,
+						date_keeping,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,
+			              amount_keeping,exp_date,status FROM $this->_name ";
 			//$where='';
 			if(!empty($search['adv_search'])){
 				$s_where = array();
@@ -80,7 +88,7 @@
 				$where.=" AND client_id= ".$search['send_name_id'];
 			}
 			$order = " ORDER BY id DESC ";
-			echo $sql.$where.$order;
+			//echo $sql.$where.$order;
 			return $db->fetchAll($sql.$where.$order);
 		}
 		function updateKeeping($data){
@@ -93,19 +101,13 @@
 						'invoice_number'=>$data['report'],
 	
 				);
-		//	print_r($arr);exit();
+		    $id = $data['id'];
 		 
 			$where=" id =".$data['id'];
-// 			print_r($where);exit();
 		$this->update($arr, $where);
-// 		print_r($db);exit();
-
-		
 		$where = " keeping_id = ".$data['id'];
-// 			print_r($where);exit();
-			$_arr = array('status'=>0);
-			$this->_name='cms_keepingdetail';
-		$this->update($_arr,$where);
+	    $this->_name='cms_keepingdetail';
+		$this->delete($where);
 		$ids = explode(',',$data['record_row']);
 			foreach ($ids as $i){
 				$arr = array(
@@ -121,7 +123,7 @@
 						'note'=>$data['note'.$i],
 			
 				);
-					
+				$this->_name='cms_keepingdetail';
 				$this->insert($arr);
 			}
 		}

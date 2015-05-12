@@ -95,7 +95,7 @@ class Keeping_Form_FrmSendMoney extends Zend_Dojo_Form
         $amount_month=new Zend_Dojo_Form_Element_ValidationTextBox('amount_month');
         $amount_month->setAttribs(array(
         		'dojoType'=>'dijit.form.ValidationTextBox',
-        		'required'=>true,
+        		//'required'=>true,
 //         		'onkeyup'=>"calCulatePeriod();",
 //         		'onkeyup'=>"calExpiredDate();",
                  'onkeyup'=>"calCulateFirstPayment();",
