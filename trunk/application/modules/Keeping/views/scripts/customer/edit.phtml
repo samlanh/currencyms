@@ -23,7 +23,7 @@ dojo.ready(function(){
 		//pro_id: "-1"
 		pro_id:"<?php echo $this->row['province'];?>"
 	},            
-	required: false,		           
+	required: true,		           
 	name: "district",
 	id: "district",
 	searchAttr: "name",
@@ -46,7 +46,7 @@ dojo.ready(function(){
 		//district_id: "-1"
 		district_id: "<?php echo $this->row['district'];?>"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "commune",
 	id: "commune",
 	searchAttr: "name",
@@ -69,7 +69,7 @@ dojo.ready(function(){
 		//commune_id:"-1"
 		commune_id:"<?php echo $this->row['commune'];?>"
 	},            
-	required: false,		           
+	required: true,		           
 	name: "village",
 	id: "village",
 	searchAttr: "name",
@@ -96,9 +96,14 @@ function filterVillage(){
 
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'Customer','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
+<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'customer','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+                if(dijit.byId('province_name').get('value')==-1){
+                      alert('Please Select Province Name');
+               	      dijit.byId('province_name').focus();
+                      return false; 
+                    }
 				return true;
 			}
 			return false;
@@ -210,7 +215,7 @@ function filterVillage(){
 		<tr>
 			<td colspan="2" align="center">
 				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
-				<?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'Customer','action'=>'')); ?>
+				<?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'customer','action'=>'')); ?>
 				<a href="<?php echo $url_close ?>">
 				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
 				</a>

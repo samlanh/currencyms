@@ -22,12 +22,12 @@ dojo.ready(function(){
 	query: {
 		pro_id: "-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "district",
 	id: "district",
 	searchAttr: "name",
 //	class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះdistrictទេ សូមជ្រើរើសprovinceម្តងទៀត!!",	
 		onChange: function() {
 				filterCommune();
 	    }
@@ -43,12 +43,12 @@ dojo.ready(function(){
 	query: {
 		district_id: "-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "commune",
 	id: "commune",
 	searchAttr: "name",
 	//class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះCommunទេ សូមជ្រើរើសdistrictម្តងទៀត!!",	
 		onChange: function() {
 			filterVillage();
   }
@@ -64,12 +64,12 @@ dojo.ready(function(){
 	query: {
 		commune_id:"-1"
 	},            
-	required: false,		           
+	required:true,		           
 	name: "village",
 	id: "village",
 	searchAttr: "name",
 	//class: 'fullside',
-	missingMessage:"អ្នក​ភ្លេច​បំពេញ​ ឈ្មោះសាខា​កូន!",	
+	missingMessage:"អត់មានឈ្មោះភូមីទេ សូមជ្រើរើសសង្កាត់ម្តងទៀត!",	
 		onChange: function() {
 }
 	}, "village");
@@ -90,9 +90,14 @@ function filterVillage(){
 
 </script>
 
-<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'Customer','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
+<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'customer','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="multipart/form-data" >
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+               if(dijit.byId('province_name').get('value')==-1){
+                alert('Please Select Province Name');
+                dijit.byId('province_name').focus();
+                return false;
+               }
 				return true;
 			}
 			return false;
@@ -203,7 +208,7 @@ function filterVillage(){
 			<td colspan="2" align="center">
 				<input type="submit" value="រក្សាទុក" name="btn_save" label="រក្សាទុក" id="submitButton" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
 				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
-				<?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'Customer','action'=>'')); ?>
+				<?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'customer','action'=>'')); ?>
 				<a href="<?php echo $url_close ?>">
 				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
 				</a>

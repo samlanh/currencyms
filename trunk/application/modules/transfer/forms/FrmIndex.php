@@ -98,7 +98,8 @@ class Transfer_Form_FrmIndex extends Zend_Dojo_Form
     	
     	$agent_id=new Zend_Dojo_Form_Element_FilteringSelect('agent_id');
     	$agent_id->setAttribs(array(
-    			'dojoType'=>'dijit.form.FilteringSelect'));
+    			'dojoType'=>'dijit.form.FilteringSelect'
+    			));
     	
     	$sub_agant=new Zend_Dojo_Form_Element_FilteringSelect('sub_agant');
     	$sub_agant->setAttribs(array(

@@ -269,6 +269,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     	return $newfile;
     }
     function getAllPartner($id=null,$option=null){
+    	$order = "ORDER BY partner_brand DESC ";
     	$db=$this->getAdapter();
     	$sql = " select id,partner_brand,partner_name from cms_partner where status=1 ";
     	if($id!=null){
@@ -284,7 +285,7 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     		return $opt;
     		
     	}else{
-    		return $rows;
+    		return $rows.$order;
     	}
     	
     	

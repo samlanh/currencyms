@@ -156,10 +156,10 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         		$where.=" AND village = ".$search['village'];
         	}
         	if(!empty($search['main_branch'])){
-        		$where.=" AND id= ".$search['main_branch'];
+        		$where.=" AND id =".$search['main_branch'];
         	}
-        	//echo $sql.$where;
-        	$order = "ORDER BY id DESC ";
+//         	echo $sql.$where.$order;
+        	$order = " ORDER BY id DESC ";
         	return $db->fetchAll($sql.$where.$order);
         }
         function getNamePartner($id=null,$option=null){
