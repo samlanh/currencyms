@@ -70,6 +70,11 @@ table tr.head-title{ background: none repeat scroll 0% 0% rgba(213, 249, 244, 1)
 <form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'index','action'=>'add')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
+                if(dijit.byId('send_name').get('value')==""){
+                   alert('សូមជ្រើសរើសឈ្មោះអ្នកផ្ញើរ');
+                   dijit.byId('send_name').focus();
+                   return false;
+                }
 				return true;
 			}
 			return false;
@@ -257,7 +262,7 @@ curr_dollar_amountoption = '<?php echo $this->currency_type;?>';
 			temp+='<td><input type="text" style=" width:100%;" required="true" onkeyup="calTotalPayment('+r+');" name="commission'+r+'" id="commission'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" style=" width:100%;" required="true" onkeyup="calCulateExchange('+r+');" name="total_amount'+r+'" id="total_amount'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
 			temp+='<td><input type="text" style=" width:100%;" required="true"  onkeyup="calReturnAmount('+r+');" name="recieve_amount'+r+'" id="recieve_amount'+r+'" value="0" dojoType="dijit.form.NumberTextBox"/></td>';
-			temp+='<td><input type="text" style=" width:100%;" name="return_amount'+r+'" id="return_amount'+r+'" dojoType="dijit.form.NumberTextBox" value="0"/></td>';
+			temp+='<td><input type="text" style=" width:100%;" readonly=" true " name="return_amount'+r+'" id="return_amount'+r+'" dojoType="dijit.form.NumberTextBox" value="0"/></td>';
 			temp+='<td><input type="text" style=" width:100%;" name="note'+r+'" value="0" id="note'+r+'" dojoType="dijit.form.NumberTextBox" s/></td>';
 			tmp='<tr style="border:1px solid #ccc; width:100%;" id="row_capital'+r+'">'
 			tmp+="</tr>";

@@ -39,14 +39,43 @@ class Keeping_IndexController extends Zend_Controller_Action
     try{
 			$db = new Keeping_Model_DbTable_DbKeeping();
 			$rs_rows= $db->getAllKeeping($search);//call frome model
+			$arr = array();
+			foreach($rs_rows as $index =>$rs){
+				$arr[$index]=array(
+						'id'=>$rs['id'],
+						'invoice_number'=>$rs['invoice_number'],
+						'client_name'=>$rs['client_name'],
+						'date_keeping'=>$rs['date_keeping'],
+						'name_en'=>$rs['name_en'],
+						'amount_keeping'=>$rs['amount_keeping'],
+						'exp_date'=>$rs['exp_date'],
+						'amount_dollar'=>0,
+						'amount_riel'=>0,
+						'amount_bath'=>0,
+						'status'=>$rs['status'],
+				);
+			
+				$rs_detail = $db->getGroupKeepingdetail($rs['id']);
+				foreach ($rs_detail as $key =>$r){
+					if($r['currency_type']==3){
+						$arr[$index]['amount_riel']=$r['amount'];
+					}elseif($r['currency_type']==1){
+						$arr[$index]['amount_dollar']=$r['amount'];
+					}elseif($r['currency_type']==2){
+						$arr[$index]['amount_bath']=$r['amount'];
+					}
+				}
+			}
+			
+			
 			$glClass = new Application_Model_GlobalClass();
-			$rs_rows = $glClass->getImgActive($rs_rows, BASE_URL, true);
+			$arr = $glClass->getImgActive($arr, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("ឈ្មោះ​អ្នក​ផ្ញើរ "," 	រយះពេលគិតជា ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ","ផុតកំណត់​ត្រឹម​ថ្ងៃ","វិក័យប័ត្រ","Status");
+			$collumns = array("វិក័យប័ត្រ","ឈ្មោះ​អ្នក​ផ្ញើរ ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលគិតជា ","រយះពេលផ្ញើរ","ផុតកំណត់​ត្រឹម​ថ្ងៃ","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត","status");
 			$link=array(
 					'module'=>'Keeping','controller'=>'index','action'=>'edit',
 			);
-			$this->view->list=$list->getCheckList(0, $collumns,$rs_rows,array('client_name'=>$link,'date_keeping'=>$link,'invoice_numer'=>$link));
+			$this->view->list=$list->getCheckList(0, $collumns,$arr,array('client_name'=>$link,'date_keeping'=>$link,'invoice_numer'=>$link));
 		}catch (Exception $e){
 			Application_Form_FrmMessage::message("Application Error");
 			echo $e->getMessage();
@@ -68,7 +97,7 @@ class Keeping_IndexController extends Zend_Controller_Action
 //     					print_r($data);exit();
     					$db_keeping = new Keeping_Model_DbTable_DbKeeping();
     					try {
-    						if($this->getRequest()->getParam("btn_save_close")){
+    						if($this->getRequest()->getParam("btn_save")){
     						$db = $db_keeping->insertKeeping($data);
     						Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL);
     						}
