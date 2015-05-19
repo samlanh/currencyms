@@ -59,8 +59,7 @@ class Partner_WithdrawController extends Zend_Controller_Action
 	    Application_Model_Decorator::removeAllDecorator($frm);
 	    $this->view->frm=$frm;
     }
-    function viewAction(){
-    }
+   
 	function editAction(){
    		 if($this->getRequest()->isPost()){
 	    	$data=$this->getRequest()->getPost();

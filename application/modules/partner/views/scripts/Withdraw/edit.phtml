@@ -43,11 +43,11 @@
 <form action="<?php echo $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
 	<script type="dojo/method" event="onSubmit">				
 			if(this.validate()) {
-                if(dijit.byId('namesend').get('value')==''){
-                    alert('Please Select name of customer');
-                    dijit.byId('namesend').focus();
-                    return false;
-                }
+                if(dijit.byId('namesend').get('value')==""){
+                alert('សូមជ្រើសរើសឈ្មោះអតិថិជន!');
+                dijit.byId('namesend').focus();
+                return false;
+            }
 				return true;
 			}
 			return false;
@@ -127,6 +127,7 @@
 		
 		
 		<td colspan="2" align="center">
+				
 				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="submitButton_Save" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
 				<?php $url_close = $this->url(array('module'=>'partner','controller'=>'withdraw','action'=>'')); ?>
 				<a href="<?php echo $url_close ?>">

@@ -31,6 +31,46 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 			);
 			$this->insert($arr);
 		}
+		$sql_partner = "SELECT * FROM cms_partner WHERE id=".$data['name_partner'];
+		$rs_partner = $db->fetchRow($sql_partner);
+			
+		$sql ="SELECT * FROM cms_partnerdeposit_detail WHERE pd_id = $id";
+		$rs = $db->fetchAll($sql);
+		//print_r($rs);
+		if($rs!=""){
+			foreach ($rs as $row){
+				if($row["currency_type"]==1){
+					$arr_update = array(
+							'cash_dollar' =>  $rs_partner["cash_dollar"]+$row["deposite_amount"] ,
+					);
+		
+					$this->_name="cms_partner";
+					$where = $db->quoteInto("id=?",$data['name_partner']);
+					$this->update($arr_update, $where);
+				}
+					
+				if($row["currency_type"]==2){
+					$arr_update = array(
+							'cash_bath' => $rs_partner["cash_bath"] + $row["deposite_amount"],
+					);
+					$this->_name="cms_partner";
+					$where = $db->quoteInto("id=?",$data['name_partner']);
+					$this->update($arr_update, $where);
+				}
+				if($row["currency_type"]==3){
+					$arr_update = array(
+							'cash_riel' => $rs_partner["cash_riel"] + $row["deposite_amount"],
+					);
+						
+					$this->_name="cms_partner";
+					$where = $db->quoteInto("id=?",$data['name_partner']);
+					$this->update($arr_update, $where);
+						
+				}
+					
+			}
+		}
+		
 	}
 	function getAllDeposite($search=null){
 	$db = $this->getAdapter();
@@ -59,7 +99,8 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 		$where.=" AND partner_id= ".$search['name_partner'];
 	}
 	//echo $sql.$where;
-	return $db->fetchAll($sql.$where);
+	$order = " ORDER By id DESC ";
+	return $db->fetchAll($sql.$where.$order);
 	//return $db->fetchAll($sql);
 	}
 	function updateDeposite($data){

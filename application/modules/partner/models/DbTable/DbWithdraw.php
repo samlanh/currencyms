@@ -14,15 +14,34 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 					'withdraw_riel'=>$data['withdraw_riel'],
 			);
 			$this->insert($arr);
+			if($data['remain_dollar']!=''){
+				$arr_update = array(
+						'cash_dollar'=>$data['remain_dollar'],
+				);
 			
-			$arr_update=array(
-					'cash_dollar'=>$data['remain_dollar'],
-					'cash_bath'=>$data['remain_bath'],
-					'cash_riel'=>$data['remain_riel'],					
-			);
-			$this->_name = "cms_partner";
-			$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
-			$this->update($arr_update, $where);
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
+			if($data['remain_bath'] !=''){
+				$arr_update = array(
+						'cash_bath'=>$data['remain_bath'],
+				);
+					
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
+			if($data['remain_riel']!=''){
+				$arr_update = array(
+						'cash_riel'=>$data['remain_riel'],
+				);
+					
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
+
 		}
 		function getAllwithdraw($search=null){
 			$db=$this->getAdapter();
@@ -50,7 +69,8 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 				$where.=" AND parent= ".$search['main_branch'];
 			}
 			//echo $sql.$where;
-			return $db->fetchAll($sql.$where);
+			$order = " ORDER BY ID DESC ";
+			return $db->fetchAll($sql.$where.$order);
 		//	return $db->fetchAll($sql);
 		}
 		function updatewithdraw($data){
@@ -67,6 +87,33 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 			);
 			$where="partner_id=".$data['namesend'];
 			$this->update($_partner_data,$where);
+			if($data['remain_dollar']!=''){
+				$arr_update = array(
+						'cash_dollar'=>$data['remain_dollar'],
+				);
+					
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
+			if($data['remain_bath'] !=''){
+				$arr_update = array(
+						'cash_bath'=>$data['remain_bath'],
+				);
+					
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
+			if($data['remain_riel']!=''){
+				$arr_update = array(
+						'cash_riel'=>$data['remain_riel'],
+				);
+					
+				$this->_name="cms_partner";
+				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
+				$this->update($arr_update, $where);
+			}
 		}
 		public function getpartnerById($id){
 			$db = $this->getAdapter();
