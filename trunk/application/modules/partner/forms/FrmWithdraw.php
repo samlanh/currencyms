@@ -125,17 +125,20 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     	$r1=new Zend_Dojo_Form_Element_NumberTextBox('remain_dollar');
     	$r1->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'ReadOnly'=>true));
     	
     	$r2=new Zend_Dojo_Form_Element_NumberTextBox('remain_riel');
     	$r2->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'ReadOnly'=>true));
     	 
     	$r3=new Zend_Dojo_Form_Element_NumberTextBox('remain_bath');
     	$r3->setAttribs(array(
     			'dojoType'=>'dijit.form.NumberTextBox',
-    			'class'=>'fullside'));
+    			'class'=>'fullside',
+    			'ReadOnly'=>true));
     	$id = new Zend_Form_Element_Hidden('id');
     	if($data!=null){
     		//print_r($data);exit();
@@ -145,11 +148,11 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     		$daydokmoney->setValue($data['date']);
     		
     		$note->setValue($data['note']);
-    		$b1->setValue($data['riel_before']);
-    		$b2->setValue($data['dollar_before']);
-       		$b3->setValue($data['bath_before']);
-    		$d1->setValue($data['withdraw_riel']);
-    		$d2->setValue($data['withdraw_dollar']);
+    		$b1->setValue($data['bath_before']);
+    		$b2->setValue($data['riel_before']);
+       		$b3->setValue($data['dollar_before']);
+    		$d2->setValue($data['withdraw_riel']);
+    		$d1->setValue($data['withdraw_dollar']);
     		$d3->setValue($data['withdraw_bat']);
     		$id->setValue($data['id']);
     		$phone->setValue($data['mobile']);

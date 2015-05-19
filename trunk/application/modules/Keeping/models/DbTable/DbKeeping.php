@@ -71,8 +71,8 @@
 			$where = " WHERE ".$from_date." AND ".$to_date;
 			$sql = "SELECT id ,invoice_number ,
 						(SELECT client_name FROM cms_client WHERE id = client_id) AS client_name,
-						date_keeping,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,
-			              amount_keeping,exp_date,status FROM $this->_name ";
+						date_keeping,amount_keeping,(SELECT name_en FROM cms_view WHERE id = payment_term and type=1) AS name_en,
+			              exp_date,status FROM $this->_name ";
 			//$where='';
 			if(!empty($search['adv_search'])){
 				$s_where = array();
