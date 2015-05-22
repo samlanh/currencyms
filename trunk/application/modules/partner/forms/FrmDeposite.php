@@ -10,9 +10,9 @@ class Partner_Form_FrmDeposite extends Zend_Dojo_Form
     	$request=Zend_Controller_Front::getInstance()->getRequest();
     	
         /* Form Elements & Other Definitions Here ... */
-    	$accourn_number=new Zend_Dojo_Form_Element_NumberTextBox('accourn_number');
+    	$accourn_number=new Zend_Dojo_Form_Element_TextBox('accourn_number');
     	$accourn_number->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'dojoType'=>'dijit.form.TextBox',
     			'readOnly'=>true));
     	$name_partner=new Zend_Dojo_Form_Element_FilteringSelect('name_partner');
     	$name_partner->setAttribs(array(

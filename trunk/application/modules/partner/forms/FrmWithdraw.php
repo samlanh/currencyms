@@ -6,9 +6,10 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     public function dakMoney($data=null)
     {
         /* Form Elements & Other Definitions Here ... */
-    	$nuber_account=new Zend_Dojo_Form_Element_NumberTextBox('account_number');
+    	$request=Zend_Controller_Front::getInstance()->getRequest();
+    	$nuber_account=new Zend_Dojo_Form_Element_TextBox('account_number');
     	$nuber_account->setAttribs(array(
-    			'dojoType'=>'dijit.form.NumberTextBox',
+    			'dojoType'=>'dijit.form.TextBox',
     			'class'=>'fullside',
     			'readOnly'=>true));
 //     	$db = new Partner_Model_DbTable_DbWithdraw();
@@ -36,6 +37,7 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     			'Onchange'=>'getfillterById()'));
     	$db = new Application_Model_DbTable_DbGlobal();
     	$opt = $db->getAllPartner(null,1);
+    	$namesend->setValue($request->getParam('namesend'));
     	$namesend->setMultiOptions($opt);
 //     	$name=array(1=>"dara",2=>"Chenda",3=>"nemol");
 //     	$namesend->setMultiOptions($name);
@@ -155,7 +157,7 @@ class Partner_Form_FrmWithdraw extends Zend_Dojo_Form
     		$d1->setValue($data['withdraw_dollar']);
     		$d3->setValue($data['withdraw_bat']);
     		$id->setValue($data['id']);
-    		$phone->setValue($data['mobile']);
+    		$phone->setValue($data['phone']);
     	}
     	
     	$this->addElements(array($nuber_account,$namesend,$daydokmoney,

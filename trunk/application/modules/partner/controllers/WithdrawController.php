@@ -36,6 +36,10 @@ class Partner_WithdrawController extends Zend_Controller_Action
 			$frm = $pructis->addPartner ();
 			Application_Model_Decorator::removeAllDecorator ( $frm );
 			$form = $this->view->frm_partner = $frm;
+			$with_draw=new Partner_Form_FrmWithdraw();
+			$frm = $with_draw->dakMoney();
+			Application_Model_Decorator::removeAllDecorator($frm);
+			$this->view->frm=$frm;
 		}
 	 public function addAction(){
 	    if($this->getRequest()->isPost()){

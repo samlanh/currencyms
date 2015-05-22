@@ -74,8 +74,8 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
 				}
 			}
 			$arr=array(
-					'parent'=>$data['main_branch'],
-					'partner_brand'=>$data['branch_name'],
+// 					'parent'=>$data['main_branch'],
+// 					'partner_brand'=>$data['branch_name'],
 					'partner_name'=>$data['partner_name'],
 					'nation_id'=>$data['cade_number'],
 					'account_no'=>$data['account_number'],
@@ -158,8 +158,8 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	if(!empty($search['main_branch'])){
         		$where.=" AND id =".$search['main_branch'];
         	}
-//         	echo $sql.$where.$order;
-        	$order = " ORDER BY id DESC ";
+        	$order = " AND is_cashoperation = 1 ORDER BY id DESC ";
+        	//echo $sql.$where.$order;
         	return $db->fetchAll($sql.$where.$order);
         }
         function getNamePartner($id=null,$option=null){
@@ -204,7 +204,7 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         }
         function getNamePartnerparent($id=null,$option=null){
         	$db=$this->getAdapter();
-        	$sql = " select id,partner_name from cms_partner ";
+        	$sql = " select id,partner_name from cms_partner WHERE is_cashoperation=1 ";
         	if($id!=null){
         		$sql.=" AND id = $id";
         	}
@@ -312,17 +312,20 @@ Class Partner_Model_DbTable_DbPartner extends zend_db_Table_Abstract
         	}
         	return $option;
         }
-        public function getNewAccountNumber(){
+        public function getNewAccountNumber($type){
         	$this->_name='cms_partner';
         	$db = $this->getAdapter();
-        	$sql=" SELECT id ,account_no FROM $this->_name ORDER BY id DESC LIMIT 1 ";
+        	$sql=" SELECT count(id)  FROM $this->_name WHERE is_cashoperation = $type ORDER BY id DESC LIMIT 1 ";
         	$acc_no = $db->fetchOne($sql);
         	$new_acc_no= (int)$acc_no+1;
+        	//echo $new_acc_no;exit();
         	$acc_no= strlen((int)$acc_no+1);
-        	$pre = "";
+        	$pre = ($type==1)?'P':'K';
+        	
         	for($i = $acc_no;$i<5;$i++){
         		$pre.='0';
         	}
+        	
         	return $pre.$new_acc_no;
         }
 	}

@@ -5,6 +5,8 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 			$arr=array(
 					'partner_id'=>$data['namesend'],
 					'date'=>$data['daydokmoney'],
+					'acco_number'=>$data['account_number'],
+					'phone'=>$data['phone'],
 					'note'=>$data['note'],
 					'dollar_before'=>$data['curr_dollar'],
 					'bath_before'=>$data['curr_bath'],
@@ -48,7 +50,7 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 			$from_date =(empty($search['start_date']))? '1': "date >= '".$search['start_date']." 00:00:00'";
 			$to_date = (empty($search['end_date']))? '1': "date <= '".$search['end_date']." 23:59:59'";
 			$where = " WHERE ".$from_date." AND ".$to_date;
-			$sql="SELECT id,(SELECT `account_no` FROM cms_partner WHERE id = partner_id) AS `account_no`,			
+			$sql="SELECT id,acco_number,			
 				date,note,dollar_before,bath_before,riel_before,withdraw_dollar,
 				withdraw_bat,withdraw_riel FROM cms_withdraw";
 			if(!empty($search['adv_search'])){
@@ -57,26 +59,31 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 				//print_r($s_search);exit();
 				$s_where[] = "date LIKE '%{$s_search}%'";
 				$s_where[]="  note LIKE '%{$s_search}%'";
-				$s_where[]="id LIKE '%{$s_search}%'";
-				$s_where[]="dollar_before LIKE '%{$s_search}%'";
+				$s_where[]="partner_id LIKE '%{$s_search}%'";
+				$s_where[]="acco_number LIKE '%{$s_search}%'";
 				$s_where[]="bath_before LIKE '%{$s_search}%'";
 				$where .=' AND ('.implode(' OR ',$s_where).')';
+				
 			}
 			if($search['status_search']>-1){
 				$where.= " AND status = ".$search['status_search'];
 			}
-			if(!empty($search['main_branch'])){
-				$where.=" AND parent= ".$search['main_branch'];
+			if(!empty($search['namesend'])){
+				$where.=" AND partner_id= ".$search['namesend'];
 			}
 			//echo $sql.$where;
 			$order = " ORDER BY ID DESC ";
 			return $db->fetchAll($sql.$where.$order);
-		//	return $db->fetchAll($sql);
 		}
 		function updatewithdraw($data){
+			$db=$this->getAdapter();
+			$db->beginTransaction();
+			try {
 			$_partner_data=array(
 					'partner_id'=>$data['namesend'],
 					'date'=>$data['daydokmoney'],
+					'acco_number'=>$data['account_number'],
+					'phone'=>$data['phone'],
 					'note'=>$data['note'],
 					'dollar_before'=>$data['curr_dollar'],
 					'bath_before'=>$data['curr_bath'],
@@ -85,7 +92,7 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 					'withdraw_bat'=>$data['withdraw_bath'],
 					'withdraw_riel'=>$data['withdraw_riel'],
 			);
-			$where="partner_id=".$data['namesend'];
+			$where="id=".$data['id'];
 			$this->update($_partner_data,$where);
 			if($data['remain_dollar']!=''){
 				$arr_update = array(
@@ -113,6 +120,11 @@ Class Partner_Model_DbTable_DbWithdraw extends zend_db_Table_Abstract{
 				$this->_name="cms_partner";
 				$where = $this->getAdapter()->quoteInto('id=?', $data['namesend']);
 				$this->update($arr_update, $where);
+			}
+			$db->commit();
+			}catch (Exception $e){
+				$db->rollBack();
+				echo $e->getMessage();exit();
 			}
 		}
 		public function getpartnerById($id){

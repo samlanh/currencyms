@@ -70,8 +70,7 @@ class Partner_DepositeController extends Zend_Controller_Action
 		Application_Model_Decorator::removeAllDecorator($frm_de);
 		$this->view->frm_deposite=$frm_de;
 	}
-	function viewAction(){
-	}
+	
 	function editAction()
 	{
 		if($this->getRequest()->isPost()){
