@@ -1,129 +1,111 @@
-<?php
-
+<?php 
 class Keeping_OutmoneyController extends Zend_Controller_Action
 {
-	const REDIRECT_URL = '/agent';
+	const REDIRECT_URL_ADD = '/Keeping/outmoney/add';
+	const REDIRECT_URL_EXIT = '/Keeping/outmoney';
 	private $activelist = array('មិនប្រើ​ប្រាស់', 'ប្រើ​ប្រាស់');
 	
-    public function init()
-    {
-        /* Initialize action controller here */
-    	header('content-type: text/html; charset=utf8');
-    	
-    	//clear all other sessions
-    	Application_Form_FrmSessionManager::clearSessionSearch();
-    }
-
-    public function indexAction()
-    {
-        // action body
-	    //create sesesion
-        $session_search_agent=new Zend_Session_Namespace('search_agent');
-        if(empty($session_search_agent->limit)){
-        	$session_search_agent->limit =  Application_Form_FrmNavigation::getLimit();        	    	
-        	$session_search_agent->active  = -1;
-        	$session_search_agent->province  = -1;
-        	$session_search_agent->txtsearch = '';      	
-        	$session_search_agent->lock();
-        }
-        
-    	//start page nevigation                	
-        $limit = $session_search_agent->limit;
-    	$start = $this->getRequest()->getParam('limit_satrt',0);
-        
-        $pro = new Application_Model_DbTable_DbProvinces();
-		$this->view->provincelist = $pro->getProvinceList();
-		$this->view->province = $session_search_agent->province;
+	public function init()
+	{
+		header('content-type: text/html; charset=utf8');
+		defined('BASE_URL')	|| define('BASE_URL', Zend_Controller_Front::getInstance()->getBaseUrl());
+	}
+	function indexAction(){
+		try{
+			$db = new Keeping_Model_DbTable_DbOutmoney();
+			if ($this->getRequest ()->isPost ()) {
+				$search = $this->getRequest ()->getPost ();
+				//print_r($search);exit();
+			} else {
+				$search = array (
+						'adv_search' => '',
+						'status_search' => - 1
+				);
+			}
 		
-		$db_agent=new Application_Model_DbTable_DbAgents();
-    	
-        $this->view->activelist =$this->activelist;       
-        $this->view->active = $session_search_agent->active;
-        
-        if($this->getRequest()->isPost()){     	
-        	$agent_seach_data=$this->getRequest()->getPost();  
-        	
-        	//set session when submit
-        	$session_search_agent->unlock();
-        	$session_search_agent->limit =  $agent_seach_data['rows_per_page'];        	    	
-        	$session_search_agent->active  = $agent_seach_data['active'];
-        	$session_search_agent->province  = $agent_seach_data['province'];
-        	$session_search_agent->txtsearch = $agent_seach_data['txtsearch'];      	
-        	$session_search_agent->lock();
-        	
-        	$this->view->province = $agent_seach_data['province'];  
-        	$this->view->txtsearch  = $agent_seach_data['txtsearch'];        	
-        	$this->view->active  = $agent_seach_data['active'];       
-        	$limit = $session_search_agent->limit;
-        	  	     	 	
-        	$agents= $db_agent->getAgentListBy($agent_seach_data, $start, $limit);  
-        	$record_count = $db_agent->getAgentListTotal($agent_seach_data);        	      	
-        }
-        else{
-        	if(!empty($session_search_agent->txtsearch ) || $session_search_agent->active > -1 || $session_search_agent->province > -1){
-        		$agent_seach_data = array(
-        								  	'active'=>$session_search_agent->active,
-								        	'province'=>$session_search_agent->province,
-								        	'txtsearch'=>$session_search_agent->txtsearch 
-        								 );
-        		$agents= $db_agent->getAgentListBy($agent_seach_data, $start, $limit);  
-        		$record_count = $db_agent->getAgentListTotal($agent_seach_data);  
-        	}
-        	else{
-	        	$agents = $db_agent->getAgentList($start, $limit);
-	        	$record_count = $db_agent->getAgentListTotal();
-        	}  
-        }
-        
-	        $result = array();
-	        $row_num = $start;
-	        foreach ($agents as $i => $agent) {					
-	        	$result[$i] = array(
-	        				'num' => (++$row_num),
-	        				'id' => $agent['id'],
-	        				'tel' => $agent['tel'], 
-	        				'name' => $agent['name'], 
-	        				'proname' =>  $agent['proname'], 
-	        				'khan'=> $agent['khan'], 
-	        				'sangkat'=> $agent['sangkat'], 
-	        				'block'=> $agent['block']
-	        				);
-	        }
-	        
-	        $this->view->agentlist = Zend_Json::encode($result);
-	        $page = new Application_Form_FrmNavigation(self::REDIRECT_URL, $start, $limit, $record_count);	        
-	        $page->init(self::REDIRECT_URL, $start, $limit, $record_count);
-	        $this->view->nevigation = $page->navigationPage();
-	        $this->view->rows_per_page = $page->getRowsPerPage($limit, 'frmlist_agent');
-	        $this->view->result_row = $page->getResultRows();
-        
-    }
-
-    public function addAction()
-    {
-       
-    	$pructis=new Money_Form_FrmMoney();
-    	$frm = $pructis->addMoney();
+			$rows= $db->getAllwithdrawKeeping($search);
+			$list = new Application_Form_Frmtable();
+			$collumns = array("លេខដៃគូ","ថ្ងៃ","សម្គាល់","ទូរស័ព្ទអតិថិជន","ប្រាក់ជាដុល្លា","ប្រាក់ជាបាត","ប្រាក់ជារៀល","ប្រាក់ជាដុល្លា(-)","ប្រាក់ជាបាត(-)","ប្រាក់ជារៀល(-)");
+			$link=array(
+					'module'=>'Keeping','controller'=>'outmoney','action'=>'edit',
+			);
+			$this->view->list=$list->getCheckList(0,$collumns,$rows,array('phone'=>$link,'create_date'=>$link,'note'=>$link));
+		}catch (Exception $e){
+			Application_Form_FrmMessage::message("Application Error");
+			echo $e->getMessage();
+			Application_Model_DbTable_DbUserLog::writeMessageError($e->getMessage());
+		}
+		$pructis = new Keeping_Form_FrmOutMoney ();
+		$frm = $pructis->dokMoney ();
+		Application_Model_Decorator::removeAllDecorator ( $frm );
+		$form = $this->view->frm_partner = $frm;
+		
+	}
+	function addAction(){
+		if($this->getRequest()->isPost()){
+			$data=$this->getRequest()->getPost();
+			//print_r($data);exit();
+			$db = new Keeping_Model_DbTable_DbOutmoney();
+			try {
+				if($this->getRequest()->getPost("btn_save")){
+					$db = $db->insertWithdrawKeeping($data);
+					Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ',self::REDIRECT_URL_ADD);
+				}
+				if($this->getRequest()->getPost("btn_save_close")){
+					//print_r($data);exit();
+					$db = $db->insertWithdrawKeeping($data);
+					Application_Form_FrmMessage::message('ការ​បញ្ចូល​​ជោគ​ជ័យ');
+					Application_Form_FrmMessage::redirector(self::REDIRECT_URL_EXIT);
+				}
+			} catch (Exception $e) {
+				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+			}
+		}
+		$pructis=new Keeping_Form_FrmOutMoney();
+		$frm = $pructis->dokMoney();
+		Application_Model_Decorator::removeAllDecorator($frm);
+		$this->view->frm=$frm;
+	}
+    function editAction(){
+    	if($this->getRequest()->isPost()){
+    		$data=$this->getRequest()->getPost();
+    		$db_wihtdraw = new Keeping_Model_DbTable_DbOutmoney();
+    		try {
+    			if($this->getRequest()->getPost("btn_save_close")){
+    				$db_wihtdraw->updateWithdrawKeeping($data);
+    				Application_Form_FrmMessage::Sucessfull('ការ​បញ្ចូល​​ជោគ​ជ័យ', self::REDIRECT_URL_EXIT);
+    			}
+    		} catch (Exception $e) {
+    			$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
+    		}
+    	}
+    	$db_wihtdraw = new Keeping_Model_DbTable_DbOutmoney();
+    	$id = $this->getRequest()->getParam("id");
+//     	echo $id;exit();
+    	$row = $db_wihtdraw->getWithdrawKeepingById($id);
+    	if(empty($row)){
+    	}
+    	$this->view->id = $row['id'];
+    	$withdraw_keeping=new Keeping_Form_FrmOutMoney();
+    	$frm = $withdraw_keeping->dokMoney($row);
     	Application_Model_Decorator::removeAllDecorator($frm);
     	$this->view->frm=$frm;
     }
-   
-    public function dakAction()
-    {
-    
-    	$pructis=new Keeping_Form_OutMoney();
-    	$frm = $pructis->dakMoney();
-    	Application_Model_Decorator::removeAllDecorator($frm);
-    	$this->view->frm=$frm;
+
+    public function getfillterAction(){
+    	if($this->getRequest()->isPost()){
+    		$data = $this->getRequest()->getPost();
+    		$id = $data["namesend"];
+    		$db = new Partner_Model_DbTable_DbWithdraw();
+    		$opt = $db->getNameFillterParent($id);
+    		print_r(Zend_Json::encode($opt));
+    		exit();
+    	}
     }
-    
-   
-
-   
-
+	
+	
 }
-
-
+?>
 
 
 

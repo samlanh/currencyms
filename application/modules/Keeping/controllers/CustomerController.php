@@ -18,7 +18,7 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 	}
 	public function indexAction() {
 		try {
-			$db = new Partner_Model_DbTable_DbPartner ();
+			$db = new Keeping_Model_DbTable_DbCustomer ();
 			if ($this->getRequest ()->isPost ()) {
 				$formdata = $this->getRequest ()->getPost ();
 				$search = array(
@@ -101,7 +101,7 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 		
 	}
 	public function addAction() {
-		$db_partner = new Partner_Model_DbTable_DbPartner ();
+		$db_partner = new Keeping_Model_DbTable_DbCustomer ();
 		if ($this->getRequest ()->isPost ()) {
 			$data = $this->getRequest ()->getPost();
 			try {
@@ -121,7 +121,7 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 				$this->view->msg = 'ការ​បញ្ចូល​មិន​ជោគ​ជ័យ';
 			}
 		}
-		$pructis = new Partner_Form_FrmPartner ();
+		$pructis = new Keeping_Form_FrmCustomer();
 		$frm = $pructis->addPartner ();
 		Application_Model_Decorator::removeAllDecorator ( $frm );
 		$form = $this->view->frm = $frm;
@@ -159,7 +159,7 @@ class Keeping_CustomerController extends Zend_Controller_Action {
 		$row = $db_partner->getPartnerById($id);
 		$this->view->row= $row;
 		$this->view->photo = $row['photo'];
-		$pructis = new Partner_Form_FrmPartner ();
+		$pructis = new Keeping_Form_FrmCustomer();
 		$frm = $pructis->addPartner ($row);
 		Application_Model_Decorator::removeAllDecorator ( $frm );
 		$form = $this->view->frm = $frm;

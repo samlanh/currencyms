@@ -98,10 +98,8 @@ Class Partner_Model_DbTable_DbDeposite extends zend_db_Table_Abstract{
 		//print_r($search['name_partner']);exit();
 		$where.=" AND partner_id= ".$search['name_partner'];
 	}
-	//echo $sql.$where;
 	$order = " ORDER By id DESC ";
 	return $db->fetchAll($sql.$where.$order);
-	//return $db->fetchAll($sql);
 	}
 	function updateDeposite($data){
 		$db = $this->getAdapter();

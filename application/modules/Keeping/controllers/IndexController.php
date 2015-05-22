@@ -46,8 +46,7 @@ class Keeping_IndexController extends Zend_Controller_Action
 						'invoice_number'=>$rs['invoice_number'],
 						'client_name'=>$rs['client_name'],
 						'date_keeping'=>$rs['date_keeping'],
-						'amount_keeping'=>$rs['amount_keeping'],
-						'name_en'=>$rs['name_en'],
+						'amount_keeping'=>$rs['amount_keeping'].' '.$rs['name_en'],
 						'exp_date'=>$rs['exp_date'],
 						'amount_dollar'=>0,
 						'amount_riel'=>0,
@@ -71,7 +70,7 @@ class Keeping_IndexController extends Zend_Controller_Action
 			$glClass = new Application_Model_GlobalClass();
 			$arr = $glClass->getImgActive($arr, BASE_URL, true);
 			$list = new Application_Form_Frmtable();
-			$collumns = array("វិក័យប័ត្រ","ឈ្មោះ​អ្នក​ផ្ញើរ ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ ","រយះពេលគិតជា","ផុតកំណត់​ត្រឹម​ថ្ងៃ","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត","status");
+			$collumns = array("វិក័យប័ត្រ","ឈ្មោះ​អ្នក​ផ្ញើរ ","កាល​បរិច្ឆេទ ផ្ញើរ","រយះពេលផ្ញើរ ","ផុតកំណត់​ត្រឹម​ថ្ងៃ","ចំនួនប្រាក់ដុល្លា","ចំនួនប្រាក់រៀល","ចំនួនប្រាក់បាត","status");
 			$link=array(
 					'module'=>'Keeping','controller'=>'index','action'=>'edit',
 			);

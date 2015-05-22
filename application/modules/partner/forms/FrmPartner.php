@@ -69,6 +69,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     			'required'=>'true',
 //    			'class'=>'fullside',
     	));
+    	
     	//------------------------------------------------------------------------
     	$branchname=new Zend_Dojo_Form_Element_ValidationTextBox('branch_name');	
     	$branchname->setAttribs(array(
@@ -88,7 +89,7 @@ class Partner_Form_FrmPartner extends Zend_Dojo_Form
     	$photo=new Zend_Form_Element_File('photo');
     	$photo->setAttribs(array(
     			));    	
-    	$id_accournnumber = $db->getNewAccountNumber();
+    	$id_accournnumber = $db->getNewAccountNumber(1);
     	$accournnumber = new Zend_Dojo_Form_Element_TextBox('account_number');
     	$accournnumber->setAttribs(array(
     			'dojoType'=>'dijit.form.TextBox',

@@ -271,13 +271,13 @@ class Application_Model_DbTable_DbGlobal extends Zend_Db_Table_Abstract
     function getAllPartner($id=null,$option=null){
     	$order = "ORDER BY partner_brand DESC ";
     	$db=$this->getAdapter();
-    	$sql = " select id,partner_brand,partner_name from cms_partner where status=1 ";
+    	$sql = " select id,partner_brand,partner_name from cms_partner where status=1 AND is_cashoperation=1 ";
     	if($id!=null){
     		$sql.=" AND id = $id";
     	}
     	$rows = $db->fetchAll($sql);
     	if($option!=null){
-    		$opt= (array("" =>"ជ្រើសរើស ឈ្មោះដៃគូ ----"));
+    		$opt= (array("" =>"ជ្រើសរើស ឈ្មោះអតិថិជន----"));
     		foreach ($rows as $rs){
     			
     			$opt[$rs['id']]=$rs['partner_brand'];
