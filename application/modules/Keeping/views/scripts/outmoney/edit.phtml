@@ -1,0 +1,195 @@
+<?php
+	$this->headTitle('Currency Smart | Agent add page'); 
+	echo $this->headTitle();
+	$form = $this->frm;
+?>
+
+<script type="text/javascript">	
+	dojo.require("dojo.data.ItemFileWriteStore");  
+	dojo.require("dojo.store.Memory");
+	dojo.require("dojo.data.ObjectStore");
+	dojo.require("dijit.form.ValidationTextBox");
+	dojo.require("dijit.form.NumberTextBox");
+	dojo.require("dijit.form.SimpleTextarea");
+	dojo.require('dijit.form.Form');
+	dojo.require('dijit.form.FilteringSelect');	
+	dojo.require('dijit.form.Button');
+	dojo.require("dijit.form.DateTextBox");
+	var url_fillter = "<?php echo $this->url(array('module'=>'Keeping','controller'=>'Outmoney','action'=>'getfillter'));?>";
+	function getfillterById(){
+		//id = dijit.byId('namesend').get('value');		
+		dojo.xhrPost({
+		     url: url_fillter, 
+		     content : { 
+		      'namesend':dijit.byId('namesend').get('value'),
+		  }, 
+		  handleAs:"json",
+		  load: function(data) {
+		   dijit.byId('account_number').attr('value',data.account_no);
+		   dijit.byId('phone').attr('value',data.mobile);
+		   dijit.byId('curr_dollar').attr('value',data.cash_dollar);
+		   dijit.byId('curr_bath').attr('value',data.cash_bath);
+		   dijit.byId('curr_riel').attr('value',data.cash_riel);
+		  },
+		  error: function(err) {
+		   alert(err);
+		  alert("Your message could not be sent, please try again!.");         
+		  }
+		 });
+	}
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<form action="<?php echo $this->url(array('module'=>'Keeping','controller'=>'outmoney','action'=>'edit')); ?>" dojoType="dijit.form.Form" method="post" enctype="application/x-www-form-urlencoded">
+	<script type="dojo/method" event="onSubmit">				
+			if(this.validate()) {
+                if(dijit.byId('namesend').get('value')==""){
+                alert('សូមជ្រើសរើសឈ្មោះអតិថិជន!');
+                dijit.byId('namesend').focus();
+                return false;
+            }
+				return true;
+			}
+			return false;
+	</script>
+	<table cellspacing="10" width="100%" style="font-size: 15px">
+		<tr>
+			<td>
+				<fieldset>
+					<legend style="font-size: 17px"><strong>ពត៏មានដកប្រាក់</strong></legend>
+						<table cellspacing="10"  width="100%" style="font-size: 15px">
+						    <tr>
+						       <td>ឈ្មោះអតិជន</td>
+						        <td><?php echo $form->getElement('namesend');echo $form->getElement('id')?></td>
+						        <td></td>
+						        <td></td>
+						    </tr>
+						     <tr>						        
+						         <td>លេខគណនី</td>
+						        <td><?php echo $form->getElement('account_number');?></td>
+						        <td>ថ្ងៃដកប្រាក់</td>
+						        <td><?php echo $form->getElement('daydakmoney');?></td>
+						    </tr>
+						     <tr>
+						        <td>លេខទូរស័ព្ទ</td>
+						        <td><?php echo $form->getElement('phone');?></td>
+						        <td>សម្គាល់</td>
+						        <td><?php echo $form->getElement('note');?></td>
+						    </tr>
+					   </table>
+						<fieldset>
+						<legend><strong>ប្រាក់ក្នុងគណនីបច្ចុប្បន្ន</strong></legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 15px">
+							<tr>
+								<td>ប្រាក់ជាដុល្លា</td>
+								<td><?php echo $form->getElement('curr_dollar');?></td>
+								<td>ប្រាក់ជាបាត</td>
+								<td><?php echo $form->getElement('curr_bath');?></td>
+								<td>ប្រាក់ជារៀល</td>
+								<td><?php echo $form->getElement('curr_riel');?></td>
+							</tr>
+	
+						</table>
+					</fieldset>
+					<fieldset>
+						<legend><strong>ប្រាក់ត្រូវដកពីគណនី</strong></legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 15px">
+							<tr>
+								<td>ប្រាក់ជាដុល្លា</td>
+								<td><?php echo $form->getElement('withdraw_dollar');?></td>
+								<td>ប្រាក់ជាបាត</td>
+								<td><?php echo $form->getElement('withdraw_bath');?></td>
+								<td>ប្រាក់ជារៀល</td>
+								<td><?php echo $form->getElement('withdraw_riel');?></td>
+							</tr>
+	
+						</table>
+					</fieldset>
+					<fieldset>
+						<legend>ប្រាក់សល់បន្ទាប់ពីដក</legend>
+						<table cellspacing="10"  cellpadding="0" width="100%" style="font-size: 15px">
+							<tr>
+								<td>ប្រាក់ជាដុល្លា</td>
+								<td><?php echo $form->getElement('remain_dollar');?></td>
+								<td>ប្រាក់ជាបាត</td>
+								<td><?php echo $form->getElement('remain_bath');?></td>
+								<td>ប្រាក់ជារៀល</td>
+								<td><?php echo $form->getElement('remain_riel');?></td>
+							</tr>
+	
+						</table>
+					</fieldset>
+						
+				</fieldset>
+				
+			</td>			
+		</tr>
+		
+		
+		<td colspan="2" align="center">
+				<input type="submit" value="រក្សាទុក & ចាកចេញ" name="btn_save_close" label="រក្សាទុក & ចាកចេញ" id="btn_save_close" dojoType="dijit.form.Button"  iconClass="dijitEditorIcon dijitEditorIconSave"/>
+				<?php $url_close = $this->url(array('module'=>'Keeping','controller'=>'Outmoney','action'=>'')); ?>
+				<a href="<?php echo $url_close ?>">
+				<input type="button" value="ចាកចេញ" name="btn_close" label="ចាកចេញ" id="submitButton_Close" dojoType="dijit.form.Button"  iconClass=" dijitIconDelete"/>							
+				</a>
+		</td>
+	</table>		
+</form>
+<script type="text/javascript">
+from=0;
+to=0;
+function CalculateWithdraw_dollar(){
+	curr_dollar = dijit.byId('curr_dollar').get('value');
+	withdraw_dollar = dijit.byId('withdraw_dollar').get('value');
+	remain = curr_dollar-withdraw_dollar;
+	dijit.byId('remain_dollar').attr('value',remain);
+}
+
+function CalculateWithdraw_bath(){
+	curr_bath = dijit.byId('curr_bath').get('value');
+	withdraw_bath = dijit.byId('withdraw_bath').get('value');
+	remain = curr_bath-withdraw_bath;
+	dijit.byId('remain_bath').attr('value',remain);
+}
+
+function CalculateWithdraw_riel(){
+	curr_riel = dijit.byId('curr_riel').get('value');
+	withdraw_riel = dijit.byId('withdraw_riel').get('value');
+	remain = curr_riel-withdraw_riel;
+	dijit.byId('remain_riel').attr('value',remain);
+}
+//-->
+function CalculateWithdrawDollar(type){
+	if(type == 1){
+		var usa = dijit.byId('withdraw_dollar').get('value');
+		var usa_from = dijit.byId('curr_dollar').get('value');
+		if(usa > usa_from){
+			alert("Money transfer is not enought");
+			dijit.byId('withdraw_dollar').attr('value',usa_from);
+		}
+	}
+
+	if(type == 2){
+		    
+		var bath = dijit.byId('withdraw_bath').get('value');
+		var bath_from = dijit.byId('curr_bath').get('value');
+		if(bath > bath_from){
+			alert("Money transfer is not enought");
+			dijit.byId('remain_bath').attr('value',0);
+			dijit.byId('withdraw_bath').attr('value',bath_from);
+		}
+	}
+
+	if(type == 3){
+		 
+		var riel = dijit.byId('withdraw_riel').get('value');
+		var riel_from = dijit.byId('curr_riel').get('value');
+		if(riel > riel_from){
+			alert("Money transfer is not enought");
+			dijit.byId('withdraw_riel').attr('value',riel_from);
+		}
+	}
+}
+</script>
+
+
